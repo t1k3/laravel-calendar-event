@@ -45,7 +45,7 @@ class TemplateCalendarEventTest extends TestCase
             'end_time',
             'description',
             'is_recurring',
-            'end_at_of_recurring',
+            'end_of_recurring',
             'frequence_number_of_recurring',
             'frequence_type_of_recurring',
             'is_public',
@@ -60,8 +60,7 @@ class TemplateCalendarEventTest extends TestCase
     public function events()
     {
         $templateCalendarEvent = factory(TemplateCalendarEvent::class)->create();
-
-        $calendarEvent = factory(CalendarEvent::class)->make();
+        $calendarEvent         = factory(CalendarEvent::class)->make();
         $calendarEvent->template()->associate($templateCalendarEvent);
         $calendarEvent->save();
 
@@ -73,8 +72,7 @@ class TemplateCalendarEventTest extends TestCase
      */
     public function parent()
     {
-        $templateCalendarEvent = factory(TemplateCalendarEvent::class)->create();
-
+        $templateCalendarEvent      = factory(TemplateCalendarEvent::class)->create();
         $templateCalendarEventChild = factory(TemplateCalendarEvent::class)->create();
         $templateCalendarEventChild->parent()->associate($templateCalendarEvent);
 

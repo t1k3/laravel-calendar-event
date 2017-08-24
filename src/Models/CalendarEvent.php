@@ -31,40 +31,37 @@ class CalendarEvent extends AbstractModel
     }
 
     /**
-     * CalendarEvent && TemplateCalendarEvent is equal with this data ($values)
-     * @param array $values
+     * Calendar event (template) data - input is different
+     * @param array $attributes
      * @return bool
      */
-    public function isEqual(array $values): bool
+    public function dataIsDifferent(array $attributes): bool
     {
-        $templateAttributes = $this->template
-            ->getAttributesArray([
-                'start_date',
-                'start_time',
-                'end_time',
-                'is_recurring',
-                'is_public'
-            ]);
-        $templateValues     = $values;
-        unset($templateValues['description']);
+        if (isset($attributes['start_date'])) {
+            if ($this->start_date !== $attributes['start_date']) {
+                return true;
+            }
+            unset($attributes['start_date']);
+        }
 
-        if ($templateAttributes === $templateValues
-            && $this->description === $values['description']
-        ) {
-            return true;
+        $template = $this->template;
+        foreach ($attributes as $key => $value) {
+            if ($template->{$key} !== $value) {
+                return true;
+            }
         }
         return false;
     }
 
     /**
-     * @param array $values
-     * @return CalendarEvent
+     * @param array $attributes
+     * @return \Illuminate\Database\Eloquent\Model
      */
-    public function createEvent(array $values): CalendarEvent
+    public function createCalendarEvent(array $attributes)
     {
-        DB::transaction(function () use ($values, &$calendarEvent) {
-            $templateCalendarEvent = $this->template()->create($values);
-            $calendarEvent         = $this->make(['start_date' => $templateCalendarEvent->start_date]);
+        DB::transaction(function () use ($attributes, &$calendarEvent) {
+            $templateCalendarEvent = $this->template()->create($attributes);
+            $calendarEvent = $this->make($attributes);
             $calendarEvent->template()->associate($templateCalendarEvent);
             $calendarEvent->save();
         });
@@ -73,20 +70,45 @@ class CalendarEvent extends AbstractModel
     }
 
     /**
-     * @param array $values
+     * @param TemplateCalendarEvent $templateCalendarEvent
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function generateCalendarEvent(TemplateCalendarEvent $templateCalendarEvent)
+    {
+//        TODO Fill me
+    }
+
+    /**
+     * @param array $attributes
      * @return null|CalendarEvent
      */
-    public function editEvent(array $values)
+    public function editCalendarEvent(array $attributes)
     {
-        if (!$this->isEqual($values)) {
-            $calendarEvent = $this->createEvent($values);
-            $calendarEvent->template->parent()->associate($this->template);
+        if ($this->dataIsDifferent($attributes)) {
+            $calendarEventNew = $this->createCalendarEvent(
+                array_merge(
+                    $this->template->toArray(),
+                    ['start_date' => $this->start_date],
+                    $attributes
+                )
+            );
 
-            $this->template->delete();
+            $calendarEventNew->template->parent()->associate($this->template);
+            if ($this->template->is_recurring && $calendarEventNew->template->is_recurring) {
+                $this->template->update([
+                    'end_of_recurring' => $this->start_date
+                ]);
+            }
             $this->delete();
 
-            return $calendarEvent;
+            return $calendarEventNew;
         }
         return null;
+    }
+
+    public function scopeEventsOfMonth($query, $month)
+    {
+//        TODO Q: This is a scope?
+//        TODO Fill me
     }
 }

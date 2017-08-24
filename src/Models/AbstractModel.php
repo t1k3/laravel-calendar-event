@@ -3,6 +3,7 @@
 namespace T1k3\LaravelCalendarEvent\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 
 /**
  * Class AbstractModel
@@ -25,5 +26,14 @@ abstract class AbstractModel extends Model
             }
         }
         return $response;
+    }
+
+    /**
+     * @param $query
+     * @return Builder
+     */
+    public function scopePublic($query)
+    {
+        return $query->where('is_public', true);
     }
 }

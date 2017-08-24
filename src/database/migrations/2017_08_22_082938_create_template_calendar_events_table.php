@@ -24,7 +24,7 @@ class CreateTemplateCalendarEventsTable extends Migration
             $table->time('end_time');
             $table->text('description')->nullable();
             $table->boolean('is_recurring')->default(false);
-            $table->date('end_at_of_recurring')->nullable();
+            $table->date('end_of_recurring')->nullable();
             $table->integer('frequence_number_of_recurring')->nullable();
             $table->string('frequence_type_of_recurring', 32)->nullable();
             $table->boolean('is_public')->default(false);

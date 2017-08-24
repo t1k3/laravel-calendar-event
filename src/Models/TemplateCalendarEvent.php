@@ -3,6 +3,7 @@
 namespace T1k3\LaravelCalendarEvent\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Query\Builder;
 
 /**
  * Class TemplateCalendarEvent
@@ -22,7 +23,7 @@ class TemplateCalendarEvent extends AbstractModel
         'end_time',
         'description',
         'is_recurring',
-        'end_at_of_recurring',
+        'end_of_recurring',
         'frequence_number_of_recurring',
         'frequence_type_of_recurring',
         'is_public',
@@ -53,5 +54,23 @@ class TemplateCalendarEvent extends AbstractModel
     public function events()
     {
         return $this->hasMany(CalendarEvent::class, 'template_calendar_event_id');
+    }
+
+    /**
+     * @param $query
+     * @return Builder
+     */
+    public function scopeRecurring($query)
+    {
+        return $query->where('is_recurring', true);
+    }
+
+    /**
+     * @param $query
+     * @return Builder
+     */
+    public function scopeInProgress($query)
+    {
+        return $query->where('end_of_recurring', '>', date('Y-m-d'));
     }
 }
