@@ -2,14 +2,13 @@
 
 namespace T1k3\LaravelCalendarEvent\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class TemplateCalendarEvent
  * @package T1k3\LaravelCalendarEvent\Models
  */
-class TemplateCalendarEvent extends Model
+class TemplateCalendarEvent extends AbstractModel
 {
     use SoftDeletes;
 
@@ -18,7 +17,6 @@ class TemplateCalendarEvent extends Model
      * @var array
      */
     protected $fillable = [
-        'parent_id',
         'start_date',
         'start_time',
         'end_time',

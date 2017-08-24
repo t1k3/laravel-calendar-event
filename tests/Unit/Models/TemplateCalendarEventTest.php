@@ -40,7 +40,6 @@ class TemplateCalendarEventTest extends TestCase
     public function getFillable()
     {
         $expectedFillables = [
-            'parent_id',
             'start_date',
             'start_time',
             'end_time',
