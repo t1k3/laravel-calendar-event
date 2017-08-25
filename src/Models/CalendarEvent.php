@@ -2,8 +2,11 @@
 
 namespace T1k3\LaravelCalendarEvent\Models;
 
+use Carbon\Carbon;
+use function foo\func;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use T1k3\LaravelCalendarEvent\Exceptions\MonthException;
 
 /**
  * Class CalendarEvent
@@ -19,6 +22,14 @@ class CalendarEvent extends AbstractModel
      */
     protected $fillable = [
         'start_date'
+    ];
+
+    /**
+     * Attribute Casting
+     * @var array
+     */
+    protected $casts = [
+        'start_date' => 'date'
     ];
 
     /**
@@ -61,21 +72,12 @@ class CalendarEvent extends AbstractModel
     {
         DB::transaction(function () use ($attributes, &$calendarEvent) {
             $templateCalendarEvent = $this->template()->create($attributes);
-            $calendarEvent = $this->make($attributes);
+            $calendarEvent         = $this->make($attributes);
             $calendarEvent->template()->associate($templateCalendarEvent);
             $calendarEvent->save();
         });
 
         return $calendarEvent;
-    }
-
-    /**
-     * @param TemplateCalendarEvent $templateCalendarEvent
-     * @return \Illuminate\Database\Eloquent\Model
-     */
-    public function generateCalendarEvent(TemplateCalendarEvent $templateCalendarEvent)
-    {
-//        TODO Fill me
     }
 
     /**
@@ -98,6 +100,10 @@ class CalendarEvent extends AbstractModel
                 $this->template->update([
                     'end_of_recurring' => $this->start_date
                 ]);
+            } else {
+                $calendarEventNew->template->update([
+                    'end_of_recurring' => null
+                ]);
             }
             $this->delete();
 
@@ -106,9 +112,49 @@ class CalendarEvent extends AbstractModel
         return null;
     }
 
-    public function scopeEventsOfMonth($query, $month)
+//    TODO Q: This is a scope <or> static
+
+    /**
+     * @param $query
+     * @param string $month | bad: 8; good: "08"
+     * @return Builder
+     */
+    public function scopeFromMonth($query, string $month)
     {
-//        TODO Q: This is a scope?
-//        TODO Fill me
+        return $query->whereMonth('start_date', $month);
+    }
+
+    public static function showPotentialCalendarEventsOfMonth(int $month)
+    {
+        if($month <= 0 && $month > 12) {
+            throw new MonthException();
+        }
+
+        $month                  = str_pad($month, 2, '0', STR_PAD_LEFT);
+        $end_of_recurring       = Carbon::parse(date('Y-' . $month))->lastOfMonth()->format('Y-m-d');
+        $calendarEvents         = [];
+        $templateCalendarEvents = TemplateCalendarEvent
+            ::where(function ($q) use ($month) {
+                $q->where('is_recurring', false)
+                    ->whereMonth('start_date', $month);
+            })
+            ->orWhere(function ($q) use ($end_of_recurring) {
+                $q->where('is_recurring', true)
+                    ->whereNull('end_of_recurring')
+                    ->where('start_date', '<=', $end_of_recurring);
+            })
+            ->orWhere(function ($q) use ($end_of_recurring) {
+                $q->where('is_recurring', true)
+                    ->where('start_date', '<=', $end_of_recurring)
+                    ->whereMonth('end_of_recurring', '<=', $end_of_recurring);
+            })
+            ->with('events')
+            ->get();
+
+        foreach ($templateCalendarEvents as $templateCalendarEvent) {
+//            TODO Fill me
+        }
+
+        return $calendarEvents;
     }
 }
