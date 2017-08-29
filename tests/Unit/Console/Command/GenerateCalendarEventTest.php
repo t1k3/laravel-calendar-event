@@ -3,7 +3,6 @@
 namespace T1k3\LaravelCalendarEvent\Tests\Unit\Console\Command;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Artisan;
 use T1k3\LaravelCalendarEvent\Enums\RecurringFrequenceType;
 use T1k3\LaravelCalendarEvent\Models\CalendarEvent;
 use T1k3\LaravelCalendarEvent\Models\TemplateCalendarEvent;
@@ -60,8 +59,8 @@ class GenerateCalendarEventTest extends TestCase
      */
     public function handle_recurring_endOfRecurring_notGenerated()
     {
-        $now                  = '2017-08-09';
-        $calendarEvent        = $this->calendarEvent->createCalendarEvent([
+        $now           = '2017-08-09';
+        $calendarEvent = $this->calendarEvent->createCalendarEvent([
             'start_date'                    => '2017-08-01',
             'start_time'                    => 10,
             'end_time'                      => 12,

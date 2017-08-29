@@ -235,6 +235,7 @@ class CalendarEventTest extends TestCase
 
 
     /**
+     * NOT data provider
      * @return array
      */
     public function data_for_eventOfMonth()
@@ -249,6 +250,7 @@ class CalendarEventTest extends TestCase
                 'is_public'    => true,
             ],
             [
+                // 08: 05, 12, 19, 26
                 'start_date'                    => '2017-07-15',
                 'start_time'                    => Carbon::now()->hour,
                 'end_time'                      => Carbon::now()->addHour()->hour,
@@ -259,6 +261,7 @@ class CalendarEventTest extends TestCase
                 'is_public'                     => true,
             ],
             [
+                // 08: 02
                 'start_date'   => '2017-08-02',
                 'start_time'   => Carbon::now()->hour,
                 'end_time'     => Carbon::now()->addHour()->hour,
@@ -267,6 +270,7 @@ class CalendarEventTest extends TestCase
                 'is_public'    => true,
             ],
             [
+                // 08: 03, 10, 17, 24, 31
                 'start_date'                    => '2017-08-03',
                 'start_time'                    => Carbon::now()->hour,
                 'end_time'                      => Carbon::now()->addHour()->hour,
@@ -277,6 +281,7 @@ class CalendarEventTest extends TestCase
                 'is_public'                     => true,
             ],
             [
+                // 08: 05, 12, 19, 26
                 'start_date'                    => '2017-08-05',
                 'start_time'                    => Carbon::now()->hour,
                 'end_time'                      => Carbon::now()->addHour()->hour,
@@ -285,7 +290,7 @@ class CalendarEventTest extends TestCase
                 'frequence_number_of_recurring' => 1,
                 'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
                 'is_public'                     => true,
-                'end_of_recurring'              => '2017-09-09',
+                'end_of_recurring'              => '2017-09-25',
             ],
             [
                 'start_date'                    => '2017-09-01',
@@ -301,16 +306,42 @@ class CalendarEventTest extends TestCase
         ];
     }
 
-//    TODO Fix me
+    /**
+     * @test
+     */
     public function eventsOfMonth()
     {
         $inputs = $this->data_for_eventOfMonth();
-        foreach($inputs as $input) {
+        foreach ($inputs as $input) {
             $this->calendarEvent->createCalendarEvent($input);
         }
 
-//        TODO Fix me
         $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(8);
-        $this->assertInstanceOf(CalendarEvent::class, $calendarEvents->first());
+        $this->assertInstanceOf(CalendarEvent::class, $calendarEvents[0]);
+//        $this->assertEquals(4, $calendarEvents->count());
+        $this->assertEquals(14, $calendarEvents->count());
+    }
+
+    /**
+     * Data provider for eventsOfMonh_InvalidMonthException
+     * @return array
+     */
+    public function dataProvider_for_eventsOfMonh_InvalidMonthException()
+    {
+        return [
+            [0],
+            [13],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider dataProvider_for_eventsOfMonh_InvalidMonthException
+     * @expectedException \T1k3\LaravelCalendarEvent\Exceptions\InvalidMonthException
+     * @param $month
+     */
+    public function eventsOfMonh_InvalidMonthException($month)
+    {
+        CalendarEvent::showPotentialCalendarEventsOfMonth($month);
     }
 }

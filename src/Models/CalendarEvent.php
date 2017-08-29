@@ -113,13 +113,13 @@ class CalendarEvent extends AbstractModel
 
     public static function showPotentialCalendarEventsOfMonth(int $month)
     {
-        if($month <= 0 && $month > 12) {
+//        TODO Refactor
+        if ($month <= 0 || $month > 12) {
             throw new InvalidMonthException();
         }
 
         $month                  = str_pad($month, 2, '0', STR_PAD_LEFT);
         $end_of_recurring       = Carbon::parse(date('Y-' . $month))->lastOfMonth()->format('Y-m-d');
-        $calendarEvents         = [];
         $templateCalendarEvents = TemplateCalendarEvent
             ::where(function ($q) use ($month) {
                 $q->where('is_recurring', false)
@@ -138,8 +138,25 @@ class CalendarEvent extends AbstractModel
             ->with('events')
             ->get();
 
+        $calendarEvents = collect();
         foreach ($templateCalendarEvents as $templateCalendarEvent) {
-//            TODO Fill me
+            $calendarEvents       = $calendarEvents->merge($templateCalendarEvent->events()->whereMonth('start_date', $month)->get());
+            $dateNext             = null;
+            $calendarEventTmpLast = $templateCalendarEvent->events()->orderBy('start_date', 'desc')->first();
+            if ($calendarEventTmpLast) {
+                $dateNext = $templateCalendarEvent->getNextCalendarEventStartDate($calendarEventTmpLast->start_date);
+            }
+
+            while ($dateNext !== null && $dateNext->month <= (int)$month) {
+                $calendarEventNotExists                = (new CalendarEvent())->make(['start_date' => $dateNext]);
+                $calendarEventNotExists->is_not_exists = true;
+                $calendarEventNotExists->template()->associate($templateCalendarEvent);
+                if ($calendarEventNotExists->start_date->month === (int)$month) {
+                    $calendarEvents = $calendarEvents->merge(collect([$calendarEventNotExists]));
+                }
+
+                $dateNext = $templateCalendarEvent->getNextCalendarEventStartDate($calendarEventNotExists->start_date);
+            }
         }
 
         return $calendarEvents;

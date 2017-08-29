@@ -3,7 +3,8 @@
 namespace T1k3\LaravelCalendarEvent\Tests;
 
 use Orchestra\Testbench\TestCase as BaseTestCase;
-use T1k3\LaravelCalendarEvent\ServiceProvider;
+use T1k3\LaravelCalendarEvent\ServiceProvider as LaravelCalendarEventServiceProvider;
+use Illuminate\Contracts\Console\Kernel;
 
 /**
  * Class TestCase
@@ -28,9 +29,15 @@ abstract class TestCase extends BaseTestCase
         $this->setUpDatabase();
     }
 
+    /**
+     * Teardown
+     */
     public function tearDown()
     {
         $this->consoleOutput = '';
+
+        (new \CreateTemplateCalendarEventsTable)->down();
+        (new \CreateCalendarEventsTable)->down();
     }
 
     /**
@@ -39,7 +46,7 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getPackageProviders($app)
     {
-        return [ServiceProvider::class];
+        return [LaravelCalendarEventServiceProvider::class];
     }
 
     /**
@@ -49,7 +56,7 @@ abstract class TestCase extends BaseTestCase
      */
     public function resolveApplicationConsoleKernel($app)
     {
-        $app->singleton(\Illuminate\Contracts\Console\Kernel::class, \Orchestra\Testbench\Console\Kernel::class);
+        $app->singleton(Kernel::class, \Orchestra\Testbench\Console\Kernel::class);
     }
 
     /**
@@ -57,7 +64,7 @@ abstract class TestCase extends BaseTestCase
      */
     public function getConsoleOutput()
     {
-        return $this->consoleOutput ?: $this->consoleOutput = $this->app[\Illuminate\Contracts\Console\Kernel::class]->output();
+        return $this->consoleOutput ?: $this->consoleOutput = $this->app[Kernel::class]->output();
     }
 
     /**
@@ -89,10 +96,10 @@ abstract class TestCase extends BaseTestCase
      */
     private function setUpDatabase()
     {
-        /*$this->artisan('migrate', [
+        $this->artisan('migrate', [
             '--database' => 'testing',
-            '--path'     => __DIR__ . '/../src/database/migrations',
-        ]);*/
+//            '--path'     => __DIR__ . '/../src/database/migrations',
+        ]);
 
         (new \CreateTemplateCalendarEventsTable)->up();
         (new \CreateCalendarEventsTable)->up();

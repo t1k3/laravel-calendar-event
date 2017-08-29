@@ -26,19 +26,19 @@ class GenerateCalendarEvent extends Command
     protected $description = 'Generate CalendarEvent to (recurring) TemplateCalendarEvent';
 
     /**
-     * TemplateCalendarEvent DAO
+     * TemplateCalendarEvent
      * @var TemplateCalendarEvent
      */
-    private $templateCalendarEventDao;
+    private $templateCalendarEvent;
 
     /**
      * GenerateCalendarEvent constructor.
-     * @param TemplateCalendarEvent $templateCalendarEventDao
+     * @param TemplateCalendarEvent $templateCalendarEvent
      */
-    public function __construct(TemplateCalendarEvent $templateCalendarEventDao)
+    public function __construct(TemplateCalendarEvent $templateCalendarEvent)
     {
         parent::__construct();
-        $this->templateCalendarEventDao = $templateCalendarEventDao;
+        $this->templateCalendarEvent = $templateCalendarEvent;
     }
 
     /**
@@ -47,17 +47,16 @@ class GenerateCalendarEvent extends Command
     public function handle()
     {
         $date                   = $this->option('date') ? $this->option('date') : date('Y-m-d');
-        $templateCalendarEvents = $this->templateCalendarEventDao
+        $templateCalendarEvents = $this->templateCalendarEvent
             ->where('is_recurring', true)
             ->where(function ($q) use ($date) {
                 $q->whereNull('end_of_recurring')
                     ->orWhere('end_of_recurring', '>=', $date);
             })
             ->get();
-
-        $now = Carbon::parse($date);
+        
         foreach ($templateCalendarEvents as $templateCalendarEvent) {
-            $templateCalendarEvent->generateNextCalendarEvent($now);
+            $templateCalendarEvent->generateNextCalendarEvent(Carbon::parse($date));
         }
 
         $this->info('Generated: next calendar events.');

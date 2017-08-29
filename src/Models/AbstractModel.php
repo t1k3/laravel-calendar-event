@@ -13,23 +13,6 @@ use Illuminate\Database\Query\Builder;
 abstract class AbstractModel extends Model
 {
     /**
-     * Get specified attributes in array
-     * @param array $keys
-     * @return array
-     */
-    public function getAttributesArray(array $keys): array
-    {
-        $response   = [];
-        $attributes = $this->getAttributes();
-        foreach ($keys as $key) {
-            if (isset($attributes[$key])) {
-                $response[$key] = $attributes[$key];
-            }
-        }
-        return $response;
-    }
-
-    /**
      * @param $query
      * @return Builder
      */
