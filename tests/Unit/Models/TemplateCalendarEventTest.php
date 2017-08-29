@@ -94,24 +94,25 @@ class TemplateCalendarEventTest extends TestCase
     public function dataProvider_for_generateNextCalendarEvent()
     {
         return [
-            [4, RecurringFrequenceType::DAY, Carbon::now()->addDays(4)],
-            [2, RecurringFrequenceType::WEEK, Carbon::now()->addWeek(2)],
-            [3, RecurringFrequenceType::MONTH, Carbon::now()->addMonths(3)],
-            [1, RecurringFrequenceType::YEAR, Carbon::now()->addYears(1)],
+            ['2017-08-10', 4, RecurringFrequenceType::DAY, '2017-08-14'],
+            ['2017-08-10', 2, RecurringFrequenceType::WEEK, '2017-08-24'],
+            ['2017-08-10', 3, RecurringFrequenceType::MONTH, '2017-11-10'],
+            ['2017-08-10', 1, RecurringFrequenceType::YEAR, '2018-08-10'],
         ];
     }
 
     /**
      * @test
      * @dataProvider dataProvider_for_generateNextCalendarEvent
+     * @param $startDate
      * @param $frequence_number_of_recurring
      * @param $frequence_type_of_recurring
      * @param $calendarEventNext_startDate
      */
-    public function generateNextCalendarEvent($frequence_number_of_recurring, $frequence_type_of_recurring, $calendarEventNext_startDate)
+    public function generateNextCalendarEvent($startDate, $frequence_number_of_recurring, $frequence_type_of_recurring, $calendarEventNext_startDate)
     {
         $templateCalendarEvent = factory(TemplateCalendarEvent::class)->create([
-            'start_date'                    => date('Y-m-d'),
+            'start_date'                    => $startDate,
             'start_time'                    => Carbon::now()->hour,
             'end_time'                      => Carbon::now()->addHour()->hour,
             'description'                   => str_random(32),
@@ -120,15 +121,15 @@ class TemplateCalendarEventTest extends TestCase
             'frequence_type_of_recurring'   => $frequence_type_of_recurring,
             'is_public'                     => true,
         ]);
-        $calendarEvent         = factory(CalendarEvent::class)->make(['start_date' => date('Y-m-d')]);
+        $calendarEvent         = factory(CalendarEvent::class)->make(['start_date' => $startDate]);
         $calendarEvent->template()->associate($templateCalendarEvent);
         $calendarEvent->save();
 
-        $calendarEventNext = $templateCalendarEvent->generateNextCalendarEvent();
+        $calendarEventNext = $templateCalendarEvent->generateNextCalendarEvent(Carbon::parse($startDate));
 
         $this->assertInstanceOf(CalendarEvent::class, $calendarEventNext);
         $this->assertInstanceOf(TemplateCalendarEvent::class, $calendarEventNext->template);
         $this->assertEquals($calendarEvent->template->id, $calendarEventNext->template->id);
-        $this->assertEquals($calendarEventNext_startDate->format('Y-m-d'), $calendarEventNext->start_date->format('Y-m-d'));
+        $this->assertEquals($calendarEventNext_startDate, $calendarEventNext->start_date->format('Y-m-d'));
     }
 }

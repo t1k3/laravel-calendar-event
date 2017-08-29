@@ -3,6 +3,7 @@
 namespace T1k3\LaravelCalendarEvent;
 
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
+use T1k3\LaravelCalendarEvent\Console\Commands\GenerateCalendarEvent;
 
 /**
  * Class ServiceProvider
@@ -30,6 +31,6 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
-        //
+        $this->commands(GenerateCalendarEvent::class);
     }
 }

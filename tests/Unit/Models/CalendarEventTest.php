@@ -117,9 +117,9 @@ class CalendarEventTest extends TestCase
     public function editCalendarEvent_notModified()
     {
         $input                = [
-            'start_date'   => date('Y-m-d'),
-            'start_time'   => Carbon::now()->hour,
-            'end_time'     => Carbon::now()->addHour()->hour,
+            'start_date'   => '2017-08-01',
+            'start_time'   => 11,
+            'end_time'     => 12,
             'description'  => str_random(32),
             'is_recurring' => false,
             'is_public'    => true,
@@ -146,10 +146,10 @@ class CalendarEventTest extends TestCase
             'frequence_number_of_recurring' => 1,
             'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
             'is_public'                     => true,
-            'end_of_recurring'              => '2017-08-15',
+            'end_of_recurring'              => '2017-08-22',
         ];
         $calendarEvent        = $this->calendarEvent->createCalendarEvent($inputCreate);
-        $calendarEventNext    = $calendarEvent->template->generateNextCalendarEvent($calendarEvent->template);
+        $calendarEventNext    = $calendarEvent->template->generateNextCalendarEvent(Carbon::parse('2017-08-06'));
         $inputUpdate          = [
             'start_date' => '2017-08-03'
         ];
@@ -160,8 +160,8 @@ class CalendarEventTest extends TestCase
         $this->assertEquals($calendarEventNext->start_date, $calendarEventNext->template->end_of_recurring);
 
         $this->assertInstanceOf(CalendarEvent::class, $calendarEventUpdated);
-        $this->assertEquals($inputUpdate['start_date'], $calendarEventUpdated->start_date);
-        $this->assertEquals($inputCreate['end_of_recurring'], $calendarEventUpdated->template->end_of_recurring);
+        $this->assertEquals($inputUpdate['start_date'], $calendarEventUpdated->start_date->format('Y-m-d'));
+        $this->assertEquals($inputCreate['end_of_recurring'], $calendarEventUpdated->template->end_of_recurring->format('Y-m-d'));
 
         $this->assertInstanceOf(TemplateCalendarEvent::class, $calendarEventUpdated->template);
         $this->assertEquals($calendarEvent->id, $calendarEventUpdated->template->parent_id);
@@ -185,7 +185,7 @@ class CalendarEventTest extends TestCase
             'end_of_recurring'              => '2017-09-08'
         ];
         $calendarEvent        = $this->calendarEvent->createCalendarEvent($inputCreate);
-        $calendarEventNext    = $calendarEvent->template->generateNextCalendarEvent($calendarEvent->template);
+        $calendarEventNext    = $calendarEvent->template->generateNextCalendarEvent(Carbon::parse('2017-08-27'));
         $inputUpdate          = [
             'start_date'   => '2017-08-27',
             'is_recurring' => false,
@@ -194,10 +194,10 @@ class CalendarEventTest extends TestCase
 
         $this->assertNull($calendarEvent->deleted_at);
         $this->assertNotNull($calendarEventNext->deleted_at);
-        $this->assertEquals($inputCreate['end_of_recurring'], $calendarEventNext->template->end_of_recurring);
+        $this->assertEquals($inputCreate['end_of_recurring'], $calendarEventNext->template->end_of_recurring->format('Y-m-d'));
 
         $this->assertInstanceOf(CalendarEvent::class, $calendarEventUpdated);
-        $this->assertEquals($inputUpdate['start_date'], $calendarEventUpdated->start_date);
+        $this->assertEquals($inputUpdate['start_date'], $calendarEventUpdated->start_date->format('Y-m-d'));
         $this->assertNull($calendarEventUpdated->template->end_of_recurring);
 
         $this->assertInstanceOf(TemplateCalendarEvent::class, $calendarEventUpdated->template);
@@ -235,7 +235,6 @@ class CalendarEventTest extends TestCase
 
 
     /**
-     * Data for events of month
      * @return array
      */
     public function data_for_eventOfMonth()

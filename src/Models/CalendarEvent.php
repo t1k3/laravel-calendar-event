@@ -3,10 +3,9 @@
 namespace T1k3\LaravelCalendarEvent\Models;
 
 use Carbon\Carbon;
-use function foo\func;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
-use T1k3\LaravelCalendarEvent\Exceptions\MonthException;
+use T1k3\LaravelCalendarEvent\Exceptions\InvalidMonthException;
 
 /**
  * Class CalendarEvent
@@ -49,7 +48,7 @@ class CalendarEvent extends AbstractModel
     public function dataIsDifferent(array $attributes): bool
     {
         if (isset($attributes['start_date'])) {
-            if ($this->start_date !== $attributes['start_date']) {
+            if ($this->start_date->format('Y-m-d') !== $attributes['start_date']) {
                 return true;
             }
             unset($attributes['start_date']);
@@ -112,22 +111,10 @@ class CalendarEvent extends AbstractModel
         return null;
     }
 
-//    TODO Q: This is a scope <or> static
-
-    /**
-     * @param $query
-     * @param string $month | bad: 8; good: "08"
-     * @return Builder
-     */
-    public function scopeFromMonth($query, string $month)
-    {
-        return $query->whereMonth('start_date', $month);
-    }
-
     public static function showPotentialCalendarEventsOfMonth(int $month)
     {
         if($month <= 0 && $month > 12) {
-            throw new MonthException();
+            throw new InvalidMonthException();
         }
 
         $month                  = str_pad($month, 2, '0', STR_PAD_LEFT);

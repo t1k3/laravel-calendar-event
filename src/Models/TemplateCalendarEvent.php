@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
 use T1k3\LaravelCalendarEvent\Enums\RecurringFrequenceType;
+use T1k3\LaravelCalendarEvent\Interfaces\PlaceInterface;
+use T1k3\LaravelCalendarEvent\Interfaces\UserInterface;
 
 /**
  * Class TemplateCalendarEvent
@@ -69,22 +71,34 @@ class TemplateCalendarEvent extends AbstractModel
         return $query->where('is_recurring', true);
     }
 
+    /*protected function associatePlace(PlaceInterface $place)
+    {
+        return $this->place()->associate($place);
+    }
+
+    protected function associateUser(UserInterface $user)
+    {
+        $this->user()->associate($user);
+    }*/
+
     /**
      * Generate next calendar event to template
+     * @param \DateTimeInterface $now
      * @return \Illuminate\Database\Eloquent\Model|null
      */
-    public function generateNextCalendarEvent()
+    public function generateNextCalendarEvent(\DateTimeInterface $now)
     {
+//        TODO Refactor (PP)
         if (!$this->is_recurring
             || ($this->end_of_recurring !== null
-                && $this->end_of_recurring <= Carbon::now()->format('Y-m-d')
-            )
+                && $this->end_of_recurring <= $now)
         ) {
             return null;
         }
 
-        $calendarEvent = $this->events()->orderBy('start_date', 'desc')->first();
+        $calendarEvent = $this->events()->withTrashed()->orderBy('start_date', 'desc')->first();
         $startDate     = Carbon::parse($calendarEvent->start_date);
+
         switch ($this->frequence_type_of_recurring) {
             case RecurringFrequenceType::DAY:
                 $startDate->addDays($this->frequence_number_of_recurring);
@@ -99,9 +113,18 @@ class TemplateCalendarEvent extends AbstractModel
                 $startDate->addYears($this->frequence_number_of_recurring);
         }
 
+        if ((
+                $this->end_of_recurring !== null
+                && $this->end_of_recurring < $startDate
+            )
+//            || $this->events()->withTrashed()->where('start_date', $startDate)->whereNotNull('deleted_at')->first()
+        ) {
+            return null;
+        }
+
         $calendarEventNext = $this->events()->make(['start_date' => $startDate]);
         $calendarEventNext->template()->associate($this);
-//        $calendarEventNext->save();
+        $calendarEventNext->save();
 
         return $calendarEventNext;
     }

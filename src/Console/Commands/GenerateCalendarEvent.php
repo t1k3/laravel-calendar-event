@@ -3,8 +3,8 @@
 namespace T1k3\LaravelCalendarEvent\Console\Commands;
 
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
-use T1k3\LaravelCalendarEvent\Models\CalendarEvent;
 use T1k3\LaravelCalendarEvent\Models\TemplateCalendarEvent;
 
 /**
@@ -17,7 +17,7 @@ class GenerateCalendarEvent extends Command
      * Console command
      * @var string
      */
-    protected $signature = 'generate:calendar-event';
+    protected $signature = 'generate:calendar-event {--date=}';
 
     /**
      * Console command description
@@ -32,26 +32,34 @@ class GenerateCalendarEvent extends Command
     private $templateCalendarEventDao;
 
     /**
-     * CalendarEvent DAO
-     * @var CalendarEvent
-     */
-    private $calendarEventDao;
-
-    /**
      * GenerateCalendarEvent constructor.
      * @param TemplateCalendarEvent $templateCalendarEventDao
-     * @param CalendarEvent $calendarEventDao
      */
-    public function __construct(TemplateCalendarEvent $templateCalendarEventDao, CalendarEvent $calendarEventDao)
+    public function __construct(TemplateCalendarEvent $templateCalendarEventDao)
     {
         parent::__construct();
-
         $this->templateCalendarEventDao = $templateCalendarEventDao;
-        $this->calendarEventDao         = $calendarEventDao;
     }
 
+    /**
+     * Handle
+     */
     public function handle()
     {
-//        TODO Fill me
+        $date                   = $this->option('date') ? $this->option('date') : date('Y-m-d');
+        $templateCalendarEvents = $this->templateCalendarEventDao
+            ->where('is_recurring', true)
+            ->where(function ($q) use ($date) {
+                $q->whereNull('end_of_recurring')
+                    ->orWhere('end_of_recurring', '>=', $date);
+            })
+            ->get();
+
+        $now = Carbon::parse($date);
+        foreach ($templateCalendarEvents as $templateCalendarEvent) {
+            $templateCalendarEvent->generateNextCalendarEvent($now);
+        }
+
+        $this->info('Generated: next calendar events.');
     }
 }

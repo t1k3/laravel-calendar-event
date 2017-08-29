@@ -2,6 +2,7 @@
 
 namespace T1k3\LaravelCalendarEvent\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
 
