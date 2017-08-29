@@ -96,10 +96,10 @@ abstract class TestCase extends BaseTestCase
      */
     private function setUpDatabase()
     {
-        $this->artisan('migrate', [
-            '--database' => 'testing',
+//        $this->artisan('migrate', [
+//            '--database' => 'testing',
 //            '--path'     => __DIR__ . '/../src/database/migrations',
-        ]);
+//        ]);
 
         (new \CreateTemplateCalendarEventsTable)->up();
         (new \CreateCalendarEventsTable)->up();
