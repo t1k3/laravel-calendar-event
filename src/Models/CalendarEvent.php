@@ -120,7 +120,7 @@ class CalendarEvent extends AbstractModel
     public static function showPotentialCalendarEventsOfMonth(int $month)
     {
 //        TODO Refactor | This is NOT a good solution (but working)
-        if ($month <= 0 || $month > 12) {
+        if ($month < 1 || $month > 12) {
             throw new InvalidMonthException();
         }
 
