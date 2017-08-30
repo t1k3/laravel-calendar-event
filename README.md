@@ -17,10 +17,11 @@ php artisan migrate
 ```
 
 ## Usage
-Create CalendarEvent
+
+##### Create CalendarEvent
 ```php
 $calendarEvent = new CalendarEvent();
-$calendarEvent->createCalendarEvent([
+$calendarEvent = $calendarEvent->createCalendarEvent([
     'start_date'                    => '2017-08-25',
     'start_time'                    => 16,
     'end_time'                      => 17,
@@ -33,16 +34,25 @@ $calendarEvent->createCalendarEvent([
 ]);
 ```
 
-Edit CalendarEvent
+##### Edit CalendarEvent
 ```php
-$calendarEvent = CalendarEvent::find($id);
-$calendarEvent->editCalendarEvent([
+$calendarEvent        = CalendarEvent::find($id);
+$calendarEventUpdated = $calendarEvent->editCalendarEvent([
     'start_date'   => '2017-08-26',
     'is_recurring' => false,
 ]);
 ```
 
-Generate next CalendarEvents from Console
+##### Edit not exist CalendarEvent
+```php
+$templateCalendarEvent = TemplateCalendarEvent::find($id);
+$calendarEventUpdated  = $templateCalendarEvent->editCalendarEvent(Carbon::parse('2017-08-30'), [
+    'description' => 'Foo Bar'
+]);
+```
+
+##### Generate next CalendarEvent(s) from Console
+Do NOT forget the cron job 
 ```bash
 php artisan generate:calendar-event
 ```
