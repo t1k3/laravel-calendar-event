@@ -315,32 +315,9 @@ class CalendarEventTest extends TestCase
             $this->calendarEvent->createCalendarEvent($input);
         }
 
-        $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(8);
+        $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(Carbon::parse('2017-08'));
         $this->assertInstanceOf(CalendarEvent::class, $calendarEvents[0]);
 //        $this->assertEquals(4, $calendarEvents->count());
         $this->assertEquals(14, $calendarEvents->count());
-    }
-
-    /**
-     * Data provider for eventsOfMonh_InvalidMonthException
-     * @return array
-     */
-    public function dataProvider_for_eventsOfMonh_InvalidMonthException()
-    {
-        return [
-            [0],
-            [13],
-        ];
-    }
-
-    /**
-     * @test
-     * @dataProvider dataProvider_for_eventsOfMonh_InvalidMonthException
-     * @expectedException \T1k3\LaravelCalendarEvent\Exceptions\InvalidMonthException
-     * @param $month
-     */
-    public function eventsOfMonh_InvalidMonthException($month)
-    {
-        CalendarEvent::showPotentialCalendarEventsOfMonth($month);
     }
 }

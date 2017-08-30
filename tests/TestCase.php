@@ -25,6 +25,9 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
+//        $this->userMock = \Mockery::mock('App\Models\User');
+//        $this->app->instance('App\Models\User', $this->userMock);
+
         $this->setUpFactory();
         $this->setUpDatabase();
     }
@@ -74,6 +77,9 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getEnvironmentSetUp($app)
     {
+        $app['config']->set('calendar-event.user.model', null);
+        $app['config']->set('calendar-event.place.model', null);
+
         $app['config']->set('database.default', 'testing');
         $app['config']->set('database.connections.testing', [
             'driver'   => 'sqlite',
@@ -101,6 +107,7 @@ abstract class TestCase extends BaseTestCase
 //            '--path'     => __DIR__ . '/../src/database/migrations',
 //        ]);
 
+//        $this->loadLaravelMigrations('testing');
         (new \CreateTemplateCalendarEventsTable)->up();
         (new \CreateCalendarEventsTable)->up();
     }

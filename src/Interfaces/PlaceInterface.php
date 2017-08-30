@@ -2,6 +2,7 @@
 
 namespace T1k3\LaravelCalendarEvent\Interfaces;
 
+
 /**
  * Interface PlaceInterface
  * @package T1k3\LaravelCalendarEvent\Interfaces
@@ -9,7 +10,7 @@ namespace T1k3\LaravelCalendarEvent\Interfaces;
 interface PlaceInterface
 {
     /**
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Relations\hasManyThrough
      */
     public function events();
 }

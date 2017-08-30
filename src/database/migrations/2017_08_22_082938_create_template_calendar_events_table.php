@@ -34,6 +34,9 @@ class CreateTemplateCalendarEventsTable extends Migration
             $table->foreign('parent_id')
                 ->references('id')->on('template_calendar_events')
                 ->onDelete('cascade');
+
+            $table->integer('user_id')->unsigned()->nullable();
+            $table->integer('place_id')->unsigned()->nullable();
         });
     }
 

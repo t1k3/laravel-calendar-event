@@ -2,12 +2,10 @@
 
 namespace T1k3\LaravelCalendarEvent\Models;
 
-use Carbon\Carbon;
-use Faker\Provider\cs_CZ\DateTime;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
 use T1k3\LaravelCalendarEvent\Enums\RecurringFrequenceType;
-use T1k3\LaravelCalendarEvent\Exceptions\CalendarEventException;
 use T1k3\LaravelCalendarEvent\Interfaces\PlaceInterface;
 use T1k3\LaravelCalendarEvent\Interfaces\UserInterface;
 
@@ -73,15 +71,25 @@ class TemplateCalendarEvent extends AbstractModel
         return $query->where('is_recurring', true);
     }
 
-    /*protected function associatePlace(PlaceInterface $place)
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|null
+     */
+    public function user()
     {
-        return $this->place()->associate($place);
+//        TODO Fix me | If the config is null then you can not use ->user (LogicException), just ->user()
+        $class = config('calendar-event.user.model');
+        return $class ? $this->belongsTo($class) : null;
     }
 
-    protected function associateUser(UserInterface $user)
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo|null
+     */
+    public function place()
     {
-        $this->user()->associate($user);
-    }*/
+//        TODO Fix me | If the config is null then you can not use ->place (LogicException), just ->place()
+        $class = config('calendar-event.place.model');
+        return $class ? $this->belongsTo($class) : null;
+    }
 
     /**
      * Create Calendar Event for TemplateCalendarEvent
@@ -106,7 +114,7 @@ class TemplateCalendarEvent extends AbstractModel
     public function editCalendarEvent(\DateTimeInterface $startDate, array $attributes)
     {
         $calendarEvent = $this->events()->where('start_date', $startDate)->first();
-        if(!$calendarEvent) {
+        if (!$calendarEvent) {
             $calendarEvent = $this->createCalendarEvent($startDate);
         }
 
@@ -143,11 +151,11 @@ class TemplateCalendarEvent extends AbstractModel
      */
     public function getNextCalendarEventStartDate(\DateTimeInterface $startDate)
     {
-        if(!$this->is_recurring) {
+        if (!$this->is_recurring) {
             return null;
         }
 
-//        TODO Refactor | OCP, Strategy pattern
+//        TODO Refactor | OCP, Strategy
         switch ($this->frequence_type_of_recurring) {
             case RecurringFrequenceType::DAY:
                 $startDate->addDays($this->frequence_number_of_recurring);

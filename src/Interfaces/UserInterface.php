@@ -2,6 +2,7 @@
 
 namespace T1k3\LaravelCalendarEvent\Interfaces;
 
+
 /**
  * Interface UserInterface
  * @package T1k3\LaravelCalendarEvent\Interfaces
@@ -9,7 +10,7 @@ namespace T1k3\LaravelCalendarEvent\Interfaces;
 interface UserInterface
 {
     /**
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Relations\hasManyThrough
      */
     public function events();
 }

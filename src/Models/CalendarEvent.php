@@ -5,7 +5,10 @@ namespace T1k3\LaravelCalendarEvent\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
+use T1k3\LaravelCalendarEvent\Enums\RecurringFrequenceType;
 use T1k3\LaravelCalendarEvent\Exceptions\InvalidMonthException;
+use T1k3\LaravelCalendarEvent\Interfaces\PlaceInterface;
+use T1k3\LaravelCalendarEvent\Interfaces\UserInterface;
 
 /**
  * Class CalendarEvent
@@ -65,13 +68,19 @@ class CalendarEvent extends AbstractModel
 
     /**
      * @param array $attributes
+     * @param UserInterface|null $user
+     * @param PlaceInterface|null $place
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function createCalendarEvent(array $attributes)
+    public function createCalendarEvent(array $attributes, UserInterface $user = null, PlaceInterface $place = null)
     {
-        DB::transaction(function () use ($attributes, &$calendarEvent) {
+        DB::transaction(function () use ($attributes, $user, $place, &$calendarEvent) {
             $templateCalendarEvent = $this->template()->create($attributes);
-            $calendarEvent         = $this->make($attributes);
+
+            if ($user !== null) $templateCalendarEvent->user()->associate($user);
+            if ($place !== null) $templateCalendarEvent->place()->associate($place);
+
+            $calendarEvent = $this->make($attributes);
             $calendarEvent->template()->associate($templateCalendarEvent);
             $calendarEvent->save();
         });
@@ -112,34 +121,28 @@ class CalendarEvent extends AbstractModel
     }
 
     /**
-     * Show all events in month
-     * @param int $month
+     * @param \DateTimeInterface $date
      * @return \Illuminate\Support\Collection|static
-     * @throws InvalidMonthException
      */
-    public static function showPotentialCalendarEventsOfMonth(int $month)
+    public static function showPotentialCalendarEventsOfMonth(\DateTimeInterface $date)
     {
-//        TODO Refactor | This is NOT a good solution (but working)
-        if ($month < 1 || $month > 12) {
-            throw new InvalidMonthException();
-        }
+        $endOfRecurring = $date->lastOfMonth();
+        $month          = str_pad($endOfRecurring->month, 2, '0', STR_PAD_LEFT);
 
-        $month                  = str_pad($month, 2, '0', STR_PAD_LEFT);
-        $end_of_recurring       = Carbon::parse(date('Y-' . $month))->lastOfMonth()->format('Y-m-d');
         $templateCalendarEvents = TemplateCalendarEvent
             ::where(function ($q) use ($month) {
                 $q->where('is_recurring', false)
                     ->whereMonth('start_date', $month);
             })
-            ->orWhere(function ($q) use ($end_of_recurring) {
+            ->orWhere(function ($q) use ($endOfRecurring) {
                 $q->where('is_recurring', true)
                     ->whereNull('end_of_recurring')
-                    ->where('start_date', '<=', $end_of_recurring);
+                    ->where('start_date', '<=', $endOfRecurring);
             })
-            ->orWhere(function ($q) use ($end_of_recurring) {
+            ->orWhere(function ($q) use ($endOfRecurring) {
                 $q->where('is_recurring', true)
-                    ->where('start_date', '<=', $end_of_recurring)
-                    ->whereMonth('end_of_recurring', '<=', $end_of_recurring);
+                    ->where('start_date', '<=', $endOfRecurring)
+                    ->whereMonth('end_of_recurring', '<=', $endOfRecurring);
             })
             ->with('events')
             ->get();
@@ -149,19 +152,40 @@ class CalendarEvent extends AbstractModel
             $calendarEvents       = $calendarEvents->merge($templateCalendarEvent->events()->whereMonth('start_date', $month)->get());
             $dateNext             = null;
             $calendarEventTmpLast = $templateCalendarEvent->events()->orderBy('start_date', 'desc')->first();
+
             if ($calendarEventTmpLast) {
-                $dateNext = $templateCalendarEvent->getNextCalendarEventStartDate($calendarEventTmpLast->start_date);
+//                TODO Refactor | OCP, Strategy
+                switch ($templateCalendarEvent->frequence_type_of_recurring) {
+                    case RecurringFrequenceType::DAY:
+                        $diff     = $date->firstOfMonth()->diffInDays($calendarEventTmpLast->start_date);
+                        $dateNext = $calendarEventTmpLast->start_date->addDays($diff);
+                        break;
+                    case RecurringFrequenceType::WEEK:
+                        $diff     = $date->firstOfMonth()->diffInWeeks($calendarEventTmpLast->start_date);
+                        $dateNext = $calendarEventTmpLast->start_date->addWeeks($diff);
+                        break;
+                    case RecurringFrequenceType::MONTH:
+                        $diff     = $date->firstOfMonth()->diffInMonths($calendarEventTmpLast->start_date);
+                        $dateNext = $calendarEventTmpLast->start_date->addMonths($diff);
+                        break;
+                    case RecurringFrequenceType::YEAR:
+                        $diff     = $date->firstOfMonth()->diffInYears($calendarEventTmpLast->start_date);
+                        $dateNext = $calendarEventTmpLast->start_date->addYears($diff);
+                }
             }
 
             while ($dateNext !== null && $dateNext->month <= (int)$month) {
-                $calendarEventNotExist               = (new CalendarEvent())->make(['start_date' => $dateNext]);
-                $calendarEventNotExist->is_not_exist = true;
-                $calendarEventNotExist->template()->associate($templateCalendarEvent);
-                if ($calendarEventNotExist->start_date->month === (int)$month) {
-                    $calendarEvents = $calendarEvents->merge(collect([$calendarEventNotExist]));
+                $calendarEventNotExists               = (new CalendarEvent())->make(['start_date' => $dateNext]);
+                $calendarEventNotExists->is_not_exist = true;
+                $calendarEventNotExists->template()->associate($templateCalendarEvent);
+
+                if ($calendarEventNotExists->start_date->month === (int)$month
+                    && !$templateCalendarEvent->events()->where('start_date', $dateNext)->first()
+                ) {
+                    $calendarEvents = $calendarEvents->merge(collect([$calendarEventNotExists]));
                 }
 
-                $dateNext = $templateCalendarEvent->getNextCalendarEventStartDate($calendarEventNotExist->start_date);
+                $dateNext = $templateCalendarEvent->getNextCalendarEventStartDate($calendarEventNotExists->start_date);
             }
         }
 

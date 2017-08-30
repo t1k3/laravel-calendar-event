@@ -19,6 +19,18 @@ php artisan migrate
 ## Usage
 
 #### Create CalendarEvent
+If you like to attach `User` and/or `Place` then must have:
+* configurate `config/calendar-event.php` 
+* implements `UserInterface`, `PlaceInterface` on your Models
+* you can use `CalendarEventUserTrait`, `CalendarEventPlaceTrait` in Models
+
+```php
+class Place extends Model implements PlaceInterface
+{
+    use CalendarEventPlaceTrait;
+}
+```
+
 ```php
 $calendarEvent = new CalendarEvent();
 $calendarEvent = $calendarEvent->createCalendarEvent([
@@ -31,7 +43,7 @@ $calendarEvent = $calendarEvent->createCalendarEvent([
     'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
     'is_public'                     => true,
     'end_of_recurring'              => '2017-09-08'
-]);
+], $user = null, $place = null);
 ```
 
 #### Edit CalendarEvent
