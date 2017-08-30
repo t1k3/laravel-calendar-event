@@ -3,11 +3,13 @@
 namespace T1k3\LaravelCalendarEvent\Exceptions;
 
 
+use Exception;
+
 /**
- * Class InvalidMonthException
+ * Class CalendarEventException
  * @package T1k3\LaravelCalendarEvent\Exceptions
  */
-class InvalidMonthException extends CalendarEventException
+abstract class CalendarEventException extends Exception
 {
 
 }

@@ -233,7 +233,6 @@ class CalendarEventTest extends TestCase
         $this->assertEquals($calendarEvent->id, $calendarEventUpdated->template->parent_id);
     }
 
-
     /**
      * NOT data provider
      * @return array

@@ -111,9 +111,15 @@ class CalendarEvent extends AbstractModel
         return null;
     }
 
+    /**
+     * Show all events in month
+     * @param int $month
+     * @return \Illuminate\Support\Collection|static
+     * @throws InvalidMonthException
+     */
     public static function showPotentialCalendarEventsOfMonth(int $month)
     {
-//        TODO Refactor
+//        TODO Refactor | This is NOT a good solution (but working)
         if ($month <= 0 || $month > 12) {
             throw new InvalidMonthException();
         }

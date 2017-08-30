@@ -3,9 +3,11 @@
 namespace T1k3\LaravelCalendarEvent\Models;
 
 use Carbon\Carbon;
+use Faker\Provider\cs_CZ\DateTime;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
 use T1k3\LaravelCalendarEvent\Enums\RecurringFrequenceType;
+use T1k3\LaravelCalendarEvent\Exceptions\CalendarEventException;
 use T1k3\LaravelCalendarEvent\Interfaces\PlaceInterface;
 use T1k3\LaravelCalendarEvent\Interfaces\UserInterface;
 
@@ -83,16 +85,32 @@ class TemplateCalendarEvent extends AbstractModel
 
     /**
      * Create Calendar Event for TemplateCalendarEvent
-     * @param $startDate
+     * @param \DateTimeInterface $startDate
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function createCalendarEvent($startDate)
+    public function createCalendarEvent(\DateTimeInterface $startDate)
     {
         $calendarEvent = $this->events()->make(['start_date' => $startDate]);
         $calendarEvent->template()->associate($this);
         $calendarEvent->save();
 
         return $calendarEvent;
+    }
+
+    /**
+     * Edit calendar event | Exist or not
+     * @param \DateTimeInterface $startDate
+     * @param array $attributes
+     * @return null|CalendarEvent
+     */
+    public function editCalendarEvent(\DateTimeInterface $startDate, array $attributes)
+    {
+        $calendarEvent = $this->events()->where('start_date', $startDate)->first();
+        if(!$calendarEvent) {
+            $calendarEvent = $this->createCalendarEvent($startDate);
+        }
+
+        return $calendarEvent->editCalendarEvent($attributes);
     }
 
     /**
@@ -118,12 +136,18 @@ class TemplateCalendarEvent extends AbstractModel
         return $this->createCalendarEvent($startDate);
     }
 
+    /**
+     * Get next calendar event start date
+     * @param \DateTimeInterface $startDate
+     * @return \DateTimeInterface|null
+     */
     public function getNextCalendarEventStartDate(\DateTimeInterface $startDate)
     {
         if(!$this->is_recurring) {
             return null;
         }
 
+//        TODO Refactor | OCP, Strategy pattern
         switch ($this->frequence_type_of_recurring) {
             case RecurringFrequenceType::DAY:
                 $startDate->addDays($this->frequence_number_of_recurring);
