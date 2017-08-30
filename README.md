@@ -18,7 +18,7 @@ php artisan migrate
 
 ## Usage
 
-##### Create CalendarEvent
+#### Create CalendarEvent
 ```php
 $calendarEvent = new CalendarEvent();
 $calendarEvent = $calendarEvent->createCalendarEvent([
@@ -34,7 +34,7 @@ $calendarEvent = $calendarEvent->createCalendarEvent([
 ]);
 ```
 
-##### Edit CalendarEvent
+#### Edit CalendarEvent
 ```php
 $calendarEvent        = CalendarEvent::find($id);
 $calendarEventUpdated = $calendarEvent->editCalendarEvent([
@@ -43,7 +43,7 @@ $calendarEventUpdated = $calendarEvent->editCalendarEvent([
 ]);
 ```
 
-##### Edit not exist CalendarEvent
+#### Edit not exist CalendarEvent
 ```php
 $templateCalendarEvent = TemplateCalendarEvent::find($id);
 $calendarEventUpdated  = $templateCalendarEvent->editCalendarEvent(Carbon::parse('2017-08-30'), [
@@ -51,7 +51,13 @@ $calendarEventUpdated  = $templateCalendarEvent->editCalendarEvent(Carbon::parse
 ]);
 ```
 
-##### Generate next CalendarEvent(s) from Console
+#### Get (potential) CalendarEvent(s) of month
+If the CalendarEvent is not exist then it is append `is_not_exist` attribute with `true` value
+```php
+$calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(8);
+```
+
+#### Generate next CalendarEvent(s) from Console
 Do NOT forget the cron job 
 ```bash
 php artisan generate:calendar-event
