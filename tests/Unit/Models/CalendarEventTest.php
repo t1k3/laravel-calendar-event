@@ -341,4 +341,92 @@ class CalendarEventTest extends TestCase
         $this->assertInstanceOf(CalendarEvent::class, $calendarEvents[0]);
         $this->assertEquals(11, $calendarEvents->count());
     }
+
+    /**
+     * @test
+     */
+    public function deleteCalendarEvent_notRecurring_recurring()
+    {
+        $calendarEvent = $this->calendarEvent->createCalendarEvent([
+            'start_date'   => '2017-08-25',
+            'start_time'   => 16,
+            'end_time'     => 17,
+            'description'  => str_random(32),
+            'is_recurring' => false,
+            'is_public'    => true
+        ]);
+
+        $calendarEvent->deleteCalendarEvent(true);
+
+        $this->assertNotNull($calendarEvent->deleted_at);
+        $this->assertNotNull($calendarEvent->template->deleted_at);
+        $this->assertNull($calendarEvent->template->end_of_recurring);
+    }
+
+    /**
+     * @test
+     */
+    public function deleteCalendarEvent_recurring_notRecurring()
+    {
+        $calendarEvent = $this->calendarEvent->createCalendarEvent([
+            'start_date'                    => '2017-08-25',
+            'start_time'                    => 16,
+            'end_time'                      => 17,
+            'description'                   => str_random(32),
+            'is_recurring'                  => true,
+            'frequence_number_of_recurring' => 1,
+            'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+            'is_public'                     => true
+        ]);
+        $calendarEvent->deleteCalendarEvent(false);
+
+        $this->assertNotNull($calendarEvent->deleted_at);
+        $this->assertNull($calendarEvent->template->end_of_recurring);
+    }
+
+    /**
+     * @test
+     */
+    public function deleteCalendarEvent_recurring_recurring_deleted()
+    {
+        $calendarEvent = $this->calendarEvent->createCalendarEvent([
+            'start_date'                    => '2017-08-25',
+            'start_time'                    => 16,
+            'end_time'                      => 17,
+            'description'                   => str_random(32),
+            'is_recurring'                  => true,
+            'frequence_number_of_recurring' => 1,
+            'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+            'is_public'                     => true
+        ]);
+        $calendarEvent->deleteCalendarEvent(true);
+
+        $this->assertNotNull($calendarEvent->deleted_at);
+        $this->assertNotNull($calendarEvent->template->deleted_at);
+        $this->assertEquals($calendarEvent->start_date, $calendarEvent->template->end_of_recurring);
+    }
+
+    /**
+     * @test
+     */
+    public function deleteCalendarEvent_recurring_recurring_notDeleted()
+    {
+        $calendarEvent = $this->calendarEvent->createCalendarEvent([
+            'start_date'                    => '2017-08-25',
+            'start_time'                    => 16,
+            'end_time'                      => 17,
+            'description'                   => str_random(32),
+            'is_recurring'                  => true,
+            'frequence_number_of_recurring' => 1,
+            'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+            'is_public'                     => true
+        ]);
+        $calendarEventNext = $calendarEvent->template->generateNextCalendarEvent(Carbon::now());
+        $calendarEventNext->deleteCalendarEvent(true);
+
+        $this->assertNull($calendarEvent->deleted_at);
+        $this->assertNotNull($calendarEventNext->deleted_at);
+        $this->assertNull($calendarEvent->template->deleted_at);
+        $this->assertEquals($calendarEventNext->start_date, $calendarEvent->template->end_of_recurring);
+    }
 }

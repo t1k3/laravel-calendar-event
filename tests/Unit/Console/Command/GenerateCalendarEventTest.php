@@ -191,16 +191,16 @@ class GenerateCalendarEventTest extends TestCase
     /**
      * @test
      */
-    public function handle_recurring_editedNotRecurring_generated()
+    public function handle_recurring_editedNotRecurring_notGenerated()
     {
-        $now                         = '2017-08-16';
+        $now                         = '2017-08-14';
         $calendarEvent               = $this->calendarEvent->createCalendarEvent([
             'start_date'                    => '2017-08-01',
             'start_time'                    => 10,
             'end_time'                      => 12,
             'description'                   => str_random(32),
             'is_recurring'                  => true,
-            'frequence_number_of_recurring' => 2,
+            'frequence_number_of_recurring' => 1,
             'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
             'is_public'                     => true,
         ]);
@@ -212,6 +212,41 @@ class GenerateCalendarEventTest extends TestCase
         ]);
 
         $this->artisan('generate:calendar-event', ['--date' => $now]);
+        $this->artisan('generate:calendar-event', ['--date' => $now]);
+
+        $calendarEventLast = $calendarEvent->template->events()->orderBy('start_date', 'desc')->first();
+
+        // The next is 2017-08-15 but is deleted
+        $this->assertContains('Generated: next calendar events: 0', $this->getConsoleOutput());
+        $this->assertEquals('2017-08-08', $calendarEventLast->start_date->format('Y-m-d'));
+    }
+
+    /**
+     * @test
+     */
+    public function handle_recurring_editedNotRecurring_generated()
+    {
+        $now                         = '2017-08-16';
+        $calendarEvent               = $this->calendarEvent->createCalendarEvent([
+            'start_date'                    => '2017-08-01',
+            'start_time'                    => 10,
+            'end_time'                      => 12,
+            'description'                   => str_random(32),
+            'is_recurring'                  => true,
+            'frequence_number_of_recurring' => 1,
+            'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+            'is_public'                     => true,
+        ]);
+        $calendarEventNextTmp        = $calendarEvent->template->generateNextCalendarEvent(new \DateTime($now)); // '2017-08-08'
+        $calendarEventNextTmp        = $calendarEvent->template->generateNextCalendarEvent(Carbon::parse($now)); // '2017-08-15'
+        $calendarEventNextTmpUpdated = $calendarEventNextTmp->editCalendarEvent([
+            'start_date'   => '2017-08-09',
+            'is_recurring' => false
+        ]);
+
+        $this->artisan('generate:calendar-event', ['--date' => $now]);
+        $this->artisan('generate:calendar-event', ['--date' => $now]);
+
         $calendarEventLast = $calendarEvent->template->events()->orderBy('start_date', 'desc')->first();
 
         $this->assertContains('Generated: next calendar events', $this->getConsoleOutput());

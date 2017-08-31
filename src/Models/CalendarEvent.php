@@ -121,6 +121,34 @@ class CalendarEvent extends AbstractModel
     }
 
     /**
+     * @param bool|null $isRecurring
+     * @return bool|null
+     */
+    public function deleteCalendarEvent(bool $isRecurring = null)
+    {
+        DB::transaction(function () use ($isRecurring, &$isDeleted) {
+            if ($isRecurring === null) {
+                $this->template->is_recurring;
+            }
+
+            if ($this->template->is_recurring && $isRecurring) {
+                $this->template->update(['end_of_recurring' => $this->start_date]);
+
+                if ($this->template->start_date == $this->start_date) {
+                    $this->template->delete();
+                }
+            }
+
+            if (!$this->template->is_recurring) {
+                $this->template->delete();
+            }
+
+            $isDeleted = $this->delete();
+        });
+        return $isDeleted;
+    }
+
+    /**
      * @param \DateTimeInterface $date
      * @return \Illuminate\Support\Collection|static
      */
