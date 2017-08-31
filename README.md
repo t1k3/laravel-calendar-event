@@ -25,6 +25,9 @@ If you like to attach `User` and/or `Place` then must have:
 * you can use `CalendarEventUserTrait`, `CalendarEventPlaceTrait` in Models
 
 ```php
+use T1k3\LaravelCalendarEvent\Interfaces\PlaceInterface;
+use T1k3\LaravelCalendarEvent\Traits\CalendarEventPlaceTrait;
+
 class Place extends Model implements PlaceInterface
 {
     use CalendarEventPlaceTrait;
@@ -32,6 +35,8 @@ class Place extends Model implements PlaceInterface
 ```
 
 ```php
+use T1k3\LaravelCalendarEvent\Models\CalendarEvent;
+
 $calendarEvent = new CalendarEvent();
 $calendarEvent = $calendarEvent->createCalendarEvent([
     'start_date'                    => '2017-08-25',
@@ -57,6 +62,8 @@ $calendarEventUpdated = $calendarEvent->editCalendarEvent([
 
 #### Edit not exist CalendarEvent
 ```php
+use T1k3\LaravelCalendarEvent\Models\TemplateCalendarEvent;
+
 $templateCalendarEvent = TemplateCalendarEvent::find($id);
 $calendarEventUpdated  = $templateCalendarEvent->editCalendarEvent(Carbon::parse('2017-08-30'), [
     'description' => 'Foo Bar'
