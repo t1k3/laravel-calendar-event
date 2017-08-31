@@ -8,6 +8,8 @@
     "event"
   ],
   "license": "MIT",
+  "minimum-stability": "dev",
+  "prefer-stable": true,
   "require": {
     "php": ">=7.0",
     "illuminate/database": "~5.4.0",
