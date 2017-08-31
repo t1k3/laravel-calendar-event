@@ -70,6 +70,7 @@ class CalendarEventTest extends TestCase
         return [
             'not_recurring' => [
                 [
+                    'title'        => 'Lorem ipsum',
                     'start_date'   => date('Y-m-d'),
                     'start_time'   => 10,
                     'end_time'     => 12,
@@ -80,6 +81,7 @@ class CalendarEventTest extends TestCase
             ],
             'recurring'     => [
                 [
+                    'title'                         => 'Lorem ipsum',
                     'start_date'                    => date('Y-m-d'),
                     'start_time'                    => 10,
                     'end_time'                      => 12,
@@ -117,6 +119,7 @@ class CalendarEventTest extends TestCase
     public function editCalendarEvent_notModified()
     {
         $input                = [
+            'title'        => 'Lorem ipsum',
             'start_date'   => '2017-08-01',
             'start_time'   => 11,
             'end_time'     => 12,
@@ -138,6 +141,7 @@ class CalendarEventTest extends TestCase
     public function editCalendarEvent_notRecurring_modifiedCalendarEventData_recurring()
     {
         $inputCreate          = [
+            'title'                         => 'Lorem ipsum',
             'start_date'                    => '2017-08-01',
             'start_time'                    => 11,
             'end_time'                      => 12,
@@ -174,6 +178,7 @@ class CalendarEventTest extends TestCase
     public function editCalendarEvent_notRecurring_modifiedCalendarEventData_notRecurring()
     {
         $inputCreate          = [
+            'title'                         => 'Lorem ipsum',
             'start_date'                    => '2017-08-25',
             'start_time'                    => 16,
             'end_time'                      => 17,
@@ -211,6 +216,7 @@ class CalendarEventTest extends TestCase
     public function editCalendarEvent_notRecurring_modifiedToRecurring()
     {
         $calendarEvent        = $this->calendarEvent->createCalendarEvent([
+            'title'        => 'Lorem ipsum',
             'start_date'   => '2017-08-25',
             'start_time'   => 8,
             'end_time'     => 14,
@@ -240,88 +246,105 @@ class CalendarEventTest extends TestCase
     public function data_for_eventOfMonth()
     {
         return [
-            [
-                'start_date'                    => '2016-10-01',
-                'start_time'                    => Carbon::now()->hour,
-                'end_time'                      => Carbon::now()->addHour()->hour,
-                'description'                   => str_random(32),
-                'is_recurring'                  => true,
-                'frequence_number_of_recurring' => 1,
-                'frequence_type_of_recurring'   => RecurringFrequenceType::YEAR,
-                'is_public'                     => true,
+            'dates'  => [
+                '2017-08-12', '2017-08-26',
+                '2017-08-02',
+                '2017-08-03', '2017-08-10', '2017-08-17', '2017-08-24', '2017-08-31',
+                '2017-08-04', '2017-08-18',
+                '2017-08-06',
             ],
-            [
-                'start_date'   => '2017-07-14',
-                'start_time'   => Carbon::now()->hour,
-                'end_time'     => Carbon::now()->addHour()->hour,
-                'description'  => str_random(32),
-                'is_recurring' => false,
-                'is_public'    => true,
-            ],
-            [
-                // 2017-08-12, 2017-08-26
-                'start_date'                    => '2017-07-15',
-                'start_time'                    => Carbon::now()->hour,
-                'end_time'                      => Carbon::now()->addHour()->hour,
-                'description'                   => str_random(32),
-                'is_recurring'                  => true,
-                'frequence_number_of_recurring' => 2,
-                'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
-                'is_public'                     => true,
-            ],
-            [
-                // 2017-08-02
-                'start_date'   => '2017-08-02',
-                'start_time'   => Carbon::now()->hour,
-                'end_time'     => Carbon::now()->addHour()->hour,
-                'description'  => str_random(32),
-                'is_recurring' => false,
-                'is_public'    => true,
-            ],
-            [
-                // 2017-08-03, 2017-08-10, 2017-08-17, 2017-08-24, 2017-08-31
-                'start_date'                    => '2017-08-03',
-                'start_time'                    => Carbon::now()->hour,
-                'end_time'                      => Carbon::now()->addHour()->hour,
-                'description'                   => str_random(32),
-                'is_recurring'                  => true,
-                'frequence_number_of_recurring' => 1,
-                'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
-                'is_public'                     => true,
-            ],
-            [
-                // 2017-08-04, 2017-08-18
-                'start_date'                    => '2017-08-04',
-                'start_time'                    => Carbon::now()->hour,
-                'end_time'                      => Carbon::now()->addHour()->hour,
-                'description'                   => str_random(32),
-                'is_recurring'                  => true,
-                'frequence_number_of_recurring' => 2,
-                'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
-                'is_public'                     => true,
-                'end_of_recurring'              => '2017-09-25',
-            ],
-            [
-                // 2017-08-06
-                'start_date'                    => '2017-07-06',
-                'start_time'                    => Carbon::now()->hour,
-                'end_time'                      => Carbon::now()->addHour()->hour,
-                'description'                   => str_random(32),
-                'is_recurring'                  => true,
-                'frequence_number_of_recurring' => 1,
-                'frequence_type_of_recurring'   => RecurringFrequenceType::MONTH,
-                'is_public'                     => true,
-            ],
-            [
-                'start_date'                    => '2017-09-01',
-                'start_time'                    => Carbon::now()->hour,
-                'end_time'                      => Carbon::now()->addHour()->hour,
-                'description'                   => str_random(32),
-                'is_recurring'                  => true,
-                'frequence_number_of_recurring' => 1,
-                'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
-                'is_public'                     => true,
-                'end_of_recurring'              => '2017-09-22',
+            'inputs' => [
+                [
+                    'title'                         => 'Lorem ipsum',
+                    'start_date'                    => '2016-10-01',
+                    'start_time'                    => Carbon::now()->hour,
+                    'end_time'                      => Carbon::now()->addHour()->hour,
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 1,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::YEAR,
+                    'is_public'                     => true,
+                ],
+                [
+                    'title'        => 'Lorem ipsum',
+                    'start_date'   => '2017-07-14',
+                    'start_time'   => Carbon::now()->hour,
+                    'end_time'     => Carbon::now()->addHour()->hour,
+                    'description'  => str_random(32),
+                    'is_recurring' => false,
+                    'is_public'    => true,
+                ],
+                [
+                    // 2017-08-12, 2017-08-26
+                    'title'                         => 'Lorem ipsum',
+                    'start_date'                    => '2017-07-15',
+                    'start_time'                    => Carbon::now()->hour,
+                    'end_time'                      => Carbon::now()->addHour()->hour,
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 2,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+                    'is_public'                     => true,
+                ],
+                [
+                    // 2017-08-02
+                    'title'        => 'Lorem ipsum',
+                    'start_date'   => '2017-08-02',
+                    'start_time'   => Carbon::now()->hour,
+                    'end_time'     => Carbon::now()->addHour()->hour,
+                    'description'  => str_random(32),
+                    'is_recurring' => false,
+                    'is_public'    => true,
+                ],
+                [
+                    // 2017-08-03, 2017-08-10, 2017-08-17, 2017-08-24, 2017-08-31
+                    'title'                         => 'Lorem ipsum',
+                    'start_date'                    => '2017-08-03',
+                    'start_time'                    => Carbon::now()->hour,
+                    'end_time'                      => Carbon::now()->addHour()->hour,
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 1,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+                    'is_public'                     => true,
+                ],
+                [
+                    // 2017-08-04, 2017-08-18
+                    'title'                         => 'Lorem ipsum',
+                    'start_date'                    => '2017-08-04',
+                    'start_time'                    => Carbon::now()->hour,
+                    'end_time'                      => Carbon::now()->addHour()->hour,
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 2,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+                    'is_public'                     => true,
+                    'end_of_recurring'              => '2017-09-25',
+                ],
+                [
+                    // 2017-08-06
+                    'title'                         => 'Lorem ipsum',
+                    'start_date'                    => '2017-07-06',
+                    'start_time'                    => Carbon::now()->hour,
+                    'end_time'                      => Carbon::now()->addHour()->hour,
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 1,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::MONTH,
+                    'is_public'                     => true,
+                ],
+                [
+                    'title'                         => 'Lorem ipsum',
+                    'start_date'                    => '2017-09-01',
+                    'start_time'                    => Carbon::now()->hour,
+                    'end_time'                      => Carbon::now()->addHour()->hour,
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 1,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+                    'is_public'                     => true,
+                    'end_of_recurring'              => '2017-09-22',
+                ]
             ]
         ];
     }
@@ -331,15 +354,9 @@ class CalendarEventTest extends TestCase
      */
     public function eventsOfMonth()
     {
-        // dates from $this->data_for_eventOfMonth()
-        $dates  = [
-            '2017-08-12', '2017-08-26',
-            '2017-08-02',
-            '2017-08-03', '2017-08-10', '2017-08-17', '2017-08-24', '2017-08-31',
-            '2017-08-04', '2017-08-18',
-            '2017-08-06',
-        ];
-        $inputs = $this->data_for_eventOfMonth();
+        $data = $this->data_for_eventOfMonth();
+        extract($data); // $inputs, $dates
+
         foreach ($inputs as $input) {
             $this->calendarEvent->createCalendarEvent($input);
         }
@@ -368,6 +385,7 @@ class CalendarEventTest extends TestCase
     public function deleteCalendarEvent_notRecurring_recurring()
     {
         $calendarEvent = $this->calendarEvent->createCalendarEvent([
+            'title'        => 'Lorem ipsum',
             'start_date'   => '2017-08-25',
             'start_time'   => 16,
             'end_time'     => 17,
@@ -389,6 +407,7 @@ class CalendarEventTest extends TestCase
     public function deleteCalendarEvent_recurring_notRecurring()
     {
         $calendarEvent = $this->calendarEvent->createCalendarEvent([
+            'title'                         => 'Lorem ipsum',
             'start_date'                    => '2017-08-25',
             'start_time'                    => 16,
             'end_time'                      => 17,
@@ -410,6 +429,7 @@ class CalendarEventTest extends TestCase
     public function deleteCalendarEvent_recurring_recurring_deleted()
     {
         $calendarEvent = $this->calendarEvent->createCalendarEvent([
+            'title'                         => 'Lorem ipsum',
             'start_date'                    => '2017-08-25',
             'start_time'                    => 16,
             'end_time'                      => 17,
@@ -432,6 +452,7 @@ class CalendarEventTest extends TestCase
     public function deleteCalendarEvent_recurring_recurring_deleted_withoutInput()
     {
         $calendarEvent = $this->calendarEvent->createCalendarEvent([
+            'title'                         => 'Lorem ipsum',
             'start_date'                    => '2017-08-25',
             'start_time'                    => 16,
             'end_time'                      => 17,
@@ -454,6 +475,7 @@ class CalendarEventTest extends TestCase
     public function deleteCalendarEvent_recurring_recurring_notDeleted()
     {
         $calendarEvent     = $this->calendarEvent->createCalendarEvent([
+            'title'                         => 'Lorem ipsum',
             'start_date'                    => '2017-08-25',
             'start_time'                    => 16,
             'end_time'                      => 17,

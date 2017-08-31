@@ -195,6 +195,7 @@ class GenerateCalendarEventTest extends TestCase
     {
         $now                         = '2017-08-14';
         $calendarEvent               = $this->calendarEvent->createCalendarEvent([
+            'title'                         => 'Lorem ipsum',
             'start_date'                    => '2017-08-01',
             'start_time'                    => 10,
             'end_time'                      => 12,
@@ -228,6 +229,7 @@ class GenerateCalendarEventTest extends TestCase
     {
         $now                         = '2017-08-16';
         $calendarEvent               = $this->calendarEvent->createCalendarEvent([
+            'title'                         => 'Lorem ipsum',
             'start_date'                    => '2017-08-01',
             'start_time'                    => 10,
             'end_time'                      => 12,

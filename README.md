@@ -39,10 +39,11 @@ use T1k3\LaravelCalendarEvent\Models\CalendarEvent;
 
 $calendarEvent = new CalendarEvent();
 $calendarEvent = $calendarEvent->createCalendarEvent([
+    'title'                         => 'Lorem ipsum',
     'start_date'                    => '2017-08-25',
     'start_time'                    => 16,
     'end_time'                      => 17,
-    'description'                   => 'Lorem ipsum',
+    'description'                   => 'Lorem ipsum dolor sit amet',
     'is_recurring'                  => true,
     'frequence_number_of_recurring' => 1,
     'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,

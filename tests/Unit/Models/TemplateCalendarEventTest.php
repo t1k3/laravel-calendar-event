@@ -101,12 +101,6 @@ class TemplateCalendarEventTest extends TestCase
         $this->assertNull($user);
     }
 
-    public function user()
-    {
-        $this->app['config']->set('calendar-event.user.model', null);
-//        $this->assertInstanceOf('App\Models\User', $templateCalendarEvent->user);
-    }
-
     /**
      * @test
      */
@@ -125,6 +119,7 @@ class TemplateCalendarEventTest extends TestCase
     public function scopeRecurring()
     {
         factory(TemplateCalendarEvent::class)->create([
+            'title'        => 'Lorem ipsum',
             'start_date'   => '2017-08-29',
             'start_time'   => Carbon::now()->hour,
             'end_time'     => Carbon::now()->addHour()->hour,
@@ -133,6 +128,7 @@ class TemplateCalendarEventTest extends TestCase
             'is_public'    => true,
         ]);
         factory(TemplateCalendarEvent::class)->create([
+            'title'                         => 'Lorem ipsum',
             'start_date'                    => '2017-08-29',
             'start_time'                    => Carbon::now()->hour,
             'end_time'                      => Carbon::now()->addHour()->hour,
@@ -155,6 +151,7 @@ class TemplateCalendarEventTest extends TestCase
     public function scopePublic()
     {
         $input = [
+            'title'        => 'Lorem ipsum',
             'start_date'   => '2017-08-29',
             'start_time'   => Carbon::now()->hour,
             'end_time'     => Carbon::now()->addHour()->hour,
@@ -175,6 +172,7 @@ class TemplateCalendarEventTest extends TestCase
         return [
             [
                 [
+                    'title'        => 'Lorem ipsum',
                     'start_date'   => '2017-08-30',
                     'start_time'   => Carbon::now()->hour,
                     'end_time'     => Carbon::now()->addHour()->hour,
@@ -185,6 +183,7 @@ class TemplateCalendarEventTest extends TestCase
             ],
             [
                 [
+                    'title'                         => 'Lorem ipsum',
                     'start_date'                    => '2017-08-30',
                     'start_time'                    => Carbon::now()->hour,
                     'end_time'                      => Carbon::now()->addHour()->hour,
@@ -198,6 +197,7 @@ class TemplateCalendarEventTest extends TestCase
             ],
             [
                 [
+                    'title'                         => 'Lorem ipsum',
                     'start_date'                    => '2017-08-30',
                     'start_time'                    => Carbon::now()->hour,
                     'end_time'                      => Carbon::now()->addHour()->hour,
@@ -252,6 +252,7 @@ class TemplateCalendarEventTest extends TestCase
     public function generateNextCalendarEvent($startDate, $frequence_number_of_recurring, $frequence_type_of_recurring, $calendarEventNext_startDate)
     {
         $templateCalendarEvent = factory(TemplateCalendarEvent::class)->create([
+            'title'                         => 'Lorem ipsum',
             'start_date'                    => $startDate,
             'start_time'                    => Carbon::now()->hour,
             'end_time'                      => Carbon::now()->addHour()->hour,
@@ -294,6 +295,7 @@ class TemplateCalendarEventTest extends TestCase
     public function editCalendarEvent_notExistCalendarEvent()
     {
         $input                 = [
+            'title'                         => 'Lorem ipsum',
             'start_date'                    => '2017-08-30',
             'start_time'                    => Carbon::now()->hour,
             'end_time'                      => Carbon::now()->addHour()->hour,
@@ -321,6 +323,7 @@ class TemplateCalendarEventTest extends TestCase
     public function editCalendarEvent_existCalendarEvent()
     {
         $input                 = [
+            'title'                         => 'Lorem ipsum',
             'start_date'                    => '2017-08-30',
             'start_time'                    => Carbon::now()->hour,
             'end_time'                      => Carbon::now()->addHour()->hour,
@@ -351,6 +354,7 @@ class TemplateCalendarEventTest extends TestCase
         return [
             [
                 [
+                    'title'                         => 'Lorem ipsum',
                     'start_date'                    => '2017-08-29',
                     'start_time'                    => Carbon::now()->hour,
                     'end_time'                      => Carbon::now()->addHour()->hour,
@@ -364,6 +368,7 @@ class TemplateCalendarEventTest extends TestCase
             ],
             [
                 [
+                    'title'        => 'Lorem ipsum',
                     'start_date'   => '2017-08-29',
                     'start_time'   => Carbon::now()->hour,
                     'end_time'     => Carbon::now()->addHour()->hour,
@@ -397,6 +402,7 @@ class TemplateCalendarEventTest extends TestCase
     public function deleteCalendarEvent_notExist()
     {
         $calendarEvent         = $this->calendarEvent->createCalendarEvent([
+            'title'                         => 'Lorem ipsum',
             'start_date'                    => '2017-08-25',
             'start_time'                    => 16,
             'end_time'                      => 17,
@@ -424,6 +430,7 @@ class TemplateCalendarEventTest extends TestCase
     {
         $startDate             = Carbon::parse('2017-08-25');
         $calendarEvent         = $this->calendarEvent->createCalendarEvent([
+            'title'                         => 'Lorem ipsum',
             'start_date'                    => $startDate,
             'start_time'                    => 16,
             'end_time'                      => 17,
