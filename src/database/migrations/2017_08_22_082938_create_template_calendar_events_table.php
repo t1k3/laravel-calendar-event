@@ -19,6 +19,7 @@ class CreateTemplateCalendarEventsTable extends Migration
         Schema::create('template_calendar_events', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('parent_id')->unsigned()->nullable();
+            $table->string('title')->nullable();
             $table->date('start_date');
             $table->time('start_time');
             $table->time('end_time');

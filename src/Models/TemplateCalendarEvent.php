@@ -22,6 +22,7 @@ class TemplateCalendarEvent extends AbstractModel
      * @var array
      */
     protected $fillable = [
+        'title',
         'start_date',
         'start_time',
         'end_time',

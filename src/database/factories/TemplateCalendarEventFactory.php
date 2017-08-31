@@ -9,6 +9,7 @@ $factory = app()->make(\Illuminate\Database\Eloquent\Factory::class);
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 $factory->define(TemplateCalendarEvent::class, function (Faker $faker) {
     return [
+        'title'        => str_random(16),
         'start_date'   => Carbon::now()->addWeek()->format('Y-m-d'),
         'start_time'   => Carbon::now()->hour,
         'end_time'     => Carbon::now()->addHour()->hour,

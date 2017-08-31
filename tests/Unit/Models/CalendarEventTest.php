@@ -239,7 +239,6 @@ class CalendarEventTest extends TestCase
      */
     public function data_for_eventOfMonth()
     {
-        // count: 11
         return [
             [
                 'start_date'                    => '2016-10-01',
@@ -260,7 +259,7 @@ class CalendarEventTest extends TestCase
                 'is_public'    => true,
             ],
             [
-                // 08: 12, 26
+                // 2017-08-12, 2017-08-26
                 'start_date'                    => '2017-07-15',
                 'start_time'                    => Carbon::now()->hour,
                 'end_time'                      => Carbon::now()->addHour()->hour,
@@ -271,7 +270,7 @@ class CalendarEventTest extends TestCase
                 'is_public'                     => true,
             ],
             [
-                // 08: 02
+                // 2017-08-02
                 'start_date'   => '2017-08-02',
                 'start_time'   => Carbon::now()->hour,
                 'end_time'     => Carbon::now()->addHour()->hour,
@@ -280,7 +279,7 @@ class CalendarEventTest extends TestCase
                 'is_public'    => true,
             ],
             [
-                // 08: 03, 10, 17, 24, 31
+                // 2017-08-03, 2017-08-10, 2017-08-17, 2017-08-24, 2017-08-31
                 'start_date'                    => '2017-08-03',
                 'start_time'                    => Carbon::now()->hour,
                 'end_time'                      => Carbon::now()->addHour()->hour,
@@ -291,7 +290,7 @@ class CalendarEventTest extends TestCase
                 'is_public'                     => true,
             ],
             [
-                // 08: 04, 18
+                // 2017-08-04, 2017-08-18
                 'start_date'                    => '2017-08-04',
                 'start_time'                    => Carbon::now()->hour,
                 'end_time'                      => Carbon::now()->addHour()->hour,
@@ -303,7 +302,7 @@ class CalendarEventTest extends TestCase
                 'end_of_recurring'              => '2017-09-25',
             ],
             [
-                // 08: 06
+                // 2017-08-06
                 'start_date'                    => '2017-07-06',
                 'start_time'                    => Carbon::now()->hour,
                 'end_time'                      => Carbon::now()->addHour()->hour,
@@ -332,6 +331,14 @@ class CalendarEventTest extends TestCase
      */
     public function eventsOfMonth()
     {
+        // dates from $this->data_for_eventOfMonth()
+        $dates  = [
+            '2017-08-12', '2017-08-26',
+            '2017-08-02',
+            '2017-08-03', '2017-08-10', '2017-08-17', '2017-08-24', '2017-08-31',
+            '2017-08-04', '2017-08-18',
+            '2017-08-06',
+        ];
         $inputs = $this->data_for_eventOfMonth();
         foreach ($inputs as $input) {
             $this->calendarEvent->createCalendarEvent($input);
@@ -339,7 +346,20 @@ class CalendarEventTest extends TestCase
         $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(Carbon::parse('2017-08'));
 
         $this->assertInstanceOf(CalendarEvent::class, $calendarEvents[0]);
-        $this->assertEquals(11, $calendarEvents->count());
+        $this->assertEquals(count($dates), $calendarEvents->count());
+        foreach ($calendarEvents as $calendarEvent) {
+            $isExist = in_array($calendarEvent->start_date->format('Y-m-d'), $dates);
+            $this->assertTrue($isExist);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function eventsOfMonth_empty()
+    {
+        $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(Carbon::parse('2017-08'));
+        $this->assertEquals(0, $calendarEvents->count());
     }
 
     /**
@@ -433,7 +453,7 @@ class CalendarEventTest extends TestCase
      */
     public function deleteCalendarEvent_recurring_recurring_notDeleted()
     {
-        $calendarEvent = $this->calendarEvent->createCalendarEvent([
+        $calendarEvent     = $this->calendarEvent->createCalendarEvent([
             'start_date'                    => '2017-08-25',
             'start_time'                    => 16,
             'end_time'                      => 17,

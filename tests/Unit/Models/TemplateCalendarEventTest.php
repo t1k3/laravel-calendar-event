@@ -49,6 +49,7 @@ class TemplateCalendarEventTest extends TestCase
     public function getFillable()
     {
         $expectedFillables = [
+            'title',
             'start_date',
             'start_time',
             'end_time',
@@ -434,7 +435,7 @@ class TemplateCalendarEventTest extends TestCase
         ]);
         $templateCalendarEvent = $calendarEvent->template;
         $isDeleted             = $templateCalendarEvent->deleteCalendarEvent($startDate);
-        
+
         $this->assertTrue($isDeleted);
         $this->assertNotNull($calendarEvent->fresh()->deleted_at);
         $this->assertNotNull($templateCalendarEvent->fresh()->deleted_at);
