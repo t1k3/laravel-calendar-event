@@ -409,6 +409,28 @@ class CalendarEventTest extends TestCase
     /**
      * @test
      */
+    public function deleteCalendarEvent_recurring_recurring_deleted_withoutInput()
+    {
+        $calendarEvent = $this->calendarEvent->createCalendarEvent([
+            'start_date'                    => '2017-08-25',
+            'start_time'                    => 16,
+            'end_time'                      => 17,
+            'description'                   => str_random(32),
+            'is_recurring'                  => true,
+            'frequence_number_of_recurring' => 1,
+            'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+            'is_public'                     => true
+        ]);
+        $calendarEvent->deleteCalendarEvent();
+
+        $this->assertNotNull($calendarEvent->deleted_at);
+        $this->assertNotNull($calendarEvent->template->deleted_at);
+        $this->assertEquals($calendarEvent->start_date, $calendarEvent->template->end_of_recurring);
+    }
+
+    /**
+     * @test
+     */
     public function deleteCalendarEvent_recurring_recurring_notDeleted()
     {
         $calendarEvent = $this->calendarEvent->createCalendarEvent([

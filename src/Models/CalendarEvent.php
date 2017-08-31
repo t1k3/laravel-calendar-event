@@ -121,6 +121,7 @@ class CalendarEvent extends AbstractModel
     }
 
     /**
+     * Delete calendar event
      * @param bool|null $isRecurring
      * @return bool|null
      */
@@ -128,7 +129,7 @@ class CalendarEvent extends AbstractModel
     {
         DB::transaction(function () use ($isRecurring, &$isDeleted) {
             if ($isRecurring === null) {
-                $this->template->is_recurring;
+                $isRecurring = $this->template->is_recurring;
             }
 
             if ($this->template->is_recurring && $isRecurring) {

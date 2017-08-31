@@ -60,7 +60,13 @@ $calendarEventUpdated = $calendarEvent->editCalendarEvent([
 ]);
 ```
 
-#### Edit not exist CalendarEvent
+#### Delete CalendarEvent
+```php
+$calendarEvent = CalendarEvent::find($id);
+$isDeleted     = $calendarEvent->deleteCalendarEvent($isRecurring = null);
+```
+
+#### Edit not existing CalendarEvent
 ```php
 use T1k3\LaravelCalendarEvent\Models\TemplateCalendarEvent;
 
@@ -68,6 +74,12 @@ $templateCalendarEvent = TemplateCalendarEvent::find($id);
 $calendarEventUpdated  = $templateCalendarEvent->editCalendarEvent(Carbon::parse('2017-08-30'), [
     'description' => 'Foo Bar'
 ]);
+```
+
+#### Delete not existing CalendarEvent
+```php
+$templateCalendarEvent = TemplateCalendarEvent::find($id);
+$isDeleted             = $templateCalendarEvent->deleteCalendarEvent(Carbon::parse('2017-08-30'), $isRecurring = null);
 ```
 
 #### Get (potential) CalendarEvent(s) of month

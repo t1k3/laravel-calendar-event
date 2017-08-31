@@ -122,6 +122,24 @@ class TemplateCalendarEvent extends AbstractModel
     }
 
     /**
+     * Delete calendar event | Exist or not
+     * @param \DateTimeInterface $startDate
+     * @param bool|null $isRecurring
+     * @return bool|null
+     */
+    public function deleteCalendarEvent(\DateTimeInterface $startDate, bool $isRecurring = null)
+    {
+        if ($isRecurring === null) $isRecurring = $this->is_recurring;
+
+        $calendarEvent = $this->events()->where('start_date', $startDate)->first();
+        if (!$calendarEvent) {
+            $calendarEvent = $this->createCalendarEvent($startDate);
+        }
+
+        return $calendarEvent->deleteCalendarEvent($isRecurring);
+    }
+
+    /**
      * Generate next calendar event to template
      * @param \DateTimeInterface $now
      * @return \Illuminate\Database\Eloquent\Model|null

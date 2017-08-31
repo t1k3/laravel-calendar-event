@@ -389,4 +389,55 @@ class TemplateCalendarEventTest extends TestCase
 
         $this->assertNull($calendarEventNext);
     }
+
+    /**
+     * @test
+     */
+    public function deleteCalendarEvent_notExist()
+    {
+        $calendarEvent         = $this->calendarEvent->createCalendarEvent([
+            'start_date'                    => '2017-08-25',
+            'start_time'                    => 16,
+            'end_time'                      => 17,
+            'description'                   => str_random(32),
+            'is_recurring'                  => true,
+            'frequence_number_of_recurring' => 1,
+            'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+            'is_public'                     => true
+        ]);
+        $templateCalendarEvent = $calendarEvent->template;
+
+        $startDate = Carbon::parse('2017-09-08');
+        $isDeleted = $templateCalendarEvent->deleteCalendarEvent($startDate);
+
+        $this->assertTrue($isDeleted);
+        $this->assertNull($calendarEvent->deleted_at);
+        $this->assertNull($templateCalendarEvent->deleted_at);
+        $this->assertEquals($startDate, $templateCalendarEvent->end_of_recurring);
+    }
+
+    /**
+     * @test
+     */
+    public function deleteCalendarEvent_exist()
+    {
+        $startDate             = Carbon::parse('2017-08-25');
+        $calendarEvent         = $this->calendarEvent->createCalendarEvent([
+            'start_date'                    => $startDate,
+            'start_time'                    => 16,
+            'end_time'                      => 17,
+            'description'                   => str_random(32),
+            'is_recurring'                  => true,
+            'frequence_number_of_recurring' => 1,
+            'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+            'is_public'                     => true
+        ]);
+        $templateCalendarEvent = $calendarEvent->template;
+        $isDeleted             = $templateCalendarEvent->deleteCalendarEvent($startDate);
+        
+        $this->assertTrue($isDeleted);
+        $this->assertNotNull($calendarEvent->fresh()->deleted_at);
+        $this->assertNotNull($templateCalendarEvent->fresh()->deleted_at);
+        $this->assertEquals($startDate, $templateCalendarEvent->fresh()->end_of_recurring);
+    }
 }
