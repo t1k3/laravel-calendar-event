@@ -94,6 +94,7 @@ class GenerateCalendarEvent extends Command
                 )
                 && $dateNext >= $date
                 && $dateNext <= $endOfRecurring
+                && !$templateCalendarEvent->events()->where('start_date', $dateNext)->first()
             ) {
                 $templateCalendarEvent->createCalendarEvent($dateNext);
                 $count++;

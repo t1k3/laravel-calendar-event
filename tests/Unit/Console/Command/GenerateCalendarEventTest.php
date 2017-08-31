@@ -178,7 +178,10 @@ class GenerateCalendarEventTest extends TestCase
     public function handle_recurring_generated($input, $now, $startDate)
     {
         $calendarEvent = $this->calendarEvent->createCalendarEvent($input);
+
         $this->artisan('generate:calendar-event', ['--date' => $now]);
+        $this->artisan('generate:calendar-event', ['--date' => $now]);
+
         $calendarEventLast = $calendarEvent->template->events()->orderBy('start_date', 'desc')->first();
 
         $this->assertContains('Generated: next calendar events', $this->getConsoleOutput());
