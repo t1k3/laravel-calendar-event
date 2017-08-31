@@ -50,7 +50,7 @@ class GenerateCalendarEventTest extends TestCase
         ]);
         $this->artisan('generate:calendar-event', ['--date' => $now]);
 
-        $this->assertContains('Generated: next calendar events.', $this->getConsoleOutput());
+        $this->assertContains('Generated: next calendar events: 0', $this->getConsoleOutput());
         $this->assertEquals(1, $this->calendarEvent->all()->count());
     }
 
@@ -74,8 +74,115 @@ class GenerateCalendarEventTest extends TestCase
         $calendarEvent->template->generateNextCalendarEvent(Carbon::parse($now)); // '2017-08-08'
         $this->artisan('generate:calendar-event', ['--date' => $now]);
 
-        $this->assertContains('Generated: next calendar events.', $this->getConsoleOutput());
+        $this->assertContains('Generated: next calendar events: 0', $this->getConsoleOutput());
         $this->assertEquals(2, $this->calendarEvent->all()->count());
+    }
+
+    public function dataProvider_for_handle_recurring_generated()
+    {
+        return [
+            [
+                [
+                    'start_date'                    => '2017-08-01',
+                    'start_time'                    => 10,
+                    'end_time'                      => 12,
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 2,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::DAY,
+                    'is_public'                     => true,
+                ],
+                Carbon::parse('2017-08-16'),
+                Carbon::parse('2017-08-16')
+            ],
+            [
+                [
+                    'start_date'                    => '2017-08-01',
+                    'start_time'                    => 10,
+                    'end_time'                      => 12,
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 2,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::DAY,
+                    'is_public'                     => true,
+                ],
+                Carbon::parse('2017-08-17'),
+                Carbon::parse('2017-08-18')
+            ],
+            [
+                [
+                    'start_date'                    => '2017-08-02',
+                    'start_time'                    => 10,
+                    'end_time'                      => 12,
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 3,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::DAY,
+                    'is_public'                     => true,
+                ],
+                Carbon::parse('2017-08-17'),
+                Carbon::parse('2017-08-19')
+            ],
+            [
+                [
+                    'start_date'                    => '2017-08-01',
+                    'start_time'                    => 10,
+                    'end_time'                      => 12,
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 1,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+                    'is_public'                     => true,
+                ],
+                Carbon::parse('2017-08-16'),
+                Carbon::parse('2017-08-22')
+            ],
+            [
+                [
+                    'start_date'                    => '2017-08-02',
+                    'start_time'                    => 10,
+                    'end_time'                      => 12,
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 2,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+                    'is_public'                     => true,
+                ],
+                Carbon::parse('2017-08-17'),
+                Carbon::parse('2017-08-23')
+            ],
+            [
+                [
+                    'start_date'                    => '2017-08-01',
+                    'start_time'                    => 10,
+                    'end_time'                      => 12,
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 1,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::MONTH,
+                    'is_public'                     => true,
+                ],
+                Carbon::parse('2017-08-26'),
+                Carbon::parse('2017-09-01')
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider dataProvider_for_handle_recurring_generated
+     * @param $input
+     * @param $now
+     * @param $startDate
+     */
+    public function handle_recurring_generated($input, $now, $startDate)
+    {
+        $calendarEvent = $this->calendarEvent->createCalendarEvent($input);
+        $this->artisan('generate:calendar-event', ['--date' => $now]);
+        $calendarEventLast = $calendarEvent->template->events()->orderBy('start_date', 'desc')->first();
+
+        $this->assertContains('Generated: next calendar events', $this->getConsoleOutput());
+        $this->assertEquals($startDate, $calendarEventLast->start_date);
     }
 
     /**
@@ -83,14 +190,14 @@ class GenerateCalendarEventTest extends TestCase
      */
     public function handle_recurring_editedNotRecurring_generated()
     {
-        $now                         = '2017-08-09';
+        $now                         = '2017-08-16';
         $calendarEvent               = $this->calendarEvent->createCalendarEvent([
             'start_date'                    => '2017-08-01',
             'start_time'                    => 10,
             'end_time'                      => 12,
             'description'                   => str_random(32),
             'is_recurring'                  => true,
-            'frequence_number_of_recurring' => 1,
+            'frequence_number_of_recurring' => 2,
             'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
             'is_public'                     => true,
         ]);
@@ -104,7 +211,7 @@ class GenerateCalendarEventTest extends TestCase
         $this->artisan('generate:calendar-event', ['--date' => $now]);
         $calendarEventLast = $calendarEvent->template->events()->orderBy('start_date', 'desc')->first();
 
-        $this->assertContains('Generated: next calendar events.', $this->getConsoleOutput());
+        $this->assertContains('Generated: next calendar events', $this->getConsoleOutput());
         $this->assertEquals('2017-08-22', $calendarEventLast->start_date->format('Y-m-d'));
     }
 }
