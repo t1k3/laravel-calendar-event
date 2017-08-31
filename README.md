@@ -36,6 +36,7 @@ class Place extends Model implements PlaceInterface
 
 ```php
 use T1k3\LaravelCalendarEvent\Models\CalendarEvent;
+use T1k3\LaravelCalendarEvent\Enums\RecurringFrequenceType;
 
 $calendarEvent = new CalendarEvent();
 $calendarEvent = $calendarEvent->createCalendarEvent([
