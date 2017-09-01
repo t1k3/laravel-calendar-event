@@ -85,7 +85,7 @@ $isDeleted             = $templateCalendarEvent->deleteCalendarEvent(Carbon::par
 ```
 
 #### Get (potential) CalendarEvent(s) of month
-If the CalendarEvent is not exist then it is append `is_not_exist` attribute with `true` value
+If the CalendarEvent is not exist then it is append `is_not_exists` attribute with `true` value
 ```php
 $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(Carbon::parse('2017-08'));
 ```

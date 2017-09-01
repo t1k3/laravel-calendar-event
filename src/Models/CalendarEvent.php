@@ -211,8 +211,8 @@ class CalendarEvent extends AbstractModel
             }
 
             while ($dateNext !== null && $dateNext->month <= (int)$month) {
-                $calendarEventNotExists               = (new CalendarEvent())->make(['start_date' => $dateNext]);
-                $calendarEventNotExists->is_not_exist = true;
+                $calendarEventNotExists                = (new CalendarEvent())->make(['start_date' => $dateNext]);
+                $calendarEventNotExists->is_not_exists = true;
                 $calendarEventNotExists->template()->associate($templateCalendarEvent);
 
                 if ($calendarEventNotExists->start_date->month === (int)$month

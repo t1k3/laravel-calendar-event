@@ -26,8 +26,6 @@ class ServiceProvider extends BaseServiceProvider
         $this->publishes([
             __DIR__ . '/config' => config_path(),
         ], 'config');
-
-        if (env('APP_ENV') !== 'testing' && file_exists($file = __DIR__ . '/Support/helpers.php')) require $file;
     }
 
     /**
@@ -38,5 +36,8 @@ class ServiceProvider extends BaseServiceProvider
     public function register()
     {
         $this->commands(GenerateCalendarEvent::class);
+
+//        Package helpers
+        if (file_exists($file = __DIR__ . '/Support/helpers.php')) require_once $file;
     }
 }

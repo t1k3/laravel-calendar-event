@@ -26,10 +26,7 @@
     ],
     "psr-4": {
       "T1k3\\LaravelCalendarEvent\\": "src"
-    },
-    "files": [
-      "src/Support/helpers.php"
-    ]
+    }
   },
   "autoload-dev": {
     "psr-4": {
