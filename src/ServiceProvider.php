@@ -26,6 +26,8 @@ class ServiceProvider extends BaseServiceProvider
         $this->publishes([
             __DIR__ . '/config' => config_path(),
         ], 'config');
+
+        if (env('APP_ENV') !== 'testing' && file_exists($file = __DIR__ . '/Support/helpers.php')) require $file;
     }
 
     /**

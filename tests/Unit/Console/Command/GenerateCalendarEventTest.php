@@ -62,8 +62,8 @@ class GenerateCalendarEventTest extends TestCase
         $now           = '2017-08-09';
         $calendarEvent = $this->calendarEvent->createCalendarEvent([
             'start_date'                    => '2017-08-01',
-            'start_time'                    => 10,
-            'end_time'                      => 12,
+            'start_time'                    => '10:00',
+            'end_time'                      => '12:00',
             'description'                   => str_random(32),
             'is_recurring'                  => true,
             'frequence_number_of_recurring' => 1,
@@ -84,8 +84,8 @@ class GenerateCalendarEventTest extends TestCase
             [
                 [
                     'start_date'                    => '2017-08-01',
-                    'start_time'                    => 10,
-                    'end_time'                      => 12,
+                    'start_time'                    => '10:00',
+                    'end_time'                      => '12:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
                     'frequence_number_of_recurring' => 2,
@@ -98,8 +98,8 @@ class GenerateCalendarEventTest extends TestCase
             [
                 [
                     'start_date'                    => '2017-08-01',
-                    'start_time'                    => 10,
-                    'end_time'                      => 12,
+                    'start_time'                    => '10:00',
+                    'end_time'                      => '12:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
                     'frequence_number_of_recurring' => 2,
@@ -112,8 +112,8 @@ class GenerateCalendarEventTest extends TestCase
             [
                 [
                     'start_date'                    => '2017-08-02',
-                    'start_time'                    => 10,
-                    'end_time'                      => 12,
+                    'start_time'                    => '10:00',
+                    'end_time'                      => '12:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
                     'frequence_number_of_recurring' => 3,
@@ -126,8 +126,8 @@ class GenerateCalendarEventTest extends TestCase
             [
                 [
                     'start_date'                    => '2017-08-01',
-                    'start_time'                    => 10,
-                    'end_time'                      => 12,
+                    'start_time'                    => '10:00',
+                    'end_time'                      => '12:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
                     'frequence_number_of_recurring' => 1,
@@ -140,8 +140,8 @@ class GenerateCalendarEventTest extends TestCase
             [
                 [
                     'start_date'                    => '2017-08-02',
-                    'start_time'                    => 10,
-                    'end_time'                      => 12,
+                    'start_time'                    => '10:00',
+                    'end_time'                      => '12:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
                     'frequence_number_of_recurring' => 2,
@@ -154,8 +154,8 @@ class GenerateCalendarEventTest extends TestCase
             [
                 [
                     'start_date'                    => '2017-08-01',
-                    'start_time'                    => 10,
-                    'end_time'                      => 12,
+                    'start_time'                    => '10:00',
+                    'end_time'                      => '12:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
                     'frequence_number_of_recurring' => 1,
@@ -193,12 +193,12 @@ class GenerateCalendarEventTest extends TestCase
      */
     public function handle_recurring_editedNotRecurring_notGenerated()
     {
-        $now                         = '2017-08-14';
+        $now                         = Carbon::parse('2017-08-14');
         $calendarEvent               = $this->calendarEvent->createCalendarEvent([
             'title'                         => 'Lorem ipsum',
-            'start_date'                    => '2017-08-01',
-            'start_time'                    => 10,
-            'end_time'                      => 12,
+            'start_date'                    => Carbon::parse('2017-08-01'),
+            'start_time'                    => Carbon::parse('10:00'),
+            'end_time'                      => Carbon::parse('12:00'),
             'description'                   => str_random(32),
             'is_recurring'                  => true,
             'frequence_number_of_recurring' => 1,
@@ -208,7 +208,7 @@ class GenerateCalendarEventTest extends TestCase
         $calendarEventNextTmp        = $calendarEvent->template->generateNextCalendarEvent(new \DateTime($now)); // '2017-08-08'
         $calendarEventNextTmp        = $calendarEvent->template->generateNextCalendarEvent(Carbon::parse($now)); // '2017-08-15'
         $calendarEventNextTmpUpdated = $calendarEventNextTmp->editCalendarEvent([
-            'start_date'   => '2017-08-09',
+            'start_date'   => Carbon::parse('2017-08-09'),
             'is_recurring' => false
         ]);
 
@@ -227,12 +227,12 @@ class GenerateCalendarEventTest extends TestCase
      */
     public function handle_recurring_editedNotRecurring_generated()
     {
-        $now                         = '2017-08-16';
+        $now                         = Carbon::parse('2017-08-16');
         $calendarEvent               = $this->calendarEvent->createCalendarEvent([
             'title'                         => 'Lorem ipsum',
-            'start_date'                    => '2017-08-01',
-            'start_time'                    => 10,
-            'end_time'                      => 12,
+            'start_date'                    => Carbon::parse('2017-08-01'),
+            'start_time'                    => Carbon::parse('10:00'),
+            'end_time'                      => Carbon::parse('12:00'),
             'description'                   => str_random(32),
             'is_recurring'                  => true,
             'frequence_number_of_recurring' => 1,
@@ -242,7 +242,7 @@ class GenerateCalendarEventTest extends TestCase
         $calendarEventNextTmp        = $calendarEvent->template->generateNextCalendarEvent(new \DateTime($now)); // '2017-08-08'
         $calendarEventNextTmp        = $calendarEvent->template->generateNextCalendarEvent(Carbon::parse($now)); // '2017-08-15'
         $calendarEventNextTmpUpdated = $calendarEventNextTmp->editCalendarEvent([
-            'start_date'   => '2017-08-09',
+            'start_date'   => Carbon::parse('2017-08-09'),
             'is_recurring' => false
         ]);
 

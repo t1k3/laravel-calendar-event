@@ -2,7 +2,6 @@
 
 namespace T1k3\LaravelCalendarEvent\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use T1k3\LaravelCalendarEvent\Enums\RecurringFrequenceType;
@@ -51,19 +50,13 @@ class CalendarEvent extends AbstractModel
     public function dataIsDifferent(array $attributes): bool
     {
         if (isset($attributes['start_date'])) {
-            if ($this->start_date->format('Y-m-d') !== $attributes['start_date']) {
+            if ($this->start_date->format('Y-m-d') !== $attributes['start_date']->format('Y-m-d')) {
                 return true;
             }
             unset($attributes['start_date']);
         }
 
-        $template = $this->template;
-        foreach ($attributes as $key => $value) {
-            if ($template->{$key} !== $value) {
-                return true;
-            }
-        }
-        return false;
+        return arrayIsEqualWithDB($attributes, $this->template);
     }
 
     /**
@@ -75,10 +68,12 @@ class CalendarEvent extends AbstractModel
     public function createCalendarEvent(array $attributes, UserInterface $user = null, PlaceInterface $place = null)
     {
         DB::transaction(function () use ($attributes, $user, $place, &$calendarEvent) {
-            $templateCalendarEvent = $this->template()->create($attributes);
+            $templateCalendarEvent = $this->template()->make($attributes);
 
             if ($user !== null) $templateCalendarEvent->user()->associate($user);
             if ($place !== null) $templateCalendarEvent->place()->associate($place);
+
+            $templateCalendarEvent->save();
 
             $calendarEvent = $this->make($attributes);
             $calendarEvent->template()->associate($templateCalendarEvent);
@@ -90,9 +85,11 @@ class CalendarEvent extends AbstractModel
 
     /**
      * @param array $attributes
+     * @param UserInterface|null $user
+     * @param PlaceInterface|null $place
      * @return null|CalendarEvent
      */
-    public function editCalendarEvent(array $attributes)
+    public function editCalendarEvent(array $attributes, UserInterface $user = null, PlaceInterface $place = null)
     {
         if ($this->dataIsDifferent($attributes)) {
             $calendarEventNew = $this->createCalendarEvent(
@@ -100,10 +97,14 @@ class CalendarEvent extends AbstractModel
                     $this->template->toArray(),
                     ['start_date' => $this->start_date],
                     $attributes
-                )
+                ),
+                $user,
+                $place
             );
 
-            $calendarEventNew->template->parent()->associate($this->template);
+            $templateCalendarEvent = $calendarEventNew->template->parent()->associate($this->template);
+            $templateCalendarEvent->save();
+
             if ($this->template->is_recurring && $calendarEventNew->template->is_recurring) {
                 $this->template->update([
                     'end_of_recurring' => $this->start_date
