@@ -70,7 +70,7 @@ class CalendarEventTest extends TestCase
         return [
             'not_recurring' => [
                 [
-                    'title'        => 'Lorem ipsum',
+                    'title'        => str_random(16),
                     'start_date'   => Carbon::parse('2017-08-25'),
                     'start_time'   => '10:00',
                     'end_time'     => '12:00',
@@ -81,7 +81,7 @@ class CalendarEventTest extends TestCase
             ],
             'recurring'     => [
                 [
-                    'title'                         => 'Lorem ipsum',
+                    'title'                         => str_random(16),
                     'start_date'                    => Carbon::parse('2017-08-25'),
                     'start_time'                    => '10:00',
                     'end_time'                      => '12:00',
@@ -107,12 +107,9 @@ class CalendarEventTest extends TestCase
 
         $this->assertInstanceOf(CalendarEvent::class, $calendarEvent);
         $this->assertEquals($input['start_date'], $calendarEvent->start_date);
-
         $this->assertInstanceOf(TemplateCalendarEvent::class, $calendarEvent->template);
 
-        $calendarEventFromDB = $this->calendarEvent->where('start_date', Carbon::parse($input['start_date']))->first();
-        $this->assertInstanceOf(CalendarEvent::class, $calendarEventFromDB);
-        $this->assertArraySubset($input, $calendarEventFromDB->template->toArray());
+        $this->assertDatabaseHas('template_calendar_events', $input);
     }
 
     /**
@@ -121,8 +118,8 @@ class CalendarEventTest extends TestCase
      */
     public function editCalendarEvent_notModified()
     {
-        $input                = [
-            'title'        => 'Lorem ipsum',
+        $inputCreate          = [
+            'title'        => str_random(16),
             'start_date'   => Carbon::parse('2017-08-01'),
             'start_time'   => Carbon::parse('11:00'),
             'end_time'     => Carbon::parse('12:00'),
@@ -131,8 +128,8 @@ class CalendarEventTest extends TestCase
             'is_public'    => true,
 
         ];
-        $calendarEvent        = $this->calendarEvent->createCalendarEvent($input);
-        $calendarEventUpdated = $calendarEvent->editCalendarEvent($input);
+        $calendarEvent        = $this->calendarEvent->createCalendarEvent($inputCreate);
+        $calendarEventUpdated = $calendarEvent->editCalendarEvent($inputCreate);
 
         $this->assertNull($calendarEventUpdated);
     }
@@ -143,8 +140,8 @@ class CalendarEventTest extends TestCase
      */
     public function editCalendarEvent_notRecurring_modifiedCalendarEventData_recurring()
     {
-        $inputCreate          = [
-            'title'                         => 'Lorem ipsum',
+        $inputCreate = [
+            'title'                         => str_random(16),
             'start_date'                    => Carbon::parse('2017-08-01'),
             'start_time'                    => Carbon::parse('11:00'),
             'end_time'                      => Carbon::parse('12:00'),
@@ -155,11 +152,12 @@ class CalendarEventTest extends TestCase
             'is_public'                     => true,
             'end_of_recurring'              => Carbon::parse('2017-08-22'),
         ];
-        $calendarEvent        = $this->calendarEvent->createCalendarEvent($inputCreate);
-        $calendarEventNext    = $calendarEvent->template->generateNextCalendarEvent(Carbon::parse('2017-08-06'));
-        $inputUpdate          = [
+        $inputUpdate = [
             'start_date' => Carbon::parse('2017-08-03')
         ];
+
+        $calendarEvent        = $this->calendarEvent->createCalendarEvent($inputCreate);
+        $calendarEventNext    = $calendarEvent->template->generateNextCalendarEvent(Carbon::parse('2017-08-06'));
         $calendarEventUpdated = $calendarEventNext->editCalendarEvent($inputUpdate);
 
         $this->assertNull($calendarEvent->deleted_at);
@@ -172,6 +170,9 @@ class CalendarEventTest extends TestCase
 
         $this->assertInstanceOf(TemplateCalendarEvent::class, $calendarEventUpdated->template);
         $this->assertEquals($calendarEvent->id, $calendarEventUpdated->template->parent_id);
+
+        $this->assertDatabaseHas('template_calendar_events', $inputUpdate);
+        $this->assertDatabaseHas('calendar_events', $inputUpdate);
     }
 
     /**
@@ -180,8 +181,8 @@ class CalendarEventTest extends TestCase
      */
     public function editCalendarEvent_notRecurring_modifiedCalendarEventData_notRecurring()
     {
-        $inputCreate          = [
-            'title'                         => 'Lorem ipsum',
+        $inputCreate = [
+            'title'                         => str_random(16),
             'start_date'                    => Carbon::parse('2017-08-25'),
             'start_time'                    => Carbon::parse('16:00'),
             'end_time'                      => Carbon::parse('17:00'),
@@ -192,12 +193,13 @@ class CalendarEventTest extends TestCase
             'is_public'                     => true,
             'end_of_recurring'              => Carbon::parse('2017-09-08'),
         ];
-        $calendarEvent        = $this->calendarEvent->createCalendarEvent($inputCreate);
-        $calendarEventNext    = $calendarEvent->template->generateNextCalendarEvent(Carbon::parse('2017-08-27'));
-        $inputUpdate          = [
+        $inputUpdate = [
             'start_date'   => Carbon::parse('2017-08-27'),
             'is_recurring' => false,
         ];
+
+        $calendarEvent        = $this->calendarEvent->createCalendarEvent($inputCreate);
+        $calendarEventNext    = $calendarEvent->template->generateNextCalendarEvent(Carbon::parse('2017-08-27'));
         $calendarEventUpdated = $calendarEventNext->editCalendarEvent($inputUpdate);
 
         $this->assertNull($calendarEvent->deleted_at);
@@ -210,6 +212,9 @@ class CalendarEventTest extends TestCase
 
         $this->assertInstanceOf(TemplateCalendarEvent::class, $calendarEventUpdated->template);
         $this->assertEquals($calendarEvent->id, $calendarEventUpdated->template->parent_id);
+
+        $this->assertDatabaseHas('template_calendar_events', $inputUpdate);
+        $this->assertDatabaseHas('calendar_events', ['start_date' => $inputUpdate['start_date']]);
     }
 
     /**
@@ -218,18 +223,20 @@ class CalendarEventTest extends TestCase
      */
     public function editCalendarEvent_notRecurring_modifiedToRecurring()
     {
-        $calendarEvent        = $this->calendarEvent->createCalendarEvent([
-            'title'        => 'Lorem ipsum',
+        $inputCreate = [
+            'title'        => str_random(16),
             'start_date'   => Carbon::parse('2017-08-25'),
             'start_time'   => Carbon::parse('8:00'),
             'end_time'     => Carbon::parse('14:00'),
             'description'  => str_random(32),
             'is_recurring' => false,
             'is_public'    => true,
-        ]);
-        $inputUpdate          = [
+        ];
+        $inputUpdate = [
             'is_recurring' => true
         ];
+
+        $calendarEvent        = $this->calendarEvent->createCalendarEvent($inputCreate);
         $calendarEventUpdated = $calendarEvent->editCalendarEvent($inputUpdate);
 
         $this->assertNotNull($calendarEvent->deleted_at);
@@ -240,6 +247,8 @@ class CalendarEventTest extends TestCase
         $this->assertInstanceOf(TemplateCalendarEvent::class, $calendarEventUpdated->template);
         $this->assertEquals($inputUpdate['is_recurring'], $calendarEventUpdated->template->is_recurring);
         $this->assertEquals($calendarEvent->id, $calendarEventUpdated->template->parent_id);
+
+        $this->assertDatabaseHas('template_calendar_events', array_merge($inputCreate, $inputUpdate));
     }
 
     /**
@@ -258,7 +267,7 @@ class CalendarEventTest extends TestCase
             ],
             'inputs' => [
                 [
-                    'title'                         => 'Lorem ipsum',
+                    'title'                         => str_random(16),
                     'start_date'                    => Carbon::parse('2016-10-01'),
                     'start_time'                    => Carbon::parse('11:30'),
                     'end_time'                      => Carbon::parse('12:30'),
@@ -269,7 +278,7 @@ class CalendarEventTest extends TestCase
                     'is_public'                     => true,
                 ],
                 [
-                    'title'        => 'Lorem ipsum',
+                    'title'        => str_random(16),
                     'start_date'   => Carbon::parse('2017-07-14'),
                     'start_time'   => Carbon::parse('11:45'),
                     'end_time'     => Carbon::parse('12:45'),
@@ -279,7 +288,7 @@ class CalendarEventTest extends TestCase
                 ],
                 [
                     // 2017-08-12, 2017-08-26
-                    'title'                         => 'Lorem ipsum',
+                    'title'                         => str_random(16),
                     'start_date'                    => Carbon::parse('2017-07-15'),
                     'start_time'                    => Carbon::parse('14:45'),
                     'end_time'                      => Carbon::parse('15:45'),
@@ -291,7 +300,7 @@ class CalendarEventTest extends TestCase
                 ],
                 [
                     // 2017-08-02
-                    'title'        => 'Lorem ipsum',
+                    'title'        => str_random(16),
                     'start_date'   => Carbon::parse('2017-08-02'),
                     'start_time'   => Carbon::parse('9:00'),
                     'end_time'     => Carbon::parse('10:00'),
@@ -301,7 +310,7 @@ class CalendarEventTest extends TestCase
                 ],
                 [
                     // 2017-08-03, 2017-08-10, 2017-08-17, 2017-08-24, 2017-08-31
-                    'title'                         => 'Lorem ipsum',
+                    'title'                         => str_random(16),
                     'start_date'                    => Carbon::parse('2017-08-03'),
                     'start_time'                    => Carbon::parse('10:00'),
                     'end_time'                      => Carbon::parse('14:00'),
@@ -313,7 +322,7 @@ class CalendarEventTest extends TestCase
                 ],
                 [
                     // 2017-08-04, 2017-08-18
-                    'title'                         => 'Lorem ipsum',
+                    'title'                         => str_random(16),
                     'start_date'                    => Carbon::parse('2017-08-04'),
                     'start_time'                    => Carbon::parse('10:00'),
                     'end_time'                      => Carbon::parse('14:00'),
@@ -326,7 +335,7 @@ class CalendarEventTest extends TestCase
                 ],
                 [
                     // 2017-08-06
-                    'title'                         => 'Lorem ipsum',
+                    'title'                         => str_random(16),
                     'start_date'                    => Carbon::parse('2017-07-06'),
                     'start_time'                    => Carbon::parse('10:00'),
                     'end_time'                      => Carbon::parse('14:00'),
@@ -337,7 +346,7 @@ class CalendarEventTest extends TestCase
                     'is_public'                     => true,
                 ],
                 [
-                    'title'                         => 'Lorem ipsum',
+                    'title'                         => str_random(16),
                     'start_date'                    => Carbon::parse('2017-09-01'),
                     'start_time'                    => Carbon::parse('10:00'),
                     'end_time'                      => Carbon::parse('14:00'),
@@ -387,15 +396,16 @@ class CalendarEventTest extends TestCase
      */
     public function deleteCalendarEvent_notRecurring_recurring()
     {
-        $calendarEvent = $this->calendarEvent->createCalendarEvent([
-            'title'        => 'Lorem ipsum',
+        $inputCreate   = [
+            'title'        => str_random(16),
             'start_date'   => Carbon::parse('2017-08-25'),
             'start_time'   => 16,
             'end_time'     => 17,
             'description'  => str_random(32),
             'is_recurring' => false,
             'is_public'    => true
-        ]);
+        ];
+        $calendarEvent = $this->calendarEvent->createCalendarEvent($inputCreate);
 
         $calendarEvent->deleteCalendarEvent(true);
 
@@ -409,8 +419,8 @@ class CalendarEventTest extends TestCase
      */
     public function deleteCalendarEvent_recurring_notRecurring()
     {
-        $calendarEvent = $this->calendarEvent->createCalendarEvent([
-            'title'                         => 'Lorem ipsum',
+        $inputCreate   = [
+            'title'                         => str_random(16),
             'start_date'                    => Carbon::parse('2017-08-25'),
             'start_time'                    => Carbon::parse('16:00'),
             'end_time'                      => Carbon::parse('17:00'),
@@ -419,7 +429,8 @@ class CalendarEventTest extends TestCase
             'frequence_number_of_recurring' => 1,
             'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
             'is_public'                     => true
-        ]);
+        ];
+        $calendarEvent = $this->calendarEvent->createCalendarEvent($inputCreate);
         $calendarEvent->deleteCalendarEvent(false);
 
         $this->assertNotNull($calendarEvent->deleted_at);
@@ -431,8 +442,8 @@ class CalendarEventTest extends TestCase
      */
     public function deleteCalendarEvent_recurring_recurring_deleted()
     {
-        $calendarEvent = $this->calendarEvent->createCalendarEvent([
-            'title'                         => 'Lorem ipsum',
+        $inputCreate   = [
+            'title'                         => str_random(16),
             'start_date'                    => Carbon::parse('2017-08-25'),
             'start_time'                    => Carbon::parse('16:00'),
             'end_time'                      => Carbon::parse('17:00'),
@@ -441,7 +452,8 @@ class CalendarEventTest extends TestCase
             'frequence_number_of_recurring' => 1,
             'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
             'is_public'                     => true
-        ]);
+        ];
+        $calendarEvent = $this->calendarEvent->createCalendarEvent($inputCreate);
         $calendarEvent->deleteCalendarEvent(true);
 
         $this->assertNotNull($calendarEvent->deleted_at);
@@ -454,8 +466,8 @@ class CalendarEventTest extends TestCase
      */
     public function deleteCalendarEvent_recurring_recurring_deleted_withoutInput()
     {
-        $calendarEvent = $this->calendarEvent->createCalendarEvent([
-            'title'                         => 'Lorem ipsum',
+        $inputCreate   = [
+            'title'                         => str_random(16),
             'start_date'                    => Carbon::parse('2017-08-25'),
             'start_time'                    => Carbon::parse('16:00'),
             'end_time'                      => Carbon::parse('17:00'),
@@ -464,7 +476,8 @@ class CalendarEventTest extends TestCase
             'frequence_number_of_recurring' => 1,
             'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
             'is_public'                     => true
-        ]);
+        ];
+        $calendarEvent = $this->calendarEvent->createCalendarEvent($inputCreate);
         $calendarEvent->deleteCalendarEvent();
 
         $this->assertNotNull($calendarEvent->deleted_at);
@@ -477,8 +490,8 @@ class CalendarEventTest extends TestCase
      */
     public function deleteCalendarEvent_recurring_recurring_notDeleted()
     {
-        $calendarEvent     = $this->calendarEvent->createCalendarEvent([
-            'title'                         => 'Lorem ipsum',
+        $inputCreate       = [
+            'title'                         => str_random(16),
             'start_date'                    => Carbon::parse('2017-08-25'),
             'start_time'                    => Carbon::parse('16:00'),
             'end_time'                      => Carbon::parse('17:00'),
@@ -487,7 +500,8 @@ class CalendarEventTest extends TestCase
             'frequence_number_of_recurring' => 1,
             'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
             'is_public'                     => true
-        ]);
+        ];
+        $calendarEvent     = $this->calendarEvent->createCalendarEvent($inputCreate);
         $calendarEventNext = $calendarEvent->template->generateNextCalendarEvent(Carbon::now());
         $calendarEventNext->deleteCalendarEvent(true);
 

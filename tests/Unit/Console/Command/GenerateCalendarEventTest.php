@@ -186,6 +186,8 @@ class GenerateCalendarEventTest extends TestCase
 
         $this->assertContains('Generated: next calendar events', $this->getConsoleOutput());
         $this->assertEquals($startDate, $calendarEventLast->start_date);
+
+        $this->assertDatabaseHas('calendar_events', ['start_date' => $startDate]);
     }
 
     /**
@@ -253,5 +255,7 @@ class GenerateCalendarEventTest extends TestCase
 
         $this->assertContains('Generated: next calendar events', $this->getConsoleOutput());
         $this->assertEquals('2017-08-22', $calendarEventLast->start_date->format('Y-m-d'));
+
+        $this->assertDatabaseHas('calendar_events', ['start_date' => Carbon::parse('2017-08-22')]);
     }
 }
