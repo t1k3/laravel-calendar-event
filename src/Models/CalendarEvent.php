@@ -70,8 +70,8 @@ class CalendarEvent extends AbstractModel
         DB::transaction(function () use ($attributes, $user, $place, &$calendarEvent) {
             $templateCalendarEvent = $this->template()->make($attributes);
 
-            if ($user !== null) $templateCalendarEvent->user()->associate($user);
-            if ($place !== null) $templateCalendarEvent->place()->associate($place);
+            if ($templateCalendarEvent->user() !== null && $user !== null) $templateCalendarEvent->user()->associate($user);
+            if ($templateCalendarEvent->place() !== null && $place !== null) $templateCalendarEvent->place()->associate($place);
 
             $templateCalendarEvent->save();
 
@@ -91,7 +91,13 @@ class CalendarEvent extends AbstractModel
      */
     public function editCalendarEvent(array $attributes, UserInterface $user = null, PlaceInterface $place = null)
     {
-        if ($this->dataIsDifferent($attributes)) {
+        $templateUser  = ($this->template->user() === null) ? null : $this->template->user;
+        $templatePlace = ($this->template->place() === null) ? null : $this->template->place;
+
+        if ($this->dataIsDifferent($attributes)
+            || $templateUser !== $user
+            || $templatePlace !== $place
+        ) {
             $calendarEventNew = $this->createCalendarEvent(
                 array_merge(
                     $this->template->toArray(),

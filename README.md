@@ -59,7 +59,7 @@ $calendarEvent        = CalendarEvent::find($id);
 $calendarEventUpdated = $calendarEvent->editCalendarEvent([
     'start_date'   => '2017-08-26',
     'is_recurring' => false,
-]);
+], $user = null, $place = null);
 ```
 
 #### Delete CalendarEvent
@@ -75,7 +75,7 @@ use T1k3\LaravelCalendarEvent\Models\TemplateCalendarEvent;
 $templateCalendarEvent = TemplateCalendarEvent::find($id);
 $calendarEventUpdated  = $templateCalendarEvent->editCalendarEvent(Carbon::parse('2017-08-30'), [
     'description' => 'Foo Bar'
-]);
+], $user = null, $place = null);
 ```
 
 #### Delete not existing CalendarEvent
