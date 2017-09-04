@@ -2,18 +2,9 @@
 
 namespace T1k3\LaravelCalendarEvent\Tests\Unit\Traits;
 
-use T1k3\LaravelCalendarEvent\Models\AbstractModel;
-use T1k3\LaravelCalendarEvent\Tests\TestCase;
-use T1k3\LaravelCalendarEvent\Traits\CalendarEventPlaceTrait;
 
-/**
- * Class Place | "Mock"
- * @package T1k3\LaravelCalendarEvent\Tests\Unit\Traits
- */
-class Place extends AbstractModel
-{
-    use CalendarEventPlaceTrait;
-}
+use T1k3\LaravelCalendarEvent\Tests\fixture\app\Models\Place;
+use T1k3\LaravelCalendarEvent\Tests\TestCase;
 
 /**
  * Class CalendarEventPlaceTraitTest

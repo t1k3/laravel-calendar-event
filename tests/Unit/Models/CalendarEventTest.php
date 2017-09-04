@@ -103,6 +103,10 @@ class CalendarEventTest extends TestCase
      */
     public function createCalendarEvent(array $input)
     {
+//        TODO Check create with User, Place
+//        $user = factory(User::class)->create();
+//        dd($user);
+
         $calendarEvent = $this->calendarEvent->createCalendarEvent($input);
 
         $this->assertInstanceOf(CalendarEvent::class, $calendarEvent);

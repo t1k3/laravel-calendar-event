@@ -25,9 +25,6 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-//        $this->userMock = \Mockery::mock('App\Models\User');
-//        $this->app->instance('App\Models\User', $this->userMock);
-
         $this->setUpFactory();
         $this->setUpDatabase();
     }
@@ -41,6 +38,8 @@ abstract class TestCase extends BaseTestCase
 
         (new \CreateTemplateCalendarEventsTable)->down();
         (new \CreateCalendarEventsTable)->down();
+
+        parent::tearDown();
     }
 
     /**
@@ -82,9 +81,9 @@ abstract class TestCase extends BaseTestCase
 
         $app['config']->set('database.default', 'testing');
         $app['config']->set('database.connections.testing', [
+            'prefix'   => '',
             'driver'   => 'sqlite',
             'database' => ':memory:',
-            'prefix'   => '',
         ]);
     }
 
@@ -94,6 +93,7 @@ abstract class TestCase extends BaseTestCase
     private function setUpFactory()
     {
         $this->withFactories(__DIR__ . '/../src/database/factories');
+//        $this->withFactories(__DIR__ . '/fixtures/factories');
     }
 
     /**
@@ -102,12 +102,16 @@ abstract class TestCase extends BaseTestCase
      */
     private function setUpDatabase()
     {
-//        $this->artisan('migrate', [
-//            '--database' => 'testing',
-//            '--path'     => __DIR__ . '/../src/database/migrations',
-//        ]);
+        /*$this->artisan('migrate', [
+            '--database' => 'testing',
+            '--path'     => __DIR__ . '/../src/database/migrations',
+        ]);
 
-//        $this->loadLaravelMigrations('testing');
+        $this->artisan('migrate', [
+            '--database' => 'testing',
+            '--path'     => realpath(__DIR__ . '/fixtures/migrations'),
+        ]);*/
+
         (new \CreateTemplateCalendarEventsTable)->up();
         (new \CreateCalendarEventsTable)->up();
     }
