@@ -42,8 +42,8 @@ $calendarEvent = new CalendarEvent();
 $calendarEvent = $calendarEvent->createCalendarEvent([
     'title'                         => 'Lorem ipsum',
     'start_date'                    => Carbon::parse('2017-08-25'),
-    'start_time'                    => '16:00:00',
-    'end_time'                      => '17:30:00',
+    'start_time'                    => Carbon::parse('16:00'),
+    'end_time'                      => Carbon::parse('17:30'),
     'description'                   => 'Lorem ipsum dolor sit amet',
     'is_recurring'                  => true,
     'frequence_number_of_recurring' => 1,
@@ -57,7 +57,7 @@ $calendarEvent = $calendarEvent->createCalendarEvent([
 ```php
 $calendarEvent        = CalendarEvent::find($id);
 $calendarEventUpdated = $calendarEvent->editCalendarEvent([
-    'start_date'   => '2017-08-26',
+    'start_date'   => Carbon::parse('2017-08-26'),
     'is_recurring' => false,
 ], $user = null, $place = null);
 ```
