@@ -87,16 +87,20 @@ class CalendarEvent extends AbstractModel
      * @param array $attributes
      * @param UserInterface|null $user
      * @param PlaceInterface|null $place
+     * @param bool $isForceUpdate
      * @return null|CalendarEvent
      */
-    public function editCalendarEvent(array $attributes, UserInterface $user = null, PlaceInterface $place = null)
+    public function editCalendarEvent(array $attributes, UserInterface $user = null, PlaceInterface $place = null, bool $isForceUpdate = false)
     {
         $templateUser  = ($this->template->user() === null) ? null : $this->template->user;
         $templatePlace = ($this->template->place() === null) ? null : $this->template->place;
 
-        if ($this->dataIsDifferent($attributes)
-            || $templateUser !== $user
-            || $templatePlace !== $place
+        if ($isForceUpdate
+            || (
+                $this->dataIsDifferent($attributes)
+                || $templateUser !== $user
+                || $templatePlace !== $place
+            )
         ) {
             $calendarEventNew = $this->createCalendarEvent(
                 array_merge(

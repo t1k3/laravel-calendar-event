@@ -112,16 +112,17 @@ class TemplateCalendarEvent extends AbstractModel
      * @param array $attributes
      * @param UserInterface|null $user
      * @param PlaceInterface|null $place
+     * @param bool $isForceUpdate
      * @return null|CalendarEvent
      */
-    public function editCalendarEvent(\DateTimeInterface $startDate, array $attributes, UserInterface $user = null, PlaceInterface $place = null)
+    public function editCalendarEvent(\DateTimeInterface $startDate, array $attributes, UserInterface $user = null, PlaceInterface $place = null, bool $isForceUpdate = false)
     {
         $calendarEvent = $this->events()->where('start_date', $startDate)->first();
         if (!$calendarEvent) {
             $calendarEvent = $this->createCalendarEvent($startDate);
         }
 
-        return $calendarEvent->editCalendarEvent($attributes, $user, $place);
+        return $calendarEvent->editCalendarEvent($attributes, $user, $place, $isForceUpdate);
     }
 
     /**
