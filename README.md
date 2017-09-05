@@ -10,9 +10,13 @@ After updating composer, add the ServiceProvider to the providers array in `conf
 T1k3\LaravelCalendarEvent\ServiceProvider::class,
 ```
 
-You need to run the migrations for this package.
+You need publish to the config.
 ```bash
 php artisan vendor:publish --provider="T1k3\LaravelCalendarEvent\ServiceProvider"
+```
+
+You need to run the migrations for this package.
+```bash
 php artisan migrate
 ```
 
