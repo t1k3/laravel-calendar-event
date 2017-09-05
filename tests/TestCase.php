@@ -35,9 +35,7 @@ abstract class TestCase extends BaseTestCase
     public function tearDown()
     {
         $this->consoleOutput = '';
-
-        (new \CreateTemplateCalendarEventsTable)->down();
-        (new \CreateCalendarEventsTable)->down();
+        $this->artisan('migrate:reset');
 
         parent::tearDown();
     }
@@ -81,7 +79,6 @@ abstract class TestCase extends BaseTestCase
 
         $app['config']->set('database.default', 'testing');
         $app['config']->set('database.connections.testing', [
-            'prefix'   => '',
             'driver'   => 'sqlite',
             'database' => ':memory:',
         ]);
@@ -93,7 +90,7 @@ abstract class TestCase extends BaseTestCase
     private function setUpFactory()
     {
         $this->withFactories(__DIR__ . '/../src/database/factories');
-//        $this->withFactories(__DIR__ . '/fixtures/factories');
+        $this->withFactories(__DIR__ . '/fixtures/database/factories');
     }
 
     /**
@@ -102,17 +99,12 @@ abstract class TestCase extends BaseTestCase
      */
     private function setUpDatabase()
     {
-        /*$this->artisan('migrate', [
-            '--database' => 'testing',
-            '--path'     => __DIR__ . '/../src/database/migrations',
-        ]);
+        $this->artisan('migrate', ['--database' => 'testing']);
 
+//        TODO Not working
         $this->artisan('migrate', [
             '--database' => 'testing',
-            '--path'     => realpath(__DIR__ . '/fixtures/migrations'),
-        ]);*/
-
-        (new \CreateTemplateCalendarEventsTable)->up();
-        (new \CreateCalendarEventsTable)->up();
+            '--path'     => __DIR__ . '/fixtures/database/migrations',
+        ]);
     }
 }

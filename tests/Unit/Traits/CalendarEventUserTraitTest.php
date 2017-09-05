@@ -3,7 +3,7 @@
 namespace T1k3\LaravelCalendarEvent\Tests\Unit\Traits;
 
 
-use T1k3\LaravelCalendarEvent\Tests\fixture\app\Models\User;
+use T1k3\LaravelCalendarEvent\Tests\Fixtures\Models\User;
 use T1k3\LaravelCalendarEvent\Tests\TestCase;
 
 /**

@@ -1,7 +1,7 @@
 <?php
 
 use Faker\Generator as Faker;
-use T1k3\LaravelCalendarEvent\Tests\Fixture\App\Models\User;
+use T1k3\LaravelCalendarEvent\Tests\Fixtures\Models\User;
 
 $factory = app()->make(\Illuminate\Database\Eloquent\Factory::class);
 

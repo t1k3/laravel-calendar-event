@@ -1,6 +1,6 @@
 <?php
 
-namespace T1k3\LaravelCalendarEvent\Tests\fixture\app\Models;
+namespace T1k3\LaravelCalendarEvent\Tests\Fixtures\Models;
 
 
 use T1k3\LaravelCalendarEvent\Interfaces\PlaceInterface;

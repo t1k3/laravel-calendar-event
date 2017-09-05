@@ -103,10 +103,6 @@ class CalendarEventTest extends TestCase
      */
     public function createCalendarEvent(array $input)
     {
-//        TODO Check create with User, Place
-//        $user = factory(User::class)->create();
-//        dd($user);
-
         $calendarEvent = $this->calendarEvent->createCalendarEvent($input);
 
         $this->assertInstanceOf(CalendarEvent::class, $calendarEvent);
@@ -114,6 +110,32 @@ class CalendarEventTest extends TestCase
         $this->assertInstanceOf(TemplateCalendarEvent::class, $calendarEvent->template);
 
         $this->assertDatabaseHas('template_calendar_events', $input);
+    }
+
+    /**
+     * @test
+     * @dataProvider dataProvider_for_createCalendarEvent
+     * @param array $input
+     */
+    public function createCalendarEvent_user_place(array $input)
+    {
+//        TODO Fixme - TestCase#104
+        $this->app['config']->set('calendar-event.user.model', \T1k3\LaravelCalendarEvent\Tests\Fixtures\Models\User::class);
+        $this->app['config']->set('calendar-event.place.model', \T1k3\LaravelCalendarEvent\Tests\Fixtures\Models\Place::class);
+
+        $user          = factory(config('calendar-event.user.model'))->create();
+        $place         = factory(config('calendar-event.place.model'))->create();
+        $calendarEvent = $this->calendarEvent->createCalendarEvent($input, $user, $place);
+
+        $this->assertInstanceOf(CalendarEvent::class, $calendarEvent);
+        $this->assertEquals($input['start_date'], $calendarEvent->start_date);
+        $this->assertEquals($user, $calendarEvent->user);
+        $this->assertEquals($place, $calendarEvent->place);
+        $this->assertInstanceOf(TemplateCalendarEvent::class, $calendarEvent->template);
+
+        $this->assertDatabaseHas('template_calendar_events', $input);
+        $this->assertDatabaseHas('users', $user->toArray());
+        $this->assertDatabaseHas('places', $place->toArray());
     }
 
     /**

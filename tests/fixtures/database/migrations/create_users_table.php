@@ -1,15 +1,13 @@
 <?php
 
-namespace T1k3\LaravelCalendarEvent\Tests\Fixtures\Database\Migrations;
-
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 /**
- * Class CreatePlacesTable
+ * Class CreateUsersTable
  */
-class CreatePlacesTable extends Migration
+class CreateUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -18,10 +16,10 @@ class CreatePlacesTable extends Migration
      */
     public function up()
     {
-        Schema::create('places', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->text('address');
+            $table->string('email')->unique();
             $table->timestamps();
         });
     }
@@ -33,6 +31,6 @@ class CreatePlacesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('places');
+        Schema::dropIfExists('users');
     }
 }

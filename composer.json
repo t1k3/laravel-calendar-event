@@ -30,7 +30,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "T1k3\\LaravelCalendarEvent\\Tests\\": "tests"
+      "T1k3\\LaravelCalendarEvent\\Tests\\": "tests",
+      "T1k3\\LaravelCalendarEvent\\Tests\\Fixtures\\": "tests/fixtures"
     }
   },
   "extra": {
