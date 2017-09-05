@@ -63,7 +63,16 @@ $calendarEvent        = CalendarEvent::find($id);
 $calendarEventUpdated = $calendarEvent->editCalendarEvent([
     'start_date'   => Carbon::parse('2017-08-26'),
     'is_recurring' => false,
-], $user = null, $place = null, $isForceUpdate = false);
+], $user = null, $place = null);
+```
+
+#### Update CalendarEvent without data check
+```php
+$calendarEvent        = CalendarEvent::find($id);
+$calendarEventUpdated = $calendarEvent->updateCalendarEvent([
+    'start_date'   => Carbon::parse('2017-08-26'),
+    'is_recurring' => false,
+], $user = null, $place = null);
 ```
 
 #### Delete CalendarEvent
@@ -79,7 +88,17 @@ use T1k3\LaravelCalendarEvent\Models\TemplateCalendarEvent;
 $templateCalendarEvent = TemplateCalendarEvent::find($id);
 $calendarEventUpdated  = $templateCalendarEvent->editCalendarEvent(Carbon::parse('2017-08-30'), [
     'description' => 'Foo Bar'
-], $user = null, $place = null, $isForceUpdate = false);
+], $user = null, $place = null);
+```
+
+#### Update not existing CalendarEvent without data check
+```php
+use T1k3\LaravelCalendarEvent\Models\TemplateCalendarEvent;
+
+$templateCalendarEvent = TemplateCalendarEvent::find($id);
+$calendarEventUpdated  = $templateCalendarEvent->updateCalendarEvent(Carbon::parse('2017-08-30'), [
+    'description' => 'Foo Bar'
+], $user = null, $place = null);
 ```
 
 #### Delete not existing CalendarEvent

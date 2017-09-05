@@ -296,6 +296,31 @@ class TemplateCalendarEventTest extends TestCase
     /**
      * @test
      */
+    public function updateCalendarEvent()
+    {
+        $inputCreate           = [
+            'title'                         => str_random(16),
+            'start_date'                    => Carbon::parse('2017-08-30'),
+            'start_time'                    => Carbon::parse('10:00'),
+            'end_time'                      => Carbon::parse('11:00'),
+            'description'                   => str_random(16),
+            'is_recurring'                  => true,
+            'frequence_number_of_recurring' => 1,
+            'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+            'is_public'                     => true,
+        ];
+        $templateCalendarEvent = factory(TemplateCalendarEvent::class)->create($inputCreate);
+        $calendarEvent         = $templateCalendarEvent->createCalendarEvent(Carbon::parse($inputCreate['start_date']));
+        $startDateNext         = $calendarEvent->start_date->addWeek();
+        $calendarEventUpdated  = $templateCalendarEvent->updateCalendarEvent($startDateNext, $inputCreate);
+
+        $this->assertNotEquals($templateCalendarEvent->id, $calendarEventUpdated->template->id);
+        $this->assertDatabaseHas('template_calendar_events', $inputCreate + ['id' => $calendarEventUpdated->template->id]);
+    }
+
+    /**
+     * @test
+     */
     public function editCalendarEvent_notExistCalendarEvent()
     {
         $inputCreate = [

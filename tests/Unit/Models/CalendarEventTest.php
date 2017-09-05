@@ -278,6 +278,30 @@ class CalendarEventTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function updateCalendarEvent()
+    {
+        $inputCreate = [
+            'title'        => str_random(16),
+            'start_date'   => Carbon::parse('2017-08-25'),
+            'start_time'   => Carbon::parse('8:00'),
+            'end_time'     => Carbon::parse('14:00'),
+            'description'  => str_random(32),
+            'is_recurring' => false,
+            'is_public'    => true,
+        ];
+
+        $calendarEvent        = $this->calendarEvent->createCalendarEvent($inputCreate);
+        $calendarEventUpdated = $calendarEvent->updateCalendarEvent($inputCreate);
+
+        $this->assertDatabaseHas('template_calendar_events', $inputCreate + ['id' => $calendarEventUpdated->template->id]);
+        $this->assertDatabaseHas('calendar_events', ['id' => $calendarEventUpdated->id]);
+        $this->assertNotEquals($calendarEvent->id, $calendarEventUpdated->id);
+        $this->assertEquals($calendarEvent->template->id, $calendarEventUpdated->template->parent_id);
+    }
+
+    /**
      * NOT data provider
      * @return array
      */

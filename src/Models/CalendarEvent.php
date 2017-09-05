@@ -84,24 +84,15 @@ class CalendarEvent extends AbstractModel
     }
 
     /**
+     * Update CalendarEvent
      * @param array $attributes
      * @param UserInterface|null $user
      * @param PlaceInterface|null $place
-     * @param bool $isForceUpdate
-     * @return null|CalendarEvent
+     * @return mixed
      */
-    public function editCalendarEvent(array $attributes, UserInterface $user = null, PlaceInterface $place = null, bool $isForceUpdate = false)
+    public function updateCalendarEvent(array $attributes, UserInterface $user = null, PlaceInterface $place = null)
     {
-        $templateUser  = ($this->template->user() === null) ? null : $this->template->user;
-        $templatePlace = ($this->template->place() === null) ? null : $this->template->place;
-
-        if ($isForceUpdate
-            || (
-                $this->dataIsDifferent($attributes)
-                || $templateUser !== $user
-                || $templatePlace !== $place
-            )
-        ) {
+        DB::transaction(function () use ($attributes, $user, $place, &$calendarEventNew) {
             $calendarEventNew = $this->createCalendarEvent(
                 array_merge(
                     $this->template->toArray(),
@@ -125,8 +116,25 @@ class CalendarEvent extends AbstractModel
                 ]);
             }
             $this->delete();
+        });
 
-            return $calendarEventNew;
+        return $calendarEventNew;
+    }
+
+    /**
+     * Edit\Update calendar event with data check
+     * @param array $attributes
+     * @param UserInterface|null $user
+     * @param PlaceInterface|null $place
+     * @return null|CalendarEvent
+     */
+    public function editCalendarEvent(array $attributes, UserInterface $user = null, PlaceInterface $place = null)
+    {
+        $templateUser  = ($this->template->user() === null) ? null : $this->template->user;
+        $templatePlace = ($this->template->place() === null) ? null : $this->template->place;
+
+        if ($this->dataIsDifferent($attributes) || $templateUser !== $user || $templatePlace !== $place) {
+            return $this->updateCalendarEvent($attributes, $user, $place);
         }
         return null;
     }

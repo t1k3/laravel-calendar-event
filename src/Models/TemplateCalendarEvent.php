@@ -107,22 +107,46 @@ class TemplateCalendarEvent extends AbstractModel
     }
 
     /**
-     * Edit calendar event | Exist or not
+     * Create or get calendar event
      * @param \DateTimeInterface $startDate
-     * @param array $attributes
-     * @param UserInterface|null $user
-     * @param PlaceInterface|null $place
-     * @param bool $isForceUpdate
-     * @return null|CalendarEvent
+     * @return \Illuminate\Database\Eloquent\Model|null|static
      */
-    public function editCalendarEvent(\DateTimeInterface $startDate, array $attributes, UserInterface $user = null, PlaceInterface $place = null, bool $isForceUpdate = false)
+    public function createOrGetCalendarEvent(\DateTimeInterface $startDate)
     {
         $calendarEvent = $this->events()->where('start_date', $startDate)->first();
         if (!$calendarEvent) {
             $calendarEvent = $this->createCalendarEvent($startDate);
         }
 
-        return $calendarEvent->editCalendarEvent($attributes, $user, $place, $isForceUpdate);
+        return $calendarEvent;
+    }
+
+    /**
+     * Edit calendar event | Exist or not | Check data
+     * @param \DateTimeInterface $startDate
+     * @param array $attributes
+     * @param UserInterface|null $user
+     * @param PlaceInterface|null $place
+     * @return null|CalendarEvent
+     */
+    public function editCalendarEvent(\DateTimeInterface $startDate, array $attributes, UserInterface $user = null, PlaceInterface $place = null)
+    {
+        $calendarEvent = $this->createOrGetCalendarEvent($startDate);
+        return $calendarEvent->editCalendarEvent($attributes, $user, $place);
+    }
+
+    /**
+     * Edit calendar event | Exist or not | Do not check data
+     * @param \DateTimeInterface $startDate
+     * @param array $attributes
+     * @param UserInterface|null $user
+     * @param PlaceInterface|null $place
+     * @return mixed
+     */
+    public function updateCalendarEvent(\DateTimeInterface $startDate, array $attributes, UserInterface $user = null, PlaceInterface $place = null)
+    {
+        $calendarEvent = $this->createOrGetCalendarEvent($startDate);
+        return $calendarEvent->updateCalendarEvent($attributes, $user, $place);
     }
 
     /**
