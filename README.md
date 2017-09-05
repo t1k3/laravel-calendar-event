@@ -10,7 +10,7 @@ After updating composer, add the ServiceProvider to the providers array in `conf
 T1k3\LaravelCalendarEvent\ServiceProvider::class,
 ```
 
-You need publish the config `config/calendar-event.php`
+You need publish to the config.
 ```bash
 php artisan vendor:publish --provider="T1k3\LaravelCalendarEvent\ServiceProvider"
 ```
