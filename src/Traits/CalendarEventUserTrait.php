@@ -19,8 +19,8 @@ trait CalendarEventUserTrait
     public function events()
     {
         return $this->hasManyThrough(
-            TemplateCalendarEvent::class, CalendarEvent::class,
-            'template_calendar_event_id', 'user_id', 'id'
+            CalendarEvent::class, TemplateCalendarEvent::class,
+            'user_id', 'template_calendar_event_id', 'id'
         );
     }
 }

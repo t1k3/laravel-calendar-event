@@ -19,8 +19,8 @@ trait CalendarEventPlaceTrait
     public function events()
     {
         return $this->hasManyThrough(
-            TemplateCalendarEvent::class, CalendarEvent::class,
-            'template_calendar_event_id', 'place_id', 'id'
+            CalendarEvent::class, TemplateCalendarEvent::class,
+            'place_id', 'template_calendar_event_id', 'id'
         );
     }
 }

@@ -129,8 +129,8 @@ class CalendarEventTest extends TestCase
 
         $this->assertInstanceOf(CalendarEvent::class, $calendarEvent);
         $this->assertEquals($input['start_date'], $calendarEvent->start_date);
-        $this->assertEquals($user, $calendarEvent->user);
-        $this->assertEquals($place, $calendarEvent->place);
+        $this->assertEquals($user, $calendarEvent->template->user);
+        $this->assertEquals($place, $calendarEvent->template->place);
         $this->assertInstanceOf(TemplateCalendarEvent::class, $calendarEvent->template);
 
         $this->assertDatabaseHas('template_calendar_events', $input);

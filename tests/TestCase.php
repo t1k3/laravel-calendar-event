@@ -46,7 +46,10 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getPackageProviders($app)
     {
-        return [LaravelCalendarEventServiceProvider::class];
+        return [
+            LaravelCalendarEventServiceProvider::class,
+//            \Orchestra\Database\ConsoleServiceProvider::class,
+        ];
     }
 
     /**
@@ -100,11 +103,11 @@ abstract class TestCase extends BaseTestCase
     private function setUpDatabase()
     {
         $this->artisan('migrate', ['--database' => 'testing']);
-
-//        TODO Not working
         $this->artisan('migrate', [
             '--database' => 'testing',
-            '--path'     => __DIR__ . '/fixtures/database/migrations',
+//            '--realpath' => realpath(__DIR__ . '/fixtures/database/migrations'),
+            '--path'     => '../../../../tests/fixtures/database/migrations',
         ]);
+
     }
 }
