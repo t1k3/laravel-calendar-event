@@ -133,6 +133,9 @@ class CalendarEventTest extends TestCase
         $this->assertEquals($place, $calendarEvent->template->place);
         $this->assertInstanceOf(TemplateCalendarEvent::class, $calendarEvent->template);
 
+        $this->assertInstanceOf(CalendarEvent::class, $user->events()->first());
+        $this->assertInstanceOf(CalendarEvent::class, $place->events()->first());
+
         $this->assertDatabaseHas('template_calendar_events', $input);
         $this->assertDatabaseHas('users', $user->toArray());
         $this->assertDatabaseHas('places', $place->toArray());
