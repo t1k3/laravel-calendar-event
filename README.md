@@ -57,7 +57,7 @@ $calendarEvent = $calendarEvent->createCalendarEvent([
 ], $user = null, $place = null);
 ```
 
-#### Edit CalendarEvent
+#### Edit and Update CalendarEvent
 ```php
 $calendarEvent        = CalendarEvent::find($id);
 $calendarEventUpdated = $calendarEvent->editCalendarEvent([
@@ -66,7 +66,7 @@ $calendarEventUpdated = $calendarEvent->editCalendarEvent([
 ], $user = null, $place = null);
 ```
 
-#### Update CalendarEvent without data check
+#### Update CalendarEvent (without data check)
 ```php
 $calendarEvent        = CalendarEvent::find($id);
 $calendarEventUpdated = $calendarEvent->updateCalendarEvent([
@@ -81,7 +81,7 @@ $calendarEvent = CalendarEvent::find($id);
 $isDeleted     = $calendarEvent->deleteCalendarEvent($isRecurring = null);
 ```
 
-#### Edit not existing CalendarEvent
+#### Edit and Update not existing CalendarEvent
 ```php
 use T1k3\LaravelCalendarEvent\Models\TemplateCalendarEvent;
 
@@ -91,7 +91,7 @@ $calendarEventUpdated  = $templateCalendarEvent->editCalendarEvent(Carbon::parse
 ], $user = null, $place = null);
 ```
 
-#### Update not existing CalendarEvent without data check
+#### Update not existing CalendarEvent (without data check)
 ```php
 use T1k3\LaravelCalendarEvent\Models\TemplateCalendarEvent;
 
