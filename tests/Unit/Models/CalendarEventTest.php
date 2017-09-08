@@ -119,7 +119,6 @@ class CalendarEventTest extends TestCase
      */
     public function createCalendarEvent_user_place(array $input)
     {
-//        TODO Fixme - TestCase#104
         $this->app['config']->set('calendar-event.user.model', \T1k3\LaravelCalendarEvent\Tests\Fixtures\Models\User::class);
         $this->app['config']->set('calendar-event.place.model', \T1k3\LaravelCalendarEvent\Tests\Fixtures\Models\Place::class);
 
