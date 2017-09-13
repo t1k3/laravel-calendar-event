@@ -16,7 +16,7 @@ trait CalendarEventUserTrait
      * Events to User, UserInterface Helper
      * @return mixed
      */
-    public function events()
+    public function calendarEvents()
     {
         return $this->hasManyThrough(
             CalendarEvent::class, TemplateCalendarEvent::class,

@@ -18,7 +18,7 @@ class CalendarEventUserTraitTest extends TestCase
     public function event()
     {
         $user   = new User();
-        $events = $user->events();
+        $events = $user->calendarEvents();
         $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\HasManyThrough::class, $events);
     }
 }

@@ -16,7 +16,7 @@ trait CalendarEventPlaceTrait
      * Events to Place, PlaceInterface Helper
      * @return mixed
      */
-    public function events()
+    public function calendarEvents()
     {
         return $this->hasManyThrough(
             CalendarEvent::class, TemplateCalendarEvent::class,

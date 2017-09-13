@@ -12,5 +12,5 @@ interface PlaceInterface
     /**
      * @return \Illuminate\Database\Eloquent\Relations\hasManyThrough
      */
-    public function events();
+    public function calendarEvents();
 }

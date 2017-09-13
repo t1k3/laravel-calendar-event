@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
 use T1k3\LaravelCalendarEvent\Enums\RecurringFrequenceType;
 use T1k3\LaravelCalendarEvent\Exceptions\InvalidMonthException;
+use T1k3\LaravelCalendarEvent\Interfaces\CalendarEventInterface;
 use T1k3\LaravelCalendarEvent\Interfaces\PlaceInterface;
 use T1k3\LaravelCalendarEvent\Interfaces\UserInterface;
 
@@ -13,7 +14,7 @@ use T1k3\LaravelCalendarEvent\Interfaces\UserInterface;
  * Class CalendarEvent
  * @package T1k3\LaravelCalendarEvent\Models
  */
-class CalendarEvent extends AbstractModel
+class CalendarEvent extends AbstractModel implements CalendarEventInterface
 {
     use SoftDeletes;
 
@@ -60,6 +61,7 @@ class CalendarEvent extends AbstractModel
     }
 
     /**
+     * Create CalendarEvent with Template, User, Place
      * @param array $attributes
      * @param UserInterface|null $user
      * @param PlaceInterface|null $place
@@ -169,6 +171,7 @@ class CalendarEvent extends AbstractModel
     }
 
     /**
+     * Show (potential) CalendarEvent of the month
      * @param \DateTimeInterface $date
      * @return \Illuminate\Support\Collection|static
      */

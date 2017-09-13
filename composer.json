@@ -11,9 +11,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": ">=7.0",
-    "illuminate/database": "~5.4.0",
-    "illuminate/support": "^5.4"
+    "php": ">=7.1"
   },
   "require-dev": {
     "mockery/mockery": "0.9.*",

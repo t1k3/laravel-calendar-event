@@ -6,6 +6,8 @@ namespace T1k3\LaravelCalendarEvent\Console\Commands;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use T1k3\LaravelCalendarEvent\Enums\RecurringFrequenceType;
+use T1k3\LaravelCalendarEvent\Interfaces\CalendarEventInterface;
+use T1k3\LaravelCalendarEvent\Models\CalendarEvent;
 use T1k3\LaravelCalendarEvent\Models\TemplateCalendarEvent;
 
 /**
@@ -96,11 +98,21 @@ class GenerateCalendarEvent extends Command
                 && $dateNext <= $endOfRecurring
                 && !$templateCalendarEvent->events()->withTrashed()->where('start_date', $dateNext)->first()
             ) {
-                $templateCalendarEvent->createCalendarEvent($dateNext);
+                $calendarEvent = $templateCalendarEvent->createCalendarEvent($dateNext);
                 $count++;
+
+                $this->closure($calendarEvent);
             }
         }
 
         $this->info(sprintf('Generated: next calendar events: %s.', $count));
+    }
+
+    /**
+     * After event created
+     * @param CalendarEventInterface $calendarEvent
+     */
+    protected function closure(CalendarEventInterface $calendarEvent)
+    {
     }
 }

@@ -7,13 +7,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
 use T1k3\LaravelCalendarEvent\Enums\RecurringFrequenceType;
 use T1k3\LaravelCalendarEvent\Interfaces\PlaceInterface;
+use T1k3\LaravelCalendarEvent\Interfaces\TemplateCalendarEventInterface;
 use T1k3\LaravelCalendarEvent\Interfaces\UserInterface;
 
 /**
  * Class TemplateCalendarEvent
  * @package T1k3\LaravelCalendarEvent\Models
  */
-class TemplateCalendarEvent extends AbstractModel
+class TemplateCalendarEvent extends AbstractModel implements TemplateCalendarEventInterface
 {
     use SoftDeletes;
 

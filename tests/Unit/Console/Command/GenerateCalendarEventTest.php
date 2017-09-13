@@ -165,6 +165,20 @@ class GenerateCalendarEventTest extends TestCase
                 Carbon::parse('2017-08-26'),
                 Carbon::parse('2017-09-01')
             ],
+            [
+                [
+                    'start_date'                    => '2016-08-27',
+                    'start_time'                    => '10:00',
+                    'end_time'                      => '12:00',
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 1,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::YEAR,
+                    'is_public'                     => true,
+                ],
+                Carbon::parse('2017-08-26'),
+                Carbon::parse('2017-08-27')
+            ],
         ];
     }
 
