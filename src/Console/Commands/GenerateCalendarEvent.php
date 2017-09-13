@@ -5,6 +5,7 @@ namespace T1k3\LaravelCalendarEvent\Console\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use T1k3\LaravelCalendarEvent\Enums\RecurringFrequenceType;
 use T1k3\LaravelCalendarEvent\Interfaces\CalendarEventInterface;
 use T1k3\LaravelCalendarEvent\Models\CalendarEvent;
@@ -102,6 +103,14 @@ class GenerateCalendarEvent extends Command
                 $count++;
 
                 $this->closure($calendarEvent);
+
+                Log::info(
+                    sprintf('Generated CalendarEvent from Console: template_calendar_event_id: %s, event_id: %s, start_date: %s',
+                        $calendarEvent->template_calendar_event_id,
+                        $calendarEvent->id,
+                        $calendarEvent->start_date->format('Y-m-d')
+                    )
+                );
             }
         }
 
