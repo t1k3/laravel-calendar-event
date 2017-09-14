@@ -156,6 +156,11 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
             if ($this->template->is_recurring && $isRecurring) {
                 $this->template->update(['end_of_recurring' => $this->start_date]);
 
+                $nextCalendarEvents = $this->template->events()->where('start_date', '>', $this->start_date)->get();
+                foreach ($nextCalendarEvents as $nextCalendarEvent) {
+                    $nextCalendarEvent->delete();
+                }
+
                 if ($this->template->start_date == $this->start_date) {
                     $this->template->delete();
                 }

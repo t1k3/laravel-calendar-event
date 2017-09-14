@@ -469,6 +469,33 @@ class CalendarEventTest extends TestCase
     /**
      * @test
      */
+    public function deleteCalendarEvent_recurring_recurring_generatedEvent()
+    {
+        $inputCreate       = [
+            'title'                         => str_random(16),
+            'start_date'                    => Carbon::parse('2017-08-25'),
+            'start_time'                    => Carbon::parse('16:00'),
+            'end_time'                      => Carbon::parse('17:00'),
+            'description'                   => str_random(32),
+            'is_recurring'                  => true,
+            'frequence_number_of_recurring' => 1,
+            'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+            'is_public'                     => true
+        ];
+        $calendarEvent     = $this->calendarEvent->createCalendarEvent($inputCreate);
+        $calendarEventNext = $calendarEvent->template->generateNextCalendarEvent(Carbon::parse('2017-08-27'));
+
+        $calendarEvent->deleteCalendarEvent(true);
+
+        $this->assertNotNull($calendarEvent->deleted_at);
+        $this->assertNotNull($calendarEventNext->fresh()->deleted_at);
+        $this->assertNotNull($calendarEvent->template->deleted_at);
+        $this->assertEquals($calendarEvent->start_date, $calendarEvent->template->end_of_recurring);
+    }
+
+    /**
+     * @test
+     */
     public function deleteCalendarEvent_recurring_notRecurring()
     {
         $inputCreate   = [
