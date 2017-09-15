@@ -166,7 +166,7 @@ class CalendarEventTest extends TestCase
      * Edit event and modified, calendar event data
      * @test
      */
-    public function editCalendarEvent_notRecurring_modifiedCalendarEventData_recurring()
+    public function editCalendarEvent_recurring_modifiedCalendarEventData_recurring()
     {
         $inputCreate = [
             'title'                         => str_random(16),
@@ -207,7 +207,48 @@ class CalendarEventTest extends TestCase
      * Edit event and modified, calendar event data
      * @test
      */
-    public function editCalendarEvent_notRecurring_modifiedCalendarEventData_notRecurring()
+    public function editCalendarEvent_recurring_modifiedCalendarEventData_recurring_nextCalendarEventIsDeleted()
+    {
+        $inputCreate = [
+            'title'                         => str_random(16),
+            'start_date'                    => Carbon::parse('2017-08-01'),
+            'start_time'                    => Carbon::parse('11:00'),
+            'end_time'                      => Carbon::parse('12:00'),
+            'description'                   => str_random(32),
+            'is_recurring'                  => true,
+            'frequence_number_of_recurring' => 1,
+            'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+            'is_public'                     => true,
+            'end_of_recurring'              => Carbon::parse('2017-08-22'),
+        ];
+        $inputUpdate = [
+            'start_date' => Carbon::parse('2017-08-03')
+        ];
+
+        $calendarEvent        = $this->calendarEvent->createCalendarEvent($inputCreate);
+        $calendarEventNext    = $calendarEvent->template->generateNextCalendarEvent(Carbon::parse('2017-08-06'));
+        $calendarEventUpdated = $calendarEvent->editCalendarEvent($inputUpdate);
+
+        $this->assertNotNull($calendarEvent->deleted_at);
+        $this->assertNotNull($calendarEventNext->fresh()->deleted_at);
+        $this->assertEquals($calendarEvent->start_date, $calendarEventNext->template->end_of_recurring);
+
+        $this->assertInstanceOf(CalendarEvent::class, $calendarEventUpdated);
+        $this->assertEquals($inputUpdate['start_date'], $calendarEventUpdated->start_date);
+        $this->assertEquals($inputCreate['end_of_recurring'], $calendarEventUpdated->template->end_of_recurring);
+
+        $this->assertInstanceOf(TemplateCalendarEvent::class, $calendarEventUpdated->template);
+        $this->assertEquals($calendarEvent->id, $calendarEventUpdated->template->parent_id);
+
+        $this->assertDatabaseHas('template_calendar_events', $inputUpdate);
+        $this->assertDatabaseHas('calendar_events', $inputUpdate);
+    }
+
+    /**
+     * Edit event and modified, calendar event data
+     * @test
+     */
+    public function editCalendarEvent_recurring_modifiedCalendarEventData_notRecurring()
     {
         $inputCreate = [
             'title'                         => str_random(16),
