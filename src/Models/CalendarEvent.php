@@ -117,7 +117,8 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
                     'end_of_recurring' => null
                 ]);
             }
-            $this->delete();
+//            $this->delete();
+            $this->deleteCalendarEvent($this->template->is_recurring && $templateCalendarEvent->is_recurring);
         });
 
         return $calendarEventNew;
