@@ -115,7 +115,7 @@ $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(Carbon::pars
 
 #### Generate next CalendarEvent(s) from Console
 Do NOT forget the [Laravel Task Scheduling](https://laravel.com/docs/master/scheduling)
-OR cron job 
+- The command run at hourly in schedule
 ```bash
 * * * * * php /path-to-your-project/artisan schedule:run >> /dev/null 2>&1
 # OR manually 
