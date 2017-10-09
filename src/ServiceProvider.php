@@ -2,6 +2,7 @@
 
 namespace T1k3\LaravelCalendarEvent;
 
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 use T1k3\LaravelCalendarEvent\Console\Commands\GenerateCalendarEvent;
 
@@ -26,6 +27,11 @@ class ServiceProvider extends BaseServiceProvider
         $this->publishes([
             __DIR__ . '/config' => config_path(),
         ], 'config');
+
+        $this->app->booted(function () {
+            $schedule = $this->app->make(Schedule::class);
+            $schedule->command('generate:calendar-event')->hourly();
+        });
     }
 
     /**
