@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @param array $array
- * @param \Illuminate\Database\Eloquent\Model $model
- * @return bool
- */
 if (!function_exists('arrayIsEqualWithDB')) {
     /**
      * @param array $array
@@ -14,8 +9,7 @@ if (!function_exists('arrayIsEqualWithDB')) {
      */
     function arrayIsEqualWithDB(array $array, \Illuminate\Database\Eloquent\Model $model, array $skippable = []): bool
     {
-        $columns   = $model->getFillable();
-
+        $columns = $model->getFillable();
         foreach ($columns as $column) {
             if (in_array($column, $skippable)) continue;
 
