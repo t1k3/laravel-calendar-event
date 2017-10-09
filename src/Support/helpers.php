@@ -15,10 +15,14 @@ if (!function_exists('arrayIsEqualWithDB')) {
         }
 
         foreach ($array as $key => $value) {
-            if ($db[$key] !== $value) {
-                return true;
+            if($value instanceof \Carbon\Carbon && !($db[$key] instanceof \Carbon\Carbon)) {
+                $db[$key] = \Carbon\Carbon::parse($db[$key]);
+            }
+
+            if ($db[$key] != $value) {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 }

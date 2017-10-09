@@ -57,7 +57,7 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
             unset($attributes['start_date']);
         }
 
-        return arrayIsEqualWithDB($attributes, $this->template);
+        return !arrayIsEqualWithDB($attributes, $this->template);
     }
 
     /**
@@ -136,7 +136,7 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
         $templateUser  = ($this->template->user() === null) ? null : $this->template->user;
         $templatePlace = ($this->template->place() === null) ? null : $this->template->place;
 
-        if ($this->dataIsDifferent($attributes) || $templateUser !== $user || $templatePlace !== $place) {
+        if ($this->dataIsDifferent($attributes) || $templateUser != $user || $templatePlace != $place) {
             return $this->updateCalendarEvent($attributes, $user, $place);
         }
         return null;
