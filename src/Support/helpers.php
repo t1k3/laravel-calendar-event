@@ -2,26 +2,35 @@
 
 /**
  * @param array $array
- * @param $db
+ * @param \Illuminate\Database\Eloquent\Model $model
  * @return bool
  */
 if (!function_exists('arrayIsEqualWithDB')) {
-    function arrayIsEqualWithDB(array $array, $db): bool
+    /**
+     * @param array $array
+     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param array $skippable
+     * @return bool
+     */
+    function arrayIsEqualWithDB(array $array, \Illuminate\Database\Eloquent\Model $model, array $skippable = []): bool
     {
-        $db    = $db->toArray();
-        $unset = ['id', 'created_at', 'updated_at', 'deleted_at'];
-        foreach ($unset as $key) {
-            if (isset($db[$key])) unset($db[$key]);
-        }
+        $columns   = $model->getFillable();
 
-        foreach ($array as $key => $value) {
-            if($value instanceof \Carbon\Carbon && !($db[$key] instanceof \Carbon\Carbon)) {
-                $db[$key] = \Carbon\Carbon::parse($db[$key]);
-            }
+        foreach ($columns as $column) {
+            if (in_array($column, $skippable)) continue;
 
-            if ($db[$key] != $value) {
+            if (isset($array[$column])) {
+                if ($array[$column] instanceof \Carbon\Carbon && !($model->{$column} instanceof \Carbon\Carbon)) {
+                    $model->{$column} = \Carbon\Carbon::parse($model->{$column});
+                }
+
+                if ($model->{$column} != $array[$column]) {
+                    return false;
+                }
+            } elseif ($model->{$column} !== null) {
                 return false;
             }
+
         }
         return true;
     }

@@ -51,13 +51,15 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
     public function dataIsDifferent(array $attributes): bool
     {
         if (isset($attributes['start_date'])) {
+            // CalendarEvent data check
             if ($this->start_date->format('Y-m-d') !== $attributes['start_date']->format('Y-m-d')) {
                 return true;
             }
             unset($attributes['start_date']);
         }
 
-        return !arrayIsEqualWithDB($attributes, $this->template);
+        // TemplateCalendarEvent data check | Skip start_date from template
+        return !arrayIsEqualWithDB($attributes, $this->template, ['start_date']);
     }
 
     /**
@@ -133,10 +135,10 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
      */
     public function editCalendarEvent(array $attributes, UserInterface $user = null, PlaceInterface $place = null)
     {
-        $templateUser  = ($this->template->user() === null) ? null : $this->template->user;
-        $templatePlace = ($this->template->place() === null) ? null : $this->template->place;
-
-        if ($this->dataIsDifferent($attributes) || $templateUser != $user || $templatePlace != $place) {
+        if ($this->dataIsDifferent($attributes)
+            || ($user ? $user->id : null) != $this->template->user_id
+            || ($place ? $place->id : null) != $this->template->place_id
+        ) {
             return $this->updateCalendarEvent($attributes, $user, $place);
         }
         return null;
