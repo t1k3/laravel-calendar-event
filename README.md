@@ -64,6 +64,8 @@ $calendarEventUpdated = $calendarEvent->editCalendarEvent([
     'start_date'   => Carbon::parse('2017-08-26'),
     'is_recurring' => false,
 ], $user = null, $place = null);
+
+// $calendarEventUpdated === null ? dd('NOT_MODIFIED') : dd('MODIFIED', $calendarEventUpdated);
 ```
 
 #### Update CalendarEvent (without data check)
@@ -89,6 +91,8 @@ $templateCalendarEvent = TemplateCalendarEvent::find($id);
 $calendarEventUpdated  = $templateCalendarEvent->editCalendarEvent(Carbon::parse('2017-08-30'), [
     'description' => 'Foo Bar'
 ], $user = null, $place = null);
+
+// $calendarEventUpdated === null ? dd('NOT_MODIFIED') : dd('MODIFIED', $calendarEventUpdated);
 ```
 
 #### Update not existing CalendarEvent (without data check)
