@@ -120,7 +120,7 @@ class GenerateCalendarEvent extends Command
             }
         }
 
-        $this->info(sprintf('Generated: next calendar events: %s.', $count));
+        $this->info(sprintf('Generated CalendarEvent from Console | Summary: %s.', $count));
     }
 
     /**

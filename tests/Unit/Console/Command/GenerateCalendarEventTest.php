@@ -51,7 +51,7 @@ class GenerateCalendarEventTest extends TestCase
         ]);
         $this->artisan('generate:calendar-event', ['--date' => $now]);
 
-        $this->assertContains('Generated: next calendar events: 0', $this->getConsoleOutput());
+        $this->assertContains('Generated CalendarEvent from Console | Summary: 0', $this->getConsoleOutput());
         $this->assertEquals(1, $this->calendarEvent->all()->count());
     }
 
@@ -76,7 +76,7 @@ class GenerateCalendarEventTest extends TestCase
         $calendarEvent->template->generateNextCalendarEvent(Carbon::parse($now)); // '2017-08-08'
         $this->artisan('generate:calendar-event', ['--date' => $now]);
 
-        $this->assertContains('Generated: next calendar events: 0', $this->getConsoleOutput());
+        $this->assertContains('Generated CalendarEvent from Console | Summary: 0', $this->getConsoleOutput());
         $this->assertEquals(2, $this->calendarEvent->all()->count());
     }
 
@@ -97,6 +97,7 @@ class GenerateCalendarEventTest extends TestCase
                 ],
                 Carbon::parse('2017-08-16'),
                 Carbon::parse('2017-08-16'),
+                Carbon::parse('2017-08-16'),
             ],
             [
                 [
@@ -111,6 +112,7 @@ class GenerateCalendarEventTest extends TestCase
                     'is_public'                     => true,
                 ],
                 Carbon::parse('2017-08-17'),
+                Carbon::parse('2017-08-18'),
                 Carbon::parse('2017-08-18'),
             ],
             [
@@ -127,6 +129,7 @@ class GenerateCalendarEventTest extends TestCase
                 ],
                 Carbon::parse('2017-08-17'),
                 Carbon::parse('2017-08-19'),
+                Carbon::parse('2017-08-19'),
             ],
             [
                 [
@@ -142,13 +145,14 @@ class GenerateCalendarEventTest extends TestCase
                 ],
                 Carbon::parse('2017-08-16'),
                 Carbon::parse('2017-08-22'),
+                Carbon::parse('2017-08-22'),
             ],
             [
                 [
                     'start_date'                    => '2017-08-02',
                     'start_time'                    => '10:00',
-                    'end_date'                      => '2017-08-02',
-                    'end_time'                      => '12:00',
+                    'end_date'                      => '2017-08-04',
+                    'end_time'                      => '10:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
                     'frequence_number_of_recurring' => 2,
@@ -157,13 +161,14 @@ class GenerateCalendarEventTest extends TestCase
                 ],
                 Carbon::parse('2017-08-17'),
                 Carbon::parse('2017-08-23'),
+                Carbon::parse('2017-08-25'),
             ],
             [
                 [
                     'start_date'                    => '2017-08-01',
                     'start_time'                    => '10:00',
-                    'end_date'                      => '2017-08-01',
-                    'end_time'                      => '12:00',
+                    'end_date'                      => '2017-08-02',
+                    'end_time'                      => '10:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
                     'frequence_number_of_recurring' => 1,
@@ -172,13 +177,14 @@ class GenerateCalendarEventTest extends TestCase
                 ],
                 Carbon::parse('2017-08-26'),
                 Carbon::parse('2017-09-01'),
+                Carbon::parse('2017-09-02'),
             ],
             [
                 [
                     'start_date'                    => '2016-08-27',
-                    'start_time'                    => '10:00',
-                    'end_date'                      => '2016-08-27',
-                    'end_time'                      => '12:00',
+                    'start_time'                    => '11:00',
+                    'end_date'                      => '2016-08-28',
+                    'end_time'                      => '01:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
                     'frequence_number_of_recurring' => 1,
@@ -187,6 +193,7 @@ class GenerateCalendarEventTest extends TestCase
                 ],
                 Carbon::parse('2017-08-26'),
                 Carbon::parse('2017-08-27'),
+                Carbon::parse('2017-08-28'),
             ],
         ];
     }
@@ -198,7 +205,7 @@ class GenerateCalendarEventTest extends TestCase
      * @param $now
      * @param $startDate
      */
-    public function handle_recurring_generated($input, $now, $startDate)
+    public function handle_recurring_generated($input, $now, $startDate, $endDate)
     {
         $calendarEvent = $this->calendarEvent->createCalendarEvent($input);
 
@@ -207,10 +214,11 @@ class GenerateCalendarEventTest extends TestCase
 
         $calendarEventLast = $calendarEvent->template->events()->orderBy('start_date', 'desc')->first();
 
-        $this->assertContains('Generated: next calendar events', $this->getConsoleOutput());
+        $this->assertContains('Generated CalendarEvent from Console | Summary:', $this->getConsoleOutput());
         $this->assertEquals($startDate, $calendarEventLast->start_date);
+        $this->assertEquals($endDate, $calendarEventLast->end_date);
 
-        $this->assertDatabaseHas('calendar_events', ['start_date' => $startDate]);
+        $this->assertDatabaseHas('calendar_events', ['start_date' => $startDate, 'end_date' => $endDate]);
     }
 
     /**
@@ -244,7 +252,7 @@ class GenerateCalendarEventTest extends TestCase
         $calendarEventLast = $calendarEvent->template->events()->orderBy('start_date', 'desc')->first();
 
         // The next is 2017-08-15 but is deleted
-        $this->assertContains('Generated: next calendar events: 0', $this->getConsoleOutput());
+        $this->assertContains('Generated CalendarEvent from Console | Summary: 0', $this->getConsoleOutput());
         $this->assertEquals('2017-08-08', $calendarEventLast->start_date->format('Y-m-d'));
     }
 
@@ -278,7 +286,7 @@ class GenerateCalendarEventTest extends TestCase
 
         $calendarEventLast = $calendarEvent->template->events()->orderBy('start_date', 'desc')->first();
 
-        $this->assertContains('Generated: next calendar events', $this->getConsoleOutput());
+        $this->assertContains('Generated CalendarEvent from Console | Summary:', $this->getConsoleOutput());
         $this->assertEquals('2017-08-22', $calendarEventLast->start_date->format('Y-m-d'));
 
         $this->assertDatabaseHas('calendar_events', ['start_date' => Carbon::parse('2017-08-22')]);

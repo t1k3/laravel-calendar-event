@@ -127,5 +127,13 @@ Do NOT forget the [Laravel Task Scheduling](https://laravel.com/docs/master/sche
 php artisan generate:calendar-event
 ```
 
+### Validation
+Do NOT forget the [validation](https://laravel.com/docs/master/validation) 
+start_date/start_time - end_date/end_time
+
+### TODO
+- [ ] Name conventions, example: `TemplateCalendarEvent::events()` to `TemplateCalendarEvent::calendarEvents()`
+- [ ] [Custom validation rule](https://laravel.com/docs/master/validation#custom-validation-rules) to date/time diff
+
 ## Credits
 * [T1k3](https://github.com/t1k3hu)
