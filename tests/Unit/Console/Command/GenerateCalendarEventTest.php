@@ -43,6 +43,7 @@ class GenerateCalendarEventTest extends TestCase
         $this->calendarEvent->createCalendarEvent([
             'start_date'   => '2017-08-29',
             'start_time'   => 8,
+            'end_date'     => '2017-08-29',
             'end_time'     => 10,
             'description'  => str_random(32),
             'is_recurring' => false,
@@ -63,6 +64,7 @@ class GenerateCalendarEventTest extends TestCase
         $calendarEvent = $this->calendarEvent->createCalendarEvent([
             'start_date'                    => '2017-08-01',
             'start_time'                    => '10:00',
+            'end_date'                      => '2017-08-01',
             'end_time'                      => '12:00',
             'description'                   => str_random(32),
             'is_recurring'                  => true,
@@ -85,6 +87,7 @@ class GenerateCalendarEventTest extends TestCase
                 [
                     'start_date'                    => '2017-08-01',
                     'start_time'                    => '10:00',
+                    'end_date'                      => '2017-08-01',
                     'end_time'                      => '12:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
@@ -93,12 +96,13 @@ class GenerateCalendarEventTest extends TestCase
                     'is_public'                     => true,
                 ],
                 Carbon::parse('2017-08-16'),
-                Carbon::parse('2017-08-16')
+                Carbon::parse('2017-08-16'),
             ],
             [
                 [
                     'start_date'                    => '2017-08-01',
                     'start_time'                    => '10:00',
+                    'end_date'                      => '2017-08-01',
                     'end_time'                      => '12:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
@@ -107,12 +111,13 @@ class GenerateCalendarEventTest extends TestCase
                     'is_public'                     => true,
                 ],
                 Carbon::parse('2017-08-17'),
-                Carbon::parse('2017-08-18')
+                Carbon::parse('2017-08-18'),
             ],
             [
                 [
                     'start_date'                    => '2017-08-02',
                     'start_time'                    => '10:00',
+                    'end_date'                      => '2017-08-02',
                     'end_time'                      => '12:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
@@ -121,12 +126,13 @@ class GenerateCalendarEventTest extends TestCase
                     'is_public'                     => true,
                 ],
                 Carbon::parse('2017-08-17'),
-                Carbon::parse('2017-08-19')
+                Carbon::parse('2017-08-19'),
             ],
             [
                 [
                     'start_date'                    => '2017-08-01',
                     'start_time'                    => '10:00',
+                    'end_date'                      => '2017-08-01',
                     'end_time'                      => '12:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
@@ -135,12 +141,13 @@ class GenerateCalendarEventTest extends TestCase
                     'is_public'                     => true,
                 ],
                 Carbon::parse('2017-08-16'),
-                Carbon::parse('2017-08-22')
+                Carbon::parse('2017-08-22'),
             ],
             [
                 [
                     'start_date'                    => '2017-08-02',
                     'start_time'                    => '10:00',
+                    'end_date'                      => '2017-08-02',
                     'end_time'                      => '12:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
@@ -149,12 +156,13 @@ class GenerateCalendarEventTest extends TestCase
                     'is_public'                     => true,
                 ],
                 Carbon::parse('2017-08-17'),
-                Carbon::parse('2017-08-23')
+                Carbon::parse('2017-08-23'),
             ],
             [
                 [
                     'start_date'                    => '2017-08-01',
                     'start_time'                    => '10:00',
+                    'end_date'                      => '2017-08-01',
                     'end_time'                      => '12:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
@@ -163,12 +171,13 @@ class GenerateCalendarEventTest extends TestCase
                     'is_public'                     => true,
                 ],
                 Carbon::parse('2017-08-26'),
-                Carbon::parse('2017-09-01')
+                Carbon::parse('2017-09-01'),
             ],
             [
                 [
                     'start_date'                    => '2016-08-27',
                     'start_time'                    => '10:00',
+                    'end_date'                      => '2016-08-27',
                     'end_time'                      => '12:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
@@ -177,7 +186,7 @@ class GenerateCalendarEventTest extends TestCase
                     'is_public'                     => true,
                 ],
                 Carbon::parse('2017-08-26'),
-                Carbon::parse('2017-08-27')
+                Carbon::parse('2017-08-27'),
             ],
         ];
     }
@@ -214,6 +223,7 @@ class GenerateCalendarEventTest extends TestCase
             'title'                         => 'Lorem ipsum',
             'start_date'                    => Carbon::parse('2017-08-01'),
             'start_time'                    => Carbon::parse('10:00'),
+            'end_date'                      => Carbon::parse('2017-08-01'),
             'end_time'                      => Carbon::parse('12:00'),
             'description'                   => str_random(32),
             'is_recurring'                  => true,
@@ -225,7 +235,7 @@ class GenerateCalendarEventTest extends TestCase
         $calendarEventNextTmp        = $calendarEvent->template->generateNextCalendarEvent(Carbon::parse($now)); // '2017-08-15'
         $calendarEventNextTmpUpdated = $calendarEventNextTmp->editCalendarEvent([
             'start_date'   => Carbon::parse('2017-08-09'),
-            'is_recurring' => false
+            'is_recurring' => false,
         ]);
 
         $this->artisan('generate:calendar-event', ['--date' => $now]);
@@ -248,6 +258,7 @@ class GenerateCalendarEventTest extends TestCase
             'title'                         => 'Lorem ipsum',
             'start_date'                    => Carbon::parse('2017-08-01'),
             'start_time'                    => Carbon::parse('10:00'),
+            'end_date'                      => Carbon::parse('2017-08-01'),
             'end_time'                      => Carbon::parse('12:00'),
             'description'                   => str_random(32),
             'is_recurring'                  => true,
@@ -259,7 +270,7 @@ class GenerateCalendarEventTest extends TestCase
         $calendarEventNextTmp        = $calendarEvent->template->generateNextCalendarEvent(Carbon::parse($now)); // '2017-08-15'
         $calendarEventNextTmpUpdated = $calendarEventNextTmp->editCalendarEvent([
             'start_date'   => Carbon::parse('2017-08-09'),
-            'is_recurring' => false
+            'is_recurring' => false,
         ]);
 
         $this->artisan('generate:calendar-event', ['--date' => $now]);

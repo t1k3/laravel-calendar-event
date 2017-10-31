@@ -47,6 +47,7 @@ $calendarEvent = $calendarEvent->createCalendarEvent([
     'title'                         => 'Lorem ipsum',
     'start_date'                    => Carbon::parse('2017-08-25'),
     'start_time'                    => Carbon::parse('16:00'),
+    'end_date'                      => Carbon::parse('2017-08-25'),
     'end_time'                      => Carbon::parse('17:30'),
     'description'                   => 'Lorem ipsum dolor sit amet',
     'is_recurring'                  => true,

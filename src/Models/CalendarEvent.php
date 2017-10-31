@@ -23,7 +23,8 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
      * @var array
      */
     protected $fillable = [
-        'start_date'
+        'start_date',
+        'end_date',
     ];
 
     /**
@@ -31,7 +32,8 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
      * @var array
      */
     protected $casts = [
-        'start_date' => 'date'
+        'start_date' => 'date',
+        'end_date'   => 'date',
     ];
 
     /**
@@ -74,8 +76,12 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
         DB::transaction(function () use ($attributes, $user, $place, &$calendarEvent) {
             $templateCalendarEvent = $this->template()->make($attributes);
 
-            if ($templateCalendarEvent->user() !== null && $user !== null) $templateCalendarEvent->user()->associate($user);
-            if ($templateCalendarEvent->place() !== null && $place !== null) $templateCalendarEvent->place()->associate($place);
+            if ($templateCalendarEvent->user() !== null && $user !== null) {
+                $templateCalendarEvent->user()->associate($user);
+            }
+            if ($templateCalendarEvent->place() !== null && $place !== null) {
+                $templateCalendarEvent->place()->associate($place);
+            }
 
             $templateCalendarEvent->save();
 
@@ -100,7 +106,10 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
             $calendarEventNew = $this->createCalendarEvent(
                 array_merge(
                     $this->template->toArray(),
-                    ['start_date' => $this->start_date],
+                    [
+                        'start_date' => $this->start_date,
+                        'end_date'   => $this->end_date,
+                    ],
                     $attributes
                 ),
                 $user,
@@ -112,11 +121,11 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
 
             if ($this->template->is_recurring && $calendarEventNew->template->is_recurring) {
                 $this->template->update([
-                    'end_of_recurring' => $this->start_date
+                    'end_of_recurring' => $this->start_date,
                 ]);
             } else {
                 $calendarEventNew->template->update([
-                    'end_of_recurring' => null
+                    'end_of_recurring' => null,
                 ]);
             }
 //            $this->delete();
@@ -208,7 +217,9 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
 
         $calendarEvents = collect();
         foreach ($templateCalendarEvents as $templateCalendarEvent) {
-            $calendarEvents       = $calendarEvents->merge($templateCalendarEvent->events()->whereMonth('start_date', $month)->get());
+            $calendarEvents       = $calendarEvents->merge($templateCalendarEvent->events()
+                ->whereMonth('start_date', $month)
+                ->get());
             $dateNext             = null;
             $calendarEventTmpLast = $templateCalendarEvent->events()->orderBy('start_date', 'desc')->first();
 
@@ -234,7 +245,14 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
             }
 
             while ($dateNext !== null && $dateNext->month <= (int)$month) {
-                $calendarEventNotExists                = (new CalendarEvent())->make(['start_date' => $dateNext]);
+                $diffInDays  = $templateCalendarEvent->start_date->diffInDays($templateCalendarEvent->end_date);
+                $dateNextEnd = clone($dateNext);
+                $dateNextEnd = $dateNextEnd->addDays($diffInDays);
+
+                $calendarEventNotExists                = (new CalendarEvent())->make([
+                    'start_date' => $dateNext,
+                    'end_date'   => $dateNextEnd,
+                ]);
                 $calendarEventNotExists->is_not_exists = true;
                 $calendarEventNotExists->template()->associate($templateCalendarEvent);
 

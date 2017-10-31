@@ -12,11 +12,12 @@ $factory->define(TemplateCalendarEvent::class, function (Faker $faker) {
         'title'        => str_random(16),
         'start_date'   => Carbon::now()->addWeek()->format('Y-m-d'),
         'start_time'   => Carbon::now()->hour,
+        'end_date'     => Carbon::now()->addWeek()->format('Y-m-d'),
         'end_time'     => Carbon::now()->addHour()->hour,
         'description'  => str_random(32),
         'is_recurring' => false,
-//        'frequence_number_of_recurring' => 1,
-//        'frequence_type_of_recurring'   => 'week',
+        //        'frequence_number_of_recurring' => 1,
+        //        'frequence_type_of_recurring'   => 'week',
         'is_public'    => true,
     ];
 });

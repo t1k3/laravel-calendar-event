@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use T1k3\LaravelCalendarEvent\Enums\RecurringFrequenceType;
 use T1k3\LaravelCalendarEvent\Models\CalendarEvent;
 use T1k3\LaravelCalendarEvent\Models\TemplateCalendarEvent;
+use T1k3\LaravelCalendarEvent\Tests\Fixtures\Models\Place;
+use T1k3\LaravelCalendarEvent\Tests\Fixtures\Models\User;
 use T1k3\LaravelCalendarEvent\Tests\TestCase;
 
 /**
@@ -42,7 +44,8 @@ class CalendarEventTest extends TestCase
     public function getFillable()
     {
         $expectedFillables = [
-            'start_date'
+            'start_date',
+            'end_date',
         ];
         $this->assertArraySubset($expectedFillables, $this->calendarEvent->getFillable());
     }
@@ -72,25 +75,27 @@ class CalendarEventTest extends TestCase
                 [
                     'title'        => str_random(16),
                     'start_date'   => Carbon::parse('2017-08-25'),
-                    'start_time'   => '10:00',
-                    'end_time'     => '12:00',
+                    'start_time'   => Carbon::parse('10:00'),
+                    'end_date'     => Carbon::parse('2017-08-25'),
+                    'end_time'     => Carbon::parse('12:00'),
                     'description'  => str_random(32),
                     'is_recurring' => false,
                     'is_public'    => true,
-                ]
+                ],
             ],
             'recurring'     => [
                 [
                     'title'                         => str_random(16),
                     'start_date'                    => Carbon::parse('2017-08-25'),
-                    'start_time'                    => '10:00',
-                    'end_time'                      => '12:00',
+                    'start_time'                    => Carbon::parse('10:00'),
+                    'end_date'                      => Carbon::parse('2017-08-25'),
+                    'end_time'                      => Carbon::parse('12:00'),
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
                     'frequence_number_of_recurring' => 1,
                     'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
                     'is_public'                     => true,
-                ]
+                ],
             ],
         ];
     }
@@ -119,8 +124,8 @@ class CalendarEventTest extends TestCase
      */
     public function createCalendarEvent_user_place(array $input)
     {
-        $this->app['config']->set('calendar-event.user.model', \T1k3\LaravelCalendarEvent\Tests\Fixtures\Models\User::class);
-        $this->app['config']->set('calendar-event.place.model', \T1k3\LaravelCalendarEvent\Tests\Fixtures\Models\Place::class);
+        $this->app['config']->set('calendar-event.user.model', User::class);
+        $this->app['config']->set('calendar-event.place.model', Place::class);
 
         $user          = factory(config('calendar-event.user.model'))->create();
         $place         = factory(config('calendar-event.place.model'))->create();
@@ -150,6 +155,7 @@ class CalendarEventTest extends TestCase
             'title'        => str_random(16),
             'start_date'   => Carbon::parse('2017-08-01'),
             'start_time'   => Carbon::parse('11:00'),
+            'end_date'     => Carbon::parse('2017-08-01'),
             'end_time'     => Carbon::parse('12:00'),
             'description'  => str_random(32),
             'is_recurring' => false,
@@ -172,6 +178,7 @@ class CalendarEventTest extends TestCase
             'title'                         => str_random(16),
             'start_date'                    => Carbon::parse('2017-08-01'),
             'start_time'                    => Carbon::parse('11:00'),
+            'end_date'                      => Carbon::parse('2017-08-01'),
             'end_time'                      => Carbon::parse('12:00'),
             'description'                   => str_random(32),
             'is_recurring'                  => true,
@@ -181,7 +188,7 @@ class CalendarEventTest extends TestCase
             'end_of_recurring'              => Carbon::parse('2017-08-22'),
         ];
         $inputUpdate = [
-            'start_date' => Carbon::parse('2017-08-03')
+            'start_date' => Carbon::parse('2017-08-03'),
         ];
 
         $calendarEvent        = $this->calendarEvent->createCalendarEvent($inputCreate);
@@ -213,6 +220,7 @@ class CalendarEventTest extends TestCase
             'title'                         => str_random(16),
             'start_date'                    => Carbon::parse('2017-08-01'),
             'start_time'                    => Carbon::parse('11:00'),
+            'end_date'                      => Carbon::parse('2017-08-01'),
             'end_time'                      => Carbon::parse('12:00'),
             'description'                   => str_random(32),
             'is_recurring'                  => true,
@@ -222,7 +230,7 @@ class CalendarEventTest extends TestCase
             'end_of_recurring'              => Carbon::parse('2017-08-22'),
         ];
         $inputUpdate = [
-            'start_date' => Carbon::parse('2017-08-03')
+            'start_date' => Carbon::parse('2017-08-03'),
         ];
 
         $calendarEvent        = $this->calendarEvent->createCalendarEvent($inputCreate);
@@ -254,6 +262,7 @@ class CalendarEventTest extends TestCase
             'title'                         => str_random(16),
             'start_date'                    => Carbon::parse('2017-08-25'),
             'start_time'                    => Carbon::parse('16:00'),
+            'end_date'                      => Carbon::parse('2017-08-25'),
             'end_time'                      => Carbon::parse('17:00'),
             'description'                   => str_random(32),
             'is_recurring'                  => true,
@@ -296,13 +305,14 @@ class CalendarEventTest extends TestCase
             'title'        => str_random(16),
             'start_date'   => Carbon::parse('2017-08-25'),
             'start_time'   => Carbon::parse('8:00'),
+            'end_date'     => Carbon::parse('2017-08-25'),
             'end_time'     => Carbon::parse('14:00'),
             'description'  => str_random(32),
             'is_recurring' => false,
             'is_public'    => true,
         ];
         $inputUpdate = [
-            'is_recurring' => true
+            'is_recurring' => true,
         ];
 
         $calendarEvent        = $this->calendarEvent->createCalendarEvent($inputCreate);
@@ -329,6 +339,7 @@ class CalendarEventTest extends TestCase
             'title'        => str_random(16),
             'start_date'   => Carbon::parse('2017-08-25'),
             'start_time'   => Carbon::parse('8:00'),
+            'end_date'     => Carbon::parse('2017-08-25'),
             'end_time'     => Carbon::parse('14:00'),
             'description'  => str_random(32),
             'is_recurring' => false,
@@ -363,6 +374,7 @@ class CalendarEventTest extends TestCase
                     'title'                         => str_random(16),
                     'start_date'                    => Carbon::parse('2016-10-01'),
                     'start_time'                    => Carbon::parse('11:30'),
+                    'end_date'                      => Carbon::parse('2016-10-01'),
                     'end_time'                      => Carbon::parse('12:30'),
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
@@ -374,6 +386,7 @@ class CalendarEventTest extends TestCase
                     'title'        => str_random(16),
                     'start_date'   => Carbon::parse('2017-07-14'),
                     'start_time'   => Carbon::parse('11:45'),
+                    'end_date'     => Carbon::parse('2017-07-14'),
                     'end_time'     => Carbon::parse('12:45'),
                     'description'  => str_random(32),
                     'is_recurring' => false,
@@ -384,6 +397,7 @@ class CalendarEventTest extends TestCase
                     'title'                         => str_random(16),
                     'start_date'                    => Carbon::parse('2017-07-15'),
                     'start_time'                    => Carbon::parse('14:45'),
+                    'end_date'                      => Carbon::parse('2017-07-15'),
                     'end_time'                      => Carbon::parse('15:45'),
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
@@ -396,6 +410,7 @@ class CalendarEventTest extends TestCase
                     'title'        => str_random(16),
                     'start_date'   => Carbon::parse('2017-08-02'),
                     'start_time'   => Carbon::parse('9:00'),
+                    'end_date'     => Carbon::parse('2017-08-02'),
                     'end_time'     => Carbon::parse('10:00'),
                     'description'  => str_random(32),
                     'is_recurring' => false,
@@ -406,6 +421,7 @@ class CalendarEventTest extends TestCase
                     'title'                         => str_random(16),
                     'start_date'                    => Carbon::parse('2017-08-03'),
                     'start_time'                    => Carbon::parse('10:00'),
+                    'end_date'                      => Carbon::parse('2017-08-03'),
                     'end_time'                      => Carbon::parse('14:00'),
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
@@ -418,6 +434,7 @@ class CalendarEventTest extends TestCase
                     'title'                         => str_random(16),
                     'start_date'                    => Carbon::parse('2017-08-04'),
                     'start_time'                    => Carbon::parse('10:00'),
+                    'end_date'                      => Carbon::parse('2017-08-04'),
                     'end_time'                      => Carbon::parse('14:00'),
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
@@ -431,6 +448,7 @@ class CalendarEventTest extends TestCase
                     'title'                         => str_random(16),
                     'start_date'                    => Carbon::parse('2017-07-06'),
                     'start_time'                    => Carbon::parse('10:00'),
+                    'end_date'                      => Carbon::parse('2017-07-06'),
                     'end_time'                      => Carbon::parse('14:00'),
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
@@ -442,6 +460,7 @@ class CalendarEventTest extends TestCase
                     'title'                         => str_random(16),
                     'start_date'                    => Carbon::parse('2017-09-01'),
                     'start_time'                    => Carbon::parse('10:00'),
+                    'end_date'                      => Carbon::parse('2017-09-01'),
                     'end_time'                      => Carbon::parse('14:00'),
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
@@ -449,8 +468,8 @@ class CalendarEventTest extends TestCase
                     'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
                     'is_public'                     => true,
                     'end_of_recurring'              => Carbon::parse('2017-09-22'),
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -493,10 +512,11 @@ class CalendarEventTest extends TestCase
             'title'        => str_random(16),
             'start_date'   => Carbon::parse('2017-08-25'),
             'start_time'   => 16,
+            'end_date'     => Carbon::parse('2017-08-25'),
             'end_time'     => 17,
             'description'  => str_random(32),
             'is_recurring' => false,
-            'is_public'    => true
+            'is_public'    => true,
         ];
         $calendarEvent = $this->calendarEvent->createCalendarEvent($inputCreate);
 
@@ -516,12 +536,13 @@ class CalendarEventTest extends TestCase
             'title'                         => str_random(16),
             'start_date'                    => Carbon::parse('2017-08-25'),
             'start_time'                    => Carbon::parse('16:00'),
+            'end_date'                      => Carbon::parse('2017-08-25'),
             'end_time'                      => Carbon::parse('17:00'),
             'description'                   => str_random(32),
             'is_recurring'                  => true,
             'frequence_number_of_recurring' => 1,
             'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
-            'is_public'                     => true
+            'is_public'                     => true,
         ];
         $calendarEvent     = $this->calendarEvent->createCalendarEvent($inputCreate);
         $calendarEventNext = $calendarEvent->template->generateNextCalendarEvent(Carbon::parse('2017-08-27'));
@@ -543,12 +564,13 @@ class CalendarEventTest extends TestCase
             'title'                         => str_random(16),
             'start_date'                    => Carbon::parse('2017-08-25'),
             'start_time'                    => Carbon::parse('16:00'),
+            'end_date'                      => Carbon::parse('2017-08-25'),
             'end_time'                      => Carbon::parse('17:00'),
             'description'                   => str_random(32),
             'is_recurring'                  => true,
             'frequence_number_of_recurring' => 1,
             'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
-            'is_public'                     => true
+            'is_public'                     => true,
         ];
         $calendarEvent = $this->calendarEvent->createCalendarEvent($inputCreate);
         $calendarEvent->deleteCalendarEvent(false);
@@ -566,12 +588,13 @@ class CalendarEventTest extends TestCase
             'title'                         => str_random(16),
             'start_date'                    => Carbon::parse('2017-08-25'),
             'start_time'                    => Carbon::parse('16:00'),
+            'end_date'                      => Carbon::parse('2017-08-25'),
             'end_time'                      => Carbon::parse('17:00'),
             'description'                   => str_random(32),
             'is_recurring'                  => true,
             'frequence_number_of_recurring' => 1,
             'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
-            'is_public'                     => true
+            'is_public'                     => true,
         ];
         $calendarEvent = $this->calendarEvent->createCalendarEvent($inputCreate);
         $calendarEvent->deleteCalendarEvent(true);
@@ -590,12 +613,13 @@ class CalendarEventTest extends TestCase
             'title'                         => str_random(16),
             'start_date'                    => Carbon::parse('2017-08-25'),
             'start_time'                    => Carbon::parse('16:00'),
+            'end_date'                      => Carbon::parse('2017-08-25'),
             'end_time'                      => Carbon::parse('17:00'),
             'description'                   => str_random(32),
             'is_recurring'                  => true,
             'frequence_number_of_recurring' => 1,
             'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
-            'is_public'                     => true
+            'is_public'                     => true,
         ];
         $calendarEvent = $this->calendarEvent->createCalendarEvent($inputCreate);
         $calendarEvent->deleteCalendarEvent();
@@ -614,12 +638,13 @@ class CalendarEventTest extends TestCase
             'title'                         => str_random(16),
             'start_date'                    => Carbon::parse('2017-08-25'),
             'start_time'                    => Carbon::parse('16:00'),
+            'end_date'                      => Carbon::parse('2017-08-25'),
             'end_time'                      => Carbon::parse('17:00'),
             'description'                   => str_random(32),
             'is_recurring'                  => true,
             'frequence_number_of_recurring' => 1,
             'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
-            'is_public'                     => true
+            'is_public'                     => true,
         ];
         $calendarEvent     = $this->calendarEvent->createCalendarEvent($inputCreate);
         $calendarEventNext = $calendarEvent->template->generateNextCalendarEvent(Carbon::now());

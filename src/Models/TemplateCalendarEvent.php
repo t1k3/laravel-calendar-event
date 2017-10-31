@@ -2,6 +2,7 @@
 
 namespace T1k3\LaravelCalendarEvent\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Query\Builder;
@@ -26,6 +27,7 @@ class TemplateCalendarEvent extends AbstractModel implements TemplateCalendarEve
         'title',
         'start_date',
         'start_time',
+        'end_date',
         'end_time',
         'description',
         'is_recurring',
@@ -43,6 +45,7 @@ class TemplateCalendarEvent extends AbstractModel implements TemplateCalendarEve
         'is_recurring'     => 'boolean',
         'is_public'        => 'boolean',
         'start_date'       => 'date',
+        'end_date'         => 'date',
         'end_of_recurring' => 'date',
     ];
 
@@ -100,7 +103,14 @@ class TemplateCalendarEvent extends AbstractModel implements TemplateCalendarEve
      */
     public function createCalendarEvent(\DateTimeInterface $startDate)
     {
-        $calendarEvent = $this->events()->make(['start_date' => $startDate]);
+        $diffInDays = $this->start_date->diffInDays($this->end_date);
+        $endDate    = clone($startDate);
+        $endDate    = $endDate->addDays($diffInDays);
+
+        $calendarEvent = $this->events()->make([
+            'start_date' => $startDate,
+            'end_date'   => $endDate,
+        ]);
         $calendarEvent->template()->associate($this);
         $calendarEvent->save();
 
