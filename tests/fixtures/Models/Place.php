@@ -13,5 +13,5 @@ use T1k3\LaravelCalendarEvent\Traits\CalendarEventPlaceTrait;
  */
 class Place extends AbstractModel implements PlaceInterface
 {
- use CalendarEventPlaceTrait;
+    use CalendarEventPlaceTrait;
 }
