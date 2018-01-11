@@ -11,6 +11,7 @@ install:
 
 script:
     - vendor/bin/phpunit --verbose
+    - vendor/bin/phpmd src text phpmd.xml --exclude src/database
 
 matrix:
     fast_finish: true

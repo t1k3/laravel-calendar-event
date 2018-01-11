@@ -81,7 +81,7 @@ class TemplateCalendarEvent extends AbstractModel implements TemplateCalendarEve
      */
     public function user()
     {
-//        TODO Fix me | If the config is null then you can not use ->user (LogicException), just ->user()
+//        TODO If the config is null then you can not use ->user (LogicException), just ->user()
         $class = config('calendar-event.user.model');
         return $class ? $this->belongsTo($class) : null;
     }
@@ -91,7 +91,7 @@ class TemplateCalendarEvent extends AbstractModel implements TemplateCalendarEve
      */
     public function place()
     {
-//        TODO Fix me | If the config is null then you can not use ->place (LogicException), just ->place()
+//        TODO If the config is null then you can not use ->place (LogicException), just ->place()
         $class = config('calendar-event.place.model');
         return $class ? $this->belongsTo($class) : null;
     }
@@ -212,7 +212,7 @@ class TemplateCalendarEvent extends AbstractModel implements TemplateCalendarEve
             return null;
         }
 
-//        TODO Refactor | OCP, Strategy
+//        TODO Refactor: OCP, Strategy
         switch ($this->frequence_type_of_recurring) {
             case RecurringFrequenceType::DAY:
                 $startDate->addDays($this->frequence_number_of_recurring);

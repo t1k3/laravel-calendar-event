@@ -63,7 +63,7 @@ class GenerateCalendarEvent extends Command
         foreach ($templateCalendarEvents as $templateCalendarEvent) {
             $dateNext       = null;
             $endOfRecurring = (clone $date)->addWeek();
-//          TODO Refactor | OCP, Strategy
+//          TODO Refactor: OCP, Strategy
             switch ($templateCalendarEvent->frequence_type_of_recurring) {
                 case RecurringFrequenceType::DAY:
                     $endOfRecurring = (clone $date);
@@ -124,10 +124,13 @@ class GenerateCalendarEvent extends Command
     }
 
     /**
-     * After event created
+     * TODO Name convention: callback()
+     * Callback for calendar event created
      * @param CalendarEventInterface $calendarEvent
+     * @return CalendarEventInterface
      */
     protected function closure(CalendarEventInterface $calendarEvent)
     {
+        return $calendarEvent;
     }
 }

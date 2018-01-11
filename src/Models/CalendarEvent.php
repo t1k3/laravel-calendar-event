@@ -224,7 +224,7 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
             $calendarEventTmpLast = $templateCalendarEvent->events()->orderBy('start_date', 'desc')->first();
 
             if ($calendarEventTmpLast) {
-//                TODO Refactor | OCP, Strategy
+//                TODO Refactor: OCP, Strategy
                 switch ($templateCalendarEvent->frequence_type_of_recurring) {
                     case RecurringFrequenceType::DAY:
                         $diff     = $date->firstOfMonth()->diffInDays($calendarEventTmpLast->start_date);
