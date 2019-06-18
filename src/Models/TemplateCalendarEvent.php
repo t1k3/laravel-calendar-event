@@ -225,6 +225,9 @@ class TemplateCalendarEvent extends AbstractModel implements TemplateCalendarEve
                 break;
             case RecurringFrequenceType::YEAR:
                 $startDate->addYears($this->frequence_number_of_recurring);
+                break;
+            case RecurringFrequenceType::NTHWEEKDAY:
+                $startDate->addMonths($this->frequence_number_of_recurring);
         }
 
         if (($this->end_of_recurring !== null

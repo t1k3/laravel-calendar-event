@@ -89,6 +89,12 @@ class GenerateCalendarEvent extends Command
 //                    $endOfRecurring = (clone $date)->addYear();
                     $diff     = $templateCalendarEvent->start_date->diffInYears($endOfRecurring);
                     $dateNext = $templateCalendarEvent->start_date->addYears($diff);
+                    break;
+                case RecurringFrequenceType::NTHWEEKDAY:
+                    $diff     = $date->firstOfMonth()->diffInMonths($templateCalendarEvent->start_date);
+                    $nextMonth = $templateCalendarEvent->start_date->addMonths($diff);
+                    $dateNext = $nextMonth->nthOfMonth($nextMonth->weekOfMonth, $templateCalendarEvent->start_date->format('w'));
+                    break;
             }
 
             if ($dateNext !== null

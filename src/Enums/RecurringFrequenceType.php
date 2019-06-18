@@ -12,4 +12,5 @@ abstract class RecurringFrequenceType
     const WEEK  = 'week';
     const MONTH = 'month';
     const YEAR  = 'year';
+    const NTHWEEKDAY  = 'nthweekday';
 }
