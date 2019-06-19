@@ -493,6 +493,37 @@ class CalendarEventTest extends TestCase
             $this->assertTrue($isExist);
         }
     }
+    
+    /**
+    * @test
+    */
+    public function getEventsOfMonth_for_nthweekRecurring()
+    {
+      $this->calendarEvent->createCalendarEvent([
+          'start_date'                    => '2019-06-19',
+          'start_time'                    => '19:30',
+          'end_date'                      => '2019-06-19',
+          'end_time'                      => '20:00',
+          'description'                   => str_random(32),
+          'is_recurring'                  => true,
+          'frequence_number_of_recurring' => 1,
+          'frequence_type_of_recurring'   => RecurringFrequenceType::NTHWEEKDAY,
+          'is_public'                     => true,
+      ]);
+      
+      
+      $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(Carbon::parse('2019-07'));
+      $this->assertEquals(1, $calendarEvents->count());
+      $this->assertEquals('2019-07-17', $calendarEvents->first()->start_date->format('Y-m-d'));
+      
+      $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(Carbon::parse('2019-08'));
+      $this->assertEquals(1, $calendarEvents->count());
+      $this->assertEquals('2019-08-21', $calendarEvents->first()->start_date->format('Y-m-d'));
+      
+      $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(Carbon::parse('2019-09'));
+      $this->assertEquals(1, $calendarEvents->count());
+      $this->assertEquals('2019-09-18', $calendarEvents->first()->start_date->format('Y-m-d'));
+    }
 
     /**
      * @test
