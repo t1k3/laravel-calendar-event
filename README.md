@@ -22,6 +22,13 @@ php artisan migrate
 
 ## Usage
 
+#### Recurring options
+- DAY
+- WEEK
+- MONTH
+- YEAR
+- NTHWEEKDAY: nth weekday per month, example 2nd Monday
+
 #### Create CalendarEvent
 If you like to attach `User` and/or `Place` then must have:
 * configurate `config/calendar-event.php` 
@@ -134,3 +141,6 @@ start_date/start_time - end_date/end_time
 ### TODO
 - [ ] Name conventions, example: `TemplateCalendarEvent::events()` to `TemplateCalendarEvent::calendarEvents()`
 - [ ] [Custom validation rule](https://laravel.com/docs/master/validation#custom-validation-rules) to date/time diff
+
+### Special thanks
+- [Bit and Pixel](https://bitandpixel.hu)
