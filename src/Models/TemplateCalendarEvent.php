@@ -227,7 +227,14 @@ class TemplateCalendarEvent extends AbstractModel implements TemplateCalendarEve
                 $startDate->addYears($this->frequence_number_of_recurring);
                 break;
             case RecurringFrequenceType::NTHWEEKDAY:
-                $startDate->addMonths($this->frequence_number_of_recurring);
+                $nextMonth = $startDate->copy()->addMonths($this->frequence_number_of_recurring);
+
+                $weekdays = getWeekdaysInMonth(
+                    $startDate->format('l'),
+                    $nextMonth,
+                );
+
+                $startDate = $weekdays[$startDate->weekOfMonth - 1];
         }
 
         if (($this->end_of_recurring !== null

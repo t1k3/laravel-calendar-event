@@ -93,8 +93,13 @@ class GenerateCalendarEvent extends Command
                 case RecurringFrequenceType::NTHWEEKDAY:
                     $diff     = $date->firstOfMonth()->diffInMonths($templateCalendarEvent->start_date);
                     $nextMonth = $templateCalendarEvent->start_date->addMonths($diff);
-                    $dateNext = $nextMonth->nthOfMonth($nextMonth->weekOfMonth, $templateCalendarEvent->start_date->format('w'));
-                    break;
+
+                    $weekdays = getWeekdaysInMonth(
+                        $templateCalendarEvent->start_date->format('l'),
+                        $nextMonth,
+                    );
+
+                    $dateNext = $weekdays[$templateCalendarEvent->start_date->weekOfMonth - 1];
             }
 
             if ($dateNext !== null
