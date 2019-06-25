@@ -230,7 +230,7 @@ class TemplateCalendarEvent extends AbstractModel implements TemplateCalendarEve
                 $nextMonth = $startDate->copy()->addMonths($this->frequence_number_of_recurring);
                     $weekdays = getWeekdaysInMonth(
                     $startDate->format('l'),
-                    $nextMonth,
+                    $nextMonth
                 );
                 $startDate = $weekdays[$startDate->weekOfMonth - 1];
         }

@@ -248,7 +248,7 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
         
                         $weekdays = getWeekdaysInMonth(
                             $calendarEventTmpLast->start_date->format('l'),
-                            $nextMonth,
+                            $nextMonth
                         );
                         $dateNext = $weekdays[$calendarEventTmpLast->start_date->weekOfMonth - 1];
                 }

@@ -96,9 +96,9 @@ class GenerateCalendarEvent extends Command
                     $nextMonth = $templateCalendarEvent->start_date->addMonths($diff);
                         $weekdays = getWeekdaysInMonth(
                         $templateCalendarEvent->start_date->format('l'),
-                        $nextMonth,
+                        $nextMonth
                     );
-                    
+
                     $dateNext = $weekdays[$templateCalendarEvent->start_date->weekOfMonth - 1];
             }
 
