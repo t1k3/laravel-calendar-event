@@ -1,4 +1,6 @@
 <?php
+use Carbon\Carbon;
+use Carbon\CarbonInterval;
 
 if (!function_exists('arrayIsEqualWithDB')) {
     /**
@@ -27,5 +29,23 @@ if (!function_exists('arrayIsEqualWithDB')) {
 
         }
         return true;
+    }
+}
+
+if (!function_exists('getWeekdaysInMonth')) {
+    /**
+    * @param string $weekday
+    * @param date $date
+    * @return collection
+    */
+   function getWeekdaysInMonth($weekday, $date)
+   {
+       $next = $date->copy()->addMonths(1);
+        return collect(new \DatePeriod(
+       
+           Carbon::parse("first $weekday of $date"),
+           CarbonInterval::week(),
+           Carbon::parse("first $weekday of $next")
+       ));
     }
 }
