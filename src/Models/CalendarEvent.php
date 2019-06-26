@@ -241,6 +241,16 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
                     case RecurringFrequenceType::YEAR:
                         $diff     = $date->firstOfMonth()->diffInYears($calendarEventTmpLast->start_date);
                         $dateNext = $calendarEventTmpLast->start_date->addYears($diff);
+                        break;
+                    case RecurringFrequenceType::NTHWEEKDAY:
+                        $diff     = $date->firstOfMonth()->diffInMonths($calendarEventTmpLast->start_date);
+                        $nextMonth = $calendarEventTmpLast->start_date->addMonths($diff);
+        
+                        $weekdays = getWeekdaysInMonth(
+                            $calendarEventTmpLast->start_date->format('l'),
+                            $nextMonth
+                        );
+                        $dateNext = $weekdays[$calendarEventTmpLast->start_date->weekOfMonth - 1];
                 }
             }
 
