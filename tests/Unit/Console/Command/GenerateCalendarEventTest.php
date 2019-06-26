@@ -197,9 +197,9 @@ class GenerateCalendarEventTest extends TestCase
             ],
             [
                 [
-                    'start_date'                    => '2019-06-19',
+                    'start_date'                    => '2019-07-17',
                     'start_time'                    => '19:30',
-                    'end_date'                      => '2019-06-19',
+                    'end_date'                      => '2019-07-17',
                     'end_time'                      => '20:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
@@ -213,9 +213,9 @@ class GenerateCalendarEventTest extends TestCase
             ],
             [
                 [
-                    'start_date'                    => '2019-06-19',
+                    'start_date'                    => '2019-08-21',
                     'start_time'                    => '19:30',
-                    'end_date'                      => '2019-06-19',
+                    'end_date'                      => '2019-08-21',
                     'end_time'                      => '20:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
@@ -229,9 +229,9 @@ class GenerateCalendarEventTest extends TestCase
             ],
             [
                 [
-                    'start_date'                    => '2019-06-19',
+                    'start_date'                    => '2019-09-18',
                     'start_time'                    => '19:30',
-                    'end_date'                      => '2019-06-19',
+                    'end_date'                      => '2019-09-18',
                     'end_time'                      => '20:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
