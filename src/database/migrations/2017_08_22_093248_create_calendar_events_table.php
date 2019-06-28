@@ -20,12 +20,8 @@ class CreateCalendarEventsTable extends Migration
             $table->increments('id');
             $table->integer('template_calendar_event_id')->unsigned();
 
-            $table->date('start_date');
-            $table->date('end_date');
-
-//            TODO Change date/time to *_at
-//            $table->datetime('start_at');
-//            $table->datetime('end_at');
+            $table->dateTime('start_datetime');
+            $table->dateTime('end_datetime');
 
             $table->timestamps();
             $table->softDeletes();
