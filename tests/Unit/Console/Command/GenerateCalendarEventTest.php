@@ -89,9 +89,9 @@ class GenerateCalendarEventTest extends TestCase
                     'frequence_type_of_recurring'   => RecurringFrequenceType::DAY,
                     'is_public'                     => true,
                 ],
+                Carbon::parse('2017-08-16'),
                 Carbon::parse('2017-08-16 10:00:00'),
-                Carbon::parse('2017-08-16 10:00:00'),
-                Carbon::parse('2017-08-16 10:00:00'),
+                Carbon::parse('2017-08-16 12:00:00'),
             ],
             [
                 [
@@ -103,9 +103,9 @@ class GenerateCalendarEventTest extends TestCase
                     'frequence_type_of_recurring'   => RecurringFrequenceType::DAY,
                     'is_public'                     => true,
                 ],
-                Carbon::parse('2017-08-17 10:00:00'),//might need to be 2017-08-18
+                Carbon::parse('2017-08-17'),//might need to be 2017-08-18
                 Carbon::parse('2017-08-18 10:00:00'),
-                Carbon::parse('2017-08-18 10:00:00'),
+                Carbon::parse('2017-08-18 12:00:00'),
             ],
             [
                 [
@@ -117,9 +117,9 @@ class GenerateCalendarEventTest extends TestCase
                     'frequence_type_of_recurring'   => RecurringFrequenceType::DAY,
                     'is_public'                     => true,
                 ],
-                Carbon::parse('2017-08-17 10:00:00'),
+                Carbon::parse('2017-08-17'),
                 Carbon::parse('2017-08-19 10:00:00'),
-                Carbon::parse('2017-08-19 10:00:00'),
+                Carbon::parse('2017-08-19 12:00:00'),
             ],
             [
                 [
@@ -131,9 +131,9 @@ class GenerateCalendarEventTest extends TestCase
                     'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
                     'is_public'                     => true,
                 ],
-                Carbon::parse('2017-08-16 10:00:00'),
+                Carbon::parse('2017-08-16'),
                 Carbon::parse('2017-08-22 10:00:00'),
-                Carbon::parse('2017-08-22 10:00:00'),
+                Carbon::parse('2017-08-22 12:00:00'),
             ],
             [
                 [
@@ -145,23 +145,23 @@ class GenerateCalendarEventTest extends TestCase
                     'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
                     'is_public'                     => true,
                 ],
-                Carbon::parse('2017-08-17 10:00:00'),
+                Carbon::parse('2017-08-17'),
                 Carbon::parse('2017-08-23 10:00:00'),
-                Carbon::parse('2017-08-25 10:00:00'),
+                Carbon::parse('2017-08-25 12:00:00'),
             ],
             [
                 [
                     'start_datetime'                => '2017-08-01 10:00:00',
-                    'end_datetime'                  => '2017-08-02 12:00:00',
+                    'end_datetime'                  => '2017-08-02 12:20:00',
                     'description'                   => str_random(32),
                     'is_recurring'                  => true,
                     'frequence_number_of_recurring' => 1,
                     'frequence_type_of_recurring'   => RecurringFrequenceType::MONTH,
                     'is_public'                     => true,
                 ],
-                Carbon::parse('2017-08-26 10:00:00'),
+                Carbon::parse('2017-08-26'),
                 Carbon::parse('2017-09-01 10:00:00'),
-                Carbon::parse('2017-09-02 12:00:00'),
+                Carbon::parse('2017-09-02 12:20:00'),
             ],
             [
                 [
@@ -173,9 +173,9 @@ class GenerateCalendarEventTest extends TestCase
                     'frequence_type_of_recurring'   => RecurringFrequenceType::YEAR,
                     'is_public'                     => true,
                 ],
-                Carbon::parse('2017-08-26 11:00:00'),
+                Carbon::parse('2017-08-26'),
                 Carbon::parse('2017-08-27 11:00:00'),
-                Carbon::parse('2017-08-28 11:00:00'),
+                Carbon::parse('2017-08-28 01:00:00'),
             ],
             [
                 [
@@ -187,7 +187,7 @@ class GenerateCalendarEventTest extends TestCase
                     'frequence_type_of_recurring'   => RecurringFrequenceType::NTHWEEKDAY,
                     'is_public'                     => true,
                 ],
-                Carbon::parse('2019-07-15 19:30:00'),
+                Carbon::parse('2019-07-15'),
                 Carbon::parse('2019-07-17 19:30:00'),
                 Carbon::parse('2019-07-17 20:00:00'),
             ],
@@ -201,7 +201,7 @@ class GenerateCalendarEventTest extends TestCase
                     'frequence_type_of_recurring'   => RecurringFrequenceType::NTHWEEKDAY,
                     'is_public'                     => true,
                 ],
-                Carbon::parse('2019-08-19 19:30:00'),
+                Carbon::parse('2019-08-19'),
                 Carbon::parse('2019-08-21 19:30:00'),
                 Carbon::parse('2019-08-21 20:00:00'),
             ],
@@ -215,7 +215,7 @@ class GenerateCalendarEventTest extends TestCase
                     'frequence_type_of_recurring'   => RecurringFrequenceType::NTHWEEKDAY,
                     'is_public'                     => true,
                 ],
-                Carbon::parse('2019-09-16 19:30:00'),
+                Carbon::parse('2019-09-16'),
                 Carbon::parse('2019-09-18 19:30:00'),
                 Carbon::parse('2019-09-18 20:00:00'),
             ],
@@ -237,6 +237,10 @@ class GenerateCalendarEventTest extends TestCase
         $this->artisan('generate:calendar-event', ['--date' => $now]);
 
         $calendarEventLast = $calendarEvent->template->events()->orderBy('start_datetime', 'desc')->first();
+
+        // if('2017-08-23' === Carbon::parse($startDateTime)->format('Y-m-d') ){
+        //     var_dump($calendarEventLast); die();
+        // }
 
         $this->assertContains('Generated CalendarEvent from Console | Summary:', $this->getConsoleOutput());
         $this->assertEquals(Carbon::parse($startDateTime), Carbon::parse($calendarEventLast->start_datetime));

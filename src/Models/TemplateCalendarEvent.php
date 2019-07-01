@@ -99,15 +99,32 @@ class TemplateCalendarEvent extends AbstractModel implements TemplateCalendarEve
      * @param \DateTimeInterface $startDateTime
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function createCalendarEvent(\DateTimeInterface $startDateTime)
+    public function createCalendarEvent(\DateTimeInterface $startDate)
     {
         $diffInDays = $this->start_datetime->diffInDays($this->end_datetime);
-        $endDateTime    = clone($startDateTime)->addDays($diffInDays);
-
+        $endDate    = clone($startDate);
+        // if('2017-09-01' == $endDate->format('Y-m-d')) {
+        //     var_dump('fdsflkdsajf',$endDate);
+        // }
+        $endDate    = $endDate->addDays($diffInDays);
+        // if('2017-09-02' == $endDate->format('Y-m-d')) {
+        //     var_dump('dsfdsf',$endDate); die();
+        // }
         $calendarEvent = $this->events()->make([
-            'start_datetime' => $startDateTime,
-            'end_datetime'   => $endDateTime,
+            'start_datetime' => $startDate,
+            'end_datetime'   => $endDate,
         ]);
+        
+        
+        
+        
+        // $diffInDays = $this->start_datetime->diffInDays($this->end_datetime);
+        // $endDateTime    = clone($startDateTime)->addDays($diffInDays);
+
+        // $calendarEvent = $this->events()->make([
+        //     'start_datetime' => $startDateTime,
+        //     'end_datetime'   => $endDateTime,
+        // ]);
         $calendarEvent->template()->associate($this);
         $calendarEvent->save();
 
