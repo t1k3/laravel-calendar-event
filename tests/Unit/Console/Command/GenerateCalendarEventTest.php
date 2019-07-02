@@ -237,11 +237,7 @@ class GenerateCalendarEventTest extends TestCase
         $this->artisan('generate:calendar-event', ['--date' => $now]);
 
         $calendarEventLast = $calendarEvent->template->events()->orderBy('start_datetime', 'desc')->first();
-
-        // if('2017-08-23' === Carbon::parse($startDateTime)->format('Y-m-d') ){
-        //     var_dump($calendarEventLast); die();
-        // }
-
+        
         $this->assertContains('Generated CalendarEvent from Console | Summary:', $this->getConsoleOutput());
         $this->assertEquals(Carbon::parse($startDateTime), Carbon::parse($calendarEventLast->start_datetime));
         $this->assertEquals(Carbon::parse($endDateTime), Carbon::parse($calendarEventLast->end_datetime));
