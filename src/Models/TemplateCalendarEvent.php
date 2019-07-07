@@ -101,9 +101,9 @@ class TemplateCalendarEvent extends AbstractModel implements TemplateCalendarEve
      */
     public function createCalendarEvent(\DateTimeInterface $startDate)
     {
-        $diffInDays = $this->start_datetime->diffInDays($this->end_datetime);
+        $diffInSeconds = $this->start_datetime->diffInSeconds($this->end_datetime);
         $endDate    = clone($startDate);
-        $endDate    = $endDate->addDays($diffInDays);
+        $endDate    = $endDate->addSeconds($diffInSeconds);
         $calendarEvent = $this->events()->make([
             'start_datetime' => $startDate,
             'end_datetime'   => Carbon::parse( $endDate->format('Y-m-d') . ' ' . $this->end_datetime->format('H:i:s') ),

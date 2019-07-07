@@ -66,7 +66,8 @@ class GenerateCalendarEvent extends Command
 //          TODO Refactor: OCP, Strategy
             switch ($templateCalendarEvent->frequence_type_of_recurring) {
                 case RecurringFrequenceType::DAY:
-                    $endOfRecurring = (clone $date);
+                    $startDateTime = $templateCalendarEvent->start_datetime;
+                    $endOfRecurring = (clone $date)->hour($startDateTime->hour)->minute($startDateTime->minute)->second($startDateTime->second);
                     $diff           = $templateCalendarEvent->start_datetime->diffInDays($endOfRecurring);
                     $dateNext       = $templateCalendarEvent->start_datetime->addDays($diff);
 
@@ -86,7 +87,8 @@ class GenerateCalendarEvent extends Command
                     $dateNext = $templateCalendarEvent->start_datetime->addMonths($diff);
                     break;
                 case RecurringFrequenceType::YEAR:
-//                    $endOfRecurring = (clone $date)->addYear();
+                    $startDateTime = $templateCalendarEvent->start_datetime;
+                    $endOfRecurring = (clone $date)->addYear()->hour($startDateTime->hour)->minute($startDateTime->minute)->second($startDateTime->second);
                     $diff     = $templateCalendarEvent->start_datetime->diffInYears($endOfRecurring);
                     $dateNext = $templateCalendarEvent->start_datetime->addYears($diff);
                     break;
