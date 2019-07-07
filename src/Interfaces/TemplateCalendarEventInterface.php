@@ -32,41 +32,41 @@ interface TemplateCalendarEventInterface
     public function place();
 
     /**
-     * @param \DateTimeInterface $startDate
+     * @param \DateTimeInterface $startDateTime
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function createCalendarEvent(\DateTimeInterface $startDate);
+    public function createCalendarEvent(\DateTimeInterface $startDateTime);
 
     /**
-     * @param \DateTimeInterface $startDate
+     * @param \DateTimeInterface $startDateTime
      * @return \Illuminate\Database\Eloquent\Model|null|static
      */
-    public function createOrGetCalendarEvent(\DateTimeInterface $startDate);
+    public function createOrGetCalendarEvent(\DateTimeInterface $startDateTime);
 
     /**
-     * @param \DateTimeInterface $startDate
+     * @param \DateTimeInterface $startDateTime
      * @param array $attributes
      * @param UserInterface|null $user
      * @param PlaceInterface|null $place
      * @return null|CalendarEvent
      */
-    public function editCalendarEvent(\DateTimeInterface $startDate, array $attributes, UserInterface $user = null, PlaceInterface $place = null);
+    public function editCalendarEvent(\DateTimeInterface $startDateTime, array $attributes, UserInterface $user = null, PlaceInterface $place = null);
 
     /**
-     * @param \DateTimeInterface $startDate
+     * @param \DateTimeInterface $startDateTime
      * @param array $attributes
      * @param UserInterface|null $user
      * @param PlaceInterface|null $place
      * @return mixed
      */
-    public function updateCalendarEvent(\DateTimeInterface $startDate, array $attributes, UserInterface $user = null, PlaceInterface $place = null);
+    public function updateCalendarEvent(\DateTimeInterface $startDateTime, array $attributes, UserInterface $user = null, PlaceInterface $place = null);
 
     /**
-     * @param \DateTimeInterface $startDate
+     * @param \DateTimeInterface $startDateTime
      * @param bool|null $isRecurring
      * @return bool|null
      */
-    public function deleteCalendarEvent(\DateTimeInterface $startDate, bool $isRecurring = null);
+    public function deleteCalendarEvent(\DateTimeInterface $startDateTime, bool $isRecurring = null);
 
     /**
      * @param \DateTimeInterface $now
@@ -75,8 +75,8 @@ interface TemplateCalendarEventInterface
     public function generateNextCalendarEvent(\DateTimeInterface $now);
 
     /**
-     * @param \DateTimeInterface $startDate
+     * @param \DateTimeInterface $startDateTime
      * @return \DateTimeInterface|null
      */
-    public function getNextCalendarEventStartDate(\DateTimeInterface $startDate);
+    public function getNextCalendarEventStartDateTime(\DateTimeInterface $startDateTime);
 }

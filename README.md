@@ -52,10 +52,8 @@ use T1k3\LaravelCalendarEvent\Enums\RecurringFrequenceType;
 $calendarEvent = new CalendarEvent();
 $calendarEvent = $calendarEvent->createCalendarEvent([
     'title'                         => 'Lorem ipsum',
-    'start_date'                    => Carbon::parse('2017-08-25'),
-    'start_time'                    => Carbon::parse('16:00'),
-    'end_date'                      => Carbon::parse('2017-08-25'),
-    'end_time'                      => Carbon::parse('17:30'),
+    'start_datetime'                => Carbon::parse('2017-08-25 16:00:00'),
+    'start_datetime'                => Carbon::parse('2017-08-25 17:30:00'),
     'description'                   => 'Lorem ipsum dolor sit amet',
     'is_recurring'                  => true,
     'frequence_number_of_recurring' => 1,
@@ -69,7 +67,7 @@ $calendarEvent = $calendarEvent->createCalendarEvent([
 ```php
 $calendarEvent        = CalendarEvent::find($id);
 $calendarEventUpdated = $calendarEvent->editCalendarEvent([
-    'start_date'   => Carbon::parse('2017-08-26'),
+    'start_datetime'   => Carbon::parse('2017-08-26'),
     'is_recurring' => false,
 ], $user = null, $place = null);
 
@@ -80,7 +78,7 @@ $calendarEventUpdated = $calendarEvent->editCalendarEvent([
 ```php
 $calendarEvent        = CalendarEvent::find($id);
 $calendarEventUpdated = $calendarEvent->updateCalendarEvent([
-    'start_date'   => Carbon::parse('2017-08-26'),
+    'start_datetime'   => Carbon::parse('2017-08-26'),
     'is_recurring' => false,
 ], $user = null, $place = null);
 ```
@@ -136,7 +134,7 @@ php artisan generate:calendar-event
 
 ### Validation
 Do NOT forget the [validation](https://laravel.com/docs/master/validation) 
-start_date/start_time - end_date/end_time
+start_datetime - end_datetime
 
 ### TODO
 - [ ] Name conventions, example: `TemplateCalendarEvent::events()` to `TemplateCalendarEvent::calendarEvents()`

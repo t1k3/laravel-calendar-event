@@ -21,18 +21,12 @@ class CreateTemplateCalendarEventsTable extends Migration
             $table->integer('parent_id')->unsigned()->nullable();
             $table->string('title')->nullable();
 
-            $table->date('start_date');
-            $table->time('start_time');
-            $table->date('end_date');
-            $table->time('end_time');
-
-//            TODO Change date/time to *_at
-//            $table->datetime('start_at');
-//            $table->datetime('end_at');
+            $table->dateTime('start_datetime');
+            $table->dateTime('end_datetime');
 
             $table->text('description')->nullable();
             $table->boolean('is_recurring')->default(false);
-            $table->date('end_of_recurring')->nullable();
+            $table->dateTime('end_of_recurring')->nullable();
             $table->integer('frequence_number_of_recurring')->nullable();
             $table->string('frequence_type_of_recurring', 32)->nullable();
             $table->boolean('is_public')->default(false);
