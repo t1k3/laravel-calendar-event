@@ -53,7 +53,7 @@ $calendarEvent = new CalendarEvent();
 $calendarEvent = $calendarEvent->createCalendarEvent([
     'title'                         => 'Lorem ipsum',
     'start_datetime'                => Carbon::parse('2017-08-25 16:00:00'),
-    'start_datetime'                => Carbon::parse('2017-08-25 17:30:00'),
+    'end_datetime'                  => Carbon::parse('2017-08-25 17:30:00'),
     'description'                   => 'Lorem ipsum dolor sit amet',
     'is_recurring'                  => true,
     'frequence_number_of_recurring' => 1,
@@ -67,8 +67,8 @@ $calendarEvent = $calendarEvent->createCalendarEvent([
 ```php
 $calendarEvent        = CalendarEvent::find($id);
 $calendarEventUpdated = $calendarEvent->editCalendarEvent([
-    'start_datetime'   => Carbon::parse('2017-08-26'),
-    'is_recurring' => false,
+    'start_datetime' => Carbon::parse('2017-08-26'),
+    'is_recurring'   => false,
 ], $user = null, $place = null);
 
 // $calendarEventUpdated === null ? dd('NOT_MODIFIED') : dd('MODIFIED', $calendarEventUpdated);
@@ -78,8 +78,8 @@ $calendarEventUpdated = $calendarEvent->editCalendarEvent([
 ```php
 $calendarEvent        = CalendarEvent::find($id);
 $calendarEventUpdated = $calendarEvent->updateCalendarEvent([
-    'start_datetime'   => Carbon::parse('2017-08-26'),
-    'is_recurring' => false,
+    'start_datetime' => Carbon::parse('2017-08-26'),
+    'is_recurring'   => false,
 ], $user = null, $place = null);
 ```
 
@@ -137,6 +137,7 @@ Do NOT forget the [validation](https://laravel.com/docs/master/validation)
 start_datetime - end_datetime
 
 ### TODO
+- [ ] OCP
 - [ ] Name conventions, example: `TemplateCalendarEvent::events()` to `TemplateCalendarEvent::calendarEvents()`
 - [ ] [Custom validation rule](https://laravel.com/docs/master/validation#custom-validation-rules) to date/time diff
 
