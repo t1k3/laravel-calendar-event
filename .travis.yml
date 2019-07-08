@@ -12,6 +12,9 @@ install:
 script:
     - vendor/bin/phpunit --verbose
     - vendor/bin/phpmd src text phpmd.xml --exclude src/database
+    
+after_success:
+    - bash <(curl -s https://codecov.io/bash)
 
 matrix:
     fast_finish: true
