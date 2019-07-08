@@ -66,40 +66,42 @@ class GenerateCalendarEvent extends Command
 //          TODO Refactor: OCP, Strategy
             switch ($templateCalendarEvent->frequence_type_of_recurring) {
                 case RecurringFrequenceType::DAY:
-                    $endOfRecurring = (clone $date);
-                    $diff           = $templateCalendarEvent->start_date->diffInDays($endOfRecurring);
-                    $dateNext       = $templateCalendarEvent->start_date->addDays($diff);
+                    $startDateTime = $templateCalendarEvent->start_datetime;
+                    $endOfRecurring = (clone $date)->hour($startDateTime->hour)->minute($startDateTime->minute)->second($startDateTime->second);
+                    $diff           = $templateCalendarEvent->start_datetime->diffInDays($endOfRecurring);
+                    $dateNext       = $templateCalendarEvent->start_datetime->addDays($diff);
 
-                    if ($templateCalendarEvent->start_date->diffInDays($dateNext) % (int)$templateCalendarEvent->frequence_number_of_recurring === 0) {
+                    if ($templateCalendarEvent->start_datetime->diffInDays($dateNext) % (int)$templateCalendarEvent->frequence_number_of_recurring === 0) {
                         $dateNext->addDays((int)$templateCalendarEvent->frequence_number_of_recurring - 1);
                         $endOfRecurring->addDays((int)$templateCalendarEvent->frequence_number_of_recurring - 1);
                     }
                     break;
                 case RecurringFrequenceType::WEEK:
 //                    $endOfRecurring = (clone $date)->addWeek();
-                    $diff     = $templateCalendarEvent->start_date->diffInWeeks($endOfRecurring);
-                    $dateNext = $templateCalendarEvent->start_date->addWeeks($diff);
+                    $diff     = $templateCalendarEvent->start_datetime->diffInWeeks($endOfRecurring);
+                    $dateNext = $templateCalendarEvent->start_datetime->addWeeks($diff);
                     break;
                 case RecurringFrequenceType::MONTH:
 //                    $endOfRecurring = (clone $date)->addMonth();
-                    $diff     = $templateCalendarEvent->start_date->diffInMonths($endOfRecurring);
-                    $dateNext = $templateCalendarEvent->start_date->addMonths($diff);
+                    $diff     = $templateCalendarEvent->start_datetime->diffInMonths($endOfRecurring);
+                    $dateNext = $templateCalendarEvent->start_datetime->addMonths($diff);
                     break;
                 case RecurringFrequenceType::YEAR:
-//                    $endOfRecurring = (clone $date)->addYear();
-                    $diff     = $templateCalendarEvent->start_date->diffInYears($endOfRecurring);
-                    $dateNext = $templateCalendarEvent->start_date->addYears($diff);
+                    $startDateTime = $templateCalendarEvent->start_datetime;
+                    $endOfRecurring = (clone $date)->addYear()->hour($startDateTime->hour)->minute($startDateTime->minute)->second($startDateTime->second);
+                    $diff     = $templateCalendarEvent->start_datetime->diffInYears($endOfRecurring);
+                    $dateNext = $templateCalendarEvent->start_datetime->addYears($diff);
                     break;
                 case RecurringFrequenceType::NTHWEEKDAY:
-                    $diff     = $date->firstOfMonth()->diffInMonths($templateCalendarEvent->start_date);
+                    $diff     = $date->firstOfMonth()->diffInMonths($templateCalendarEvent->start_datetime);
 
-                    $nextMonth = $templateCalendarEvent->start_date->addMonths($diff);
+                    $nextMonth = $templateCalendarEvent->start_datetime->addMonths($diff);
                         $weekdays = getWeekdaysInMonth(
-                        $templateCalendarEvent->start_date->format('l'),
+                        $templateCalendarEvent->start_datetime->format('l'),
                         $nextMonth
                     );
 
-                    $dateNext = $weekdays[$templateCalendarEvent->start_date->weekOfMonth - 1];
+                    $dateNext = $weekdays[$templateCalendarEvent->start_datetime->weekOfMonth - 1];
             }
 
             if ($dateNext !== null
@@ -108,7 +110,7 @@ class GenerateCalendarEvent extends Command
                 )
                 && $dateNext >= $date
                 && $dateNext <= $endOfRecurring
-                && !$templateCalendarEvent->events()->withTrashed()->where('start_date', $dateNext)->first()
+                && !$templateCalendarEvent->events()->withTrashed()->where('start_datetime', $dateNext)->first()
             ) {
                 $calendarEvent = $templateCalendarEvent->createCalendarEvent($dateNext);
                 $count++;
@@ -120,12 +122,12 @@ class GenerateCalendarEvent extends Command
                         Generated CalendarEvent from Console: 
                         template_calendar_event_id: %s, 
                         calendar_event_id: %s, 
-                        start_date: %s, 
-                        end_date: %s',
+                        start_datetime: %s, 
+                        end_datetime: %s',
                         $calendarEvent->template_calendar_event_id,
                         $calendarEvent->id,
-                        $calendarEvent->start_date->format('Y-m-d'),
-                        $calendarEvent->end_date->format('Y-m-d')
+                        $calendarEvent->start_datetime->format('Y-m-d'),
+                        $calendarEvent->end_datetime->format('Y-m-d')
                     )
                 );
             }
