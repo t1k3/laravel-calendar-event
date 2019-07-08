@@ -10,10 +10,8 @@ $factory = app()->make(\Illuminate\Database\Eloquent\Factory::class);
 $factory->define(TemplateCalendarEvent::class, function (Faker $faker) {
     return [
         'title'        => str_random(16),
-        'start_date'   => Carbon::now()->addWeek()->format('Y-m-d'),
-        'start_time'   => Carbon::now()->hour,
-        'end_date'     => Carbon::now()->addWeek()->format('Y-m-d'),
-        'end_time'     => Carbon::now()->addHour()->hour,
+        'start_datetime'   => Carbon::now()->addWeek(),
+        'end_datetime'     => Carbon::now()->addWeek(),
         'description'  => str_random(32),
         'is_recurring' => false,
         //        'frequence_number_of_recurring' => 1,
