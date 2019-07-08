@@ -1,5 +1,12 @@
 # Laravel Calendar Event
 
+[![Latest Stable Version](https://poser.pugx.org/t1k3/laravel-calendar-event/v/stable)](https://packagist.org/packages/t1k3/laravel-calendar-event)
+[![Total Downloads](https://poser.pugx.org/t1k3/laravel-calendar-event/downloads)](https://packagist.org/packages/t1k3/laravel-calendar-event)
+[![License](https://poser.pugx.org/t1k3/laravel-calendar-event/license)](https://packagist.org/packages/t1k3/laravel-calendar-event)
+[![Build Status](https://travis-ci.org/t1k3/laravel-calendar-event.svg?branch=master)](https://travis-ci.org/t1k3/laravel-calendar-event)
+[![codecov](https://codecov.io/gh/t1k3/laravel-calendar-event/branch/master/graph/badge.svg)](https://codecov.io/gh/t1k3/laravel-calendar-event) 
+[![Maintainability](https://api.codeclimate.com/v1/badges/c226ae53c829f256ec58/maintainability)](https://codeclimate.com/github/t1k3/laravel-calendar-event/maintainability)
+
 ## Installation
 ```bash
 composer require t1k3/laravel-calendar-event
