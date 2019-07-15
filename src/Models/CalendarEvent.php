@@ -33,7 +33,7 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
      */
     protected $casts = [
         'start_datetime' => 'datetime',
-        'end_datetime'   => 'datetime',
+        'end_datetime' => 'datetime',
     ];
 
     /**
@@ -108,7 +108,7 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
                     $this->template->toArray(),
                     [
                         'start_datetime' => $this->start_datetime,
-                        'end_datetime'   => $this->end_datetime,
+                        'end_datetime' => $this->end_datetime,
                     ],
                     $attributes
                 ),
@@ -194,8 +194,8 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
      */
     public static function showPotentialCalendarEventsOfMonth(\DateTimeInterface $date)
     {
-        $endOfRecurring = $date->lastOfMonth();
-        $month          = str_pad($endOfRecurring->month, 2, '0', STR_PAD_LEFT);
+        $endOfRecurring = $date->lastOfMonth()->hour(23)->minute(59)->second(59);
+        $month = str_pad($endOfRecurring->month, 2, '0', STR_PAD_LEFT);
 
         $templateCalendarEvents = TemplateCalendarEvent
             ::where(function ($q) use ($month) {
@@ -217,35 +217,35 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
 
         $calendarEvents = collect();
         foreach ($templateCalendarEvents as $templateCalendarEvent) {
-            $calendarEvents       = $calendarEvents->merge($templateCalendarEvent->events()
-                ->whereMonth('start_datetime', $month)
-                ->get());
-            $dateNext             = null;
+            $calendarEvents = $calendarEvents->merge(
+                $templateCalendarEvent->events()->whereMonth('start_datetime', $month)->get()
+            );
+            $dateNext = null;
             $calendarEventTmpLast = $templateCalendarEvent->events()->orderBy('start_datetime', 'desc')->first();
 
             if ($calendarEventTmpLast) {
 //                TODO Refactor: OCP, Strategy
                 switch ($templateCalendarEvent->frequence_type_of_recurring) {
                     case RecurringFrequenceType::DAY:
-                        $diff     = $date->firstOfMonth()->diffInDays($calendarEventTmpLast->start_datetime);
+                        $diff = $calendarEventTmpLast->template->frequence_number_of_recurring;
                         $dateNext = $calendarEventTmpLast->start_datetime->addDays($diff);
                         break;
                     case RecurringFrequenceType::WEEK:
-                        $diff     = $date->firstOfMonth()->diffInWeeks($calendarEventTmpLast->start_datetime);
+                        $diff = $date->firstOfMonth()->diffInWeeks($calendarEventTmpLast->start_datetime);
                         $dateNext = $calendarEventTmpLast->start_datetime->addWeeks($diff);
                         break;
                     case RecurringFrequenceType::MONTH:
-                        $diff     = $date->firstOfMonth()->diffInMonths($calendarEventTmpLast->start_datetime);
+                        $diff = $date->firstOfMonth()->diffInMonths($calendarEventTmpLast->start_datetime);
                         $dateNext = $calendarEventTmpLast->start_datetime->addMonths($diff);
                         break;
                     case RecurringFrequenceType::YEAR:
-                        $diff     = $date->firstOfMonth()->diffInYears($calendarEventTmpLast->start_datetime);
+                        $diff = $date->firstOfMonth()->diffInYears($calendarEventTmpLast->start_datetime);
                         $dateNext = $calendarEventTmpLast->start_datetime->addYears($diff);
                         break;
                     case RecurringFrequenceType::NTHWEEKDAY:
-                        $diff     = $date->firstOfMonth()->diffInMonths($calendarEventTmpLast->start_datetime);
+                        $diff = $date->firstOfMonth()->diffInMonths($calendarEventTmpLast->start_datetime);
                         $nextMonth = $calendarEventTmpLast->start_datetime->addMonths($diff);
-        
+
                         $weekdays = getWeekdaysInMonth(
                             $calendarEventTmpLast->start_datetime->format('l'),
                             $nextMonth
@@ -255,13 +255,13 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
             }
 
             while ($dateNext !== null && $dateNext->month <= (int)$month) {
-                $diffInDays  = $templateCalendarEvent->start_datetime->diffInDays($templateCalendarEvent->end_datetime);
+                $diffInDays = $templateCalendarEvent->start_datetime->diffInDays($templateCalendarEvent->end_datetime);
                 $dateNextEnd = clone($dateNext);
                 $dateNextEnd = $dateNextEnd->addDays($diffInDays);
 
-                $calendarEventNotExists                = (new CalendarEvent())->make([
+                $calendarEventNotExists = (new CalendarEvent())->make([
                     'start_datetime' => $dateNext,
-                    'end_datetime'   => $dateNextEnd,
+                    'end_datetime' => $dateNextEnd,
                 ]);
                 $calendarEventNotExists->is_not_exists = true;
                 $calendarEventNotExists->template()->associate($templateCalendarEvent);

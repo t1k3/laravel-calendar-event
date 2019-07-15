@@ -461,7 +461,86 @@ class CalendarEventTest extends TestCase
             $this->assertTrue($isExist);
         }
     }
-    
+
+    public function dataProvider_for_eventsOfMonth_after_merge_date_time()
+    {
+        for ($i = 1; $i <= 31; $i++) {
+            $array[] = [$i];
+        }
+
+        return $array;
+    }
+
+    /**
+     * @test
+     * @dataProvider dataProvider_for_eventsOfMonth_after_merge_date_time
+     * @param int $day
+     */
+    public function getEventsOfMonth_after_merge_date_time(int $day)
+    {
+        $startDateTime = Carbon::parse('2019-07-' . $day . ' 18:00:00');
+        $this->calendarEvent->createCalendarEvent([
+            'title'                         => str_random(16),
+            'start_datetime'                => $startDateTime,
+            'end_datetime'                  => clone($startDateTime)->addHours(2),
+            'description'                   => str_random(32),
+            'is_recurring'                  => true,
+            'frequence_number_of_recurring' => 1,
+            'frequence_type_of_recurring'   => RecurringFrequenceType::DAY,
+            'is_public'                     => true,
+            'end_of_recurring'              => null,
+        ]);
+
+        $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(Carbon::parse('2019-07'));
+        $this->assertEquals(32 - $day, $calendarEvents->count());
+    }
+
+    /**
+     * @test
+     * @dataProvider dataProvider_for_eventsOfMonth_after_merge_date_time
+     * @param int $day
+     */
+    public function getEventsOfMonth_after_merge_date_time_nextMonth(int $day)
+    {
+        $startDateTime = Carbon::parse('2019-07-' . $day . ' 18:00:00');
+        $this->calendarEvent->createCalendarEvent([
+            'title'                         => str_random(16),
+            'start_datetime'                => $startDateTime,
+            'end_datetime'                  => clone($startDateTime)->addHours(2),
+            'description'                   => str_random(32),
+            'is_recurring'                  => true,
+            'frequence_number_of_recurring' => 1,
+            'frequence_type_of_recurring'   => RecurringFrequenceType::DAY,
+            'is_public'                     => true,
+            'end_of_recurring'              => null,
+        ]);
+
+        $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(Carbon::parse('2019-08'));
+        $this->assertEquals(31, $calendarEvents->count());
+    }
+
+    /**
+     * @test
+     */
+    public function getEventsOfMonth_after_merge_date_time_Type_week()
+    {
+        $startDateTime = Carbon::parse('2019-07-03 18:00:00');
+        $this->calendarEvent->createCalendarEvent([
+            'title'                         => str_random(16),
+            'start_datetime'                => $startDateTime,
+            'end_datetime'                  => clone($startDateTime)->addHours(2),
+            'description'                   => str_random(32),
+            'is_recurring'                  => true,
+            'frequence_number_of_recurring' => 1,
+            'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+            'is_public'                     => true,
+            'end_of_recurring'              => null,
+        ]);
+
+        $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(Carbon::parse('2019-07'));
+        $this->assertEquals(5, $calendarEvents->count());
+    }
+
     /**
     * @test
     */
@@ -475,17 +554,18 @@ class CalendarEventTest extends TestCase
           'frequence_number_of_recurring' => 1,
           'frequence_type_of_recurring'   => RecurringFrequenceType::NTHWEEKDAY,
           'is_public'                     => true,
+          'end_of_recurring'              => null,
       ]);
-      
-      
+
+
       $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(Carbon::parse('2019-07'));
       $this->assertEquals(1, $calendarEvents->count());
       $this->assertEquals('2019-07-17', $calendarEvents->first()->start_datetime->format('Y-m-d'));
-      
+
       $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(Carbon::parse('2019-08'));
       $this->assertEquals(1, $calendarEvents->count());
       $this->assertEquals('2019-08-21', $calendarEvents->first()->start_datetime->format('Y-m-d'));
-      
+
       $calendarEvents = CalendarEvent::showPotentialCalendarEventsOfMonth(Carbon::parse('2019-09'));
       $this->assertEquals(1, $calendarEvents->count());
       $this->assertEquals('2019-09-18', $calendarEvents->first()->start_datetime->format('Y-m-d'));
