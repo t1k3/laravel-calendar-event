@@ -141,7 +141,22 @@ php artisan generate:calendar-event
 
 ### Validation
 Do NOT forget the [validation](https://laravel.com/docs/master/validation) 
-start_datetime - end_datetime
+- start_datetime 
+- end_datetime
+
+### How to upgrade Carbon
+```bash
+$ docker run -it --rm -v $PWD:/app -w /app epcallan/php7-testing-phpunit:7.2-phpunit7 bash
+$ composer install
+$ ./vendor/bin/upgrade-carbon
+```
+
+### How to Testing
+```bash
+$ docker run -it --rm -v $PWD:/app -w /app epcallan/php7-testing-phpunit:7.2-phpunit7 bash
+$ composer install
+$ ./vendor/bin/phpunit
+```
 
 ### TODO
 - [ ] OCP

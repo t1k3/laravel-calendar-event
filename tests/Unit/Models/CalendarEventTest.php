@@ -24,9 +24,10 @@ class CalendarEventTest extends TestCase
     /**
      * Setup
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
+
         $this->calendarEvent = new CalendarEvent();
     }
 
@@ -444,7 +445,7 @@ class CalendarEventTest extends TestCase
     /**
      * @test
      */
-    public function eventsOfMonth()
+    public function test_eventsOfMonth()
     {
         $data = $this->data_for_eventOfMonth();
         extract($data); // $inputs, $dates

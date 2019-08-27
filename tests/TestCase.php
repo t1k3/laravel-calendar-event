@@ -2,6 +2,8 @@
 
 namespace T1k3\LaravelCalendarEvent\Tests;
 
+use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use T1k3\LaravelCalendarEvent\ServiceProvider as LaravelCalendarEventServiceProvider;
 use Illuminate\Contracts\Console\Kernel;
@@ -12,6 +14,8 @@ use Illuminate\Contracts\Console\Kernel;
  */
 abstract class TestCase extends BaseTestCase
 {
+    use DatabaseTransactions;
+
     /**
      * Console output
      * @var string
@@ -21,18 +25,20 @@ abstract class TestCase extends BaseTestCase
     /**
      * Setup
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->setUpFactory();
         $this->setUpDatabase();
+
+        $this->withoutMockingConsoleOutput();
     }
 
     /**
      * Teardown
      */
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->consoleOutput = '';
         $this->artisan('migrate:reset');
@@ -41,7 +47,7 @@ abstract class TestCase extends BaseTestCase
     }
 
     /**
-     * @param \Illuminate\Foundation\Application $app
+     * @param Application $app
      * @return array
      */
     protected function getPackageProviders($app)
@@ -55,7 +61,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Resolve application Console Kernel implementation.
      *
-     * @param \Illuminate\Foundation\Application $app
+     * @param Application $app
      */
     public function resolveApplicationConsoleKernel($app)
     {
@@ -73,7 +79,7 @@ abstract class TestCase extends BaseTestCase
     /**
      * Define environment setup
      *
-     * @param \Illuminate\Foundation\Application $app
+     * @param Application $app
      */
     protected function getEnvironmentSetUp($app)
     {
