@@ -366,6 +366,16 @@ class CalendarEventTest extends TestCase
                     'is_public'                     => true,
                 ],
                 [
+                    'title'                         => str_random(16),
+                    'start_datetime'                => Carbon::parse('2017-07-15 14:45:00'),
+                    'end_datetime'                  => Carbon::parse('2017-07-15 15:45:00'),
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 2,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::MONTH,
+                    'is_public'                     => true,
+                ],
+                [
                     'title'          => str_random(16),
                     'start_datetime' => Carbon::parse('2017-07-14 11:45:00'),
                     'end_datetime'   => Carbon::parse('2017-07-14 12:45:00'),
