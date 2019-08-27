@@ -284,8 +284,14 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
             })
             ->orWhere(function ($q) use ($endOfRecurring) {
                 $q->where('is_recurring', true)
-                    ->where('start_datetime', '<=', $endOfRecurring)
-                    ->whereMonth('end_of_recurring', '>=', $endOfRecurring);
+                    ->where('end_of_recurring', '>=', $endOfRecurring)
+                    ->where('start_datetime', '<=', $endOfRecurring);
+            })
+            ->orWhere(function ($q) use ($endOfRecurring, $month) {
+                $q->where('is_recurring', true)
+                    ->whereYear('end_of_recurring', $endOfRecurring->year)
+                    ->whereMonth('end_of_recurring', $month)
+                    ->where('start_datetime', '<=', $endOfRecurring);
             })
             ->with('events')
             ->get();
