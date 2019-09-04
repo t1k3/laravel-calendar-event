@@ -30,9 +30,10 @@ class TemplateCalendarEventTest extends TestCase
     /**
      * Setup
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
+
         $this->templateCalendarEvent = new TemplateCalendarEvent();
         $this->calendarEvent         = new CalendarEvent();
     }

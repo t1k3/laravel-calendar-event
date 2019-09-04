@@ -3,6 +3,7 @@
 namespace T1k3\LaravelCalendarEvent\Tests\Unit\Console\Command;
 
 use Carbon\Carbon;
+use Mockery;
 use T1k3\LaravelCalendarEvent\Enums\RecurringFrequenceType;
 use T1k3\LaravelCalendarEvent\Models\CalendarEvent;
 use T1k3\LaravelCalendarEvent\Models\TemplateCalendarEvent;
@@ -27,9 +28,10 @@ class GenerateCalendarEventTest extends TestCase
     /**
      * Setup
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
+
         $this->templateCalendarEvent = new TemplateCalendarEvent();
         $this->calendarEvent         = new CalendarEvent();
     }
@@ -47,8 +49,8 @@ class GenerateCalendarEventTest extends TestCase
             'is_recurring'     => false,
             'is_public'        => true,
         ]);
-        $this->artisan('generate:calendar-event', ['--date' => $now]);
 
+        $this->artisan('generate:calendar-event', ['--date' => $now]);
         $this->assertContains('Generated CalendarEvent from Console | Summary: 0', $this->getConsoleOutput());
         $this->assertEquals(1, $this->calendarEvent->all()->count());
     }
