@@ -19,9 +19,9 @@
         </whitelist>
     </filter>
     <logging>
-        <log type="coverage-clover" target="build/logs/clover.xml"/>
-        <log type="coverage-text" target="build/logs/coverage.txt"/>
-        <log type="coverage-html" target="build/logs/coverage" charset="UTF-8" yui="true" highlight="true"/>
+        <log type="coverage-html" target="build/phpunit/html"/>
+        <log type="coverage-clover" target="build/phpunit/clover.xml"/>
+        <log type="coverage-text" target="build/phpunit/coverage.txt"/>
     </logging>
     <php>
         <env name="APP_ENV" value="testing"/>

@@ -24,9 +24,10 @@ class CalendarEventTest extends TestCase
     /**
      * Setup
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
+
         $this->calendarEvent = new CalendarEvent();
     }
 
@@ -352,6 +353,7 @@ class CalendarEventTest extends TestCase
                 '2017-08-03', '2017-08-10', '2017-08-17', '2017-08-24', '2017-08-31',
                 '2017-08-04', '2017-08-18',
                 '2017-08-06',
+                '2017-08-07',
             ],
             'inputs' => [
                 [
@@ -362,6 +364,17 @@ class CalendarEventTest extends TestCase
                     'is_recurring'                  => true,
                     'frequence_number_of_recurring' => 1,
                     'frequence_type_of_recurring'   => RecurringFrequenceType::YEAR,
+                    'is_public'                     => true,
+                ],
+                [
+                    'title'                         => str_random(16),
+                    'start_datetime'                => Carbon::parse('2017-07-13 14:45:00'),
+                    'end_datetime'                  => Carbon::parse('2017-07-13 15:45:00'),
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 2,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::MONTH,
+                    'end_of_recurring'              => Carbon::parse('2017-12-15'),
                     'is_public'                     => true,
                 ],
                 [
@@ -381,6 +394,18 @@ class CalendarEventTest extends TestCase
                     'is_recurring'                  => true,
                     'frequence_number_of_recurring' => 2,
                     'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+                    'is_public'                     => true,
+                ],
+                [
+                    // 2017-08-07
+                    'title'                         => str_random(16),
+                    'start_datetime'                => Carbon::parse('2017-07-17 14:45:00'),
+                    'end_datetime'                  => Carbon::parse('2017-07-17 15:45:00'),
+                    'description'                   => str_random(32),
+                    'is_recurring'                  => true,
+                    'frequence_number_of_recurring' => 1,
+                    'frequence_type_of_recurring'   => RecurringFrequenceType::WEEK,
+                    'end_of_recurring'              => Carbon::parse('2017-08-08'),
                     'is_public'                     => true,
                 ],
                 [
@@ -444,7 +469,7 @@ class CalendarEventTest extends TestCase
     /**
      * @test
      */
-    public function eventsOfMonth()
+    public function test_eventsOfMonth()
     {
         $data = $this->data_for_eventOfMonth();
         extract($data); // $inputs, $dates

@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use T1k3\LaravelCalendarEvent\Enums\RecurringFrequenceType;
-use T1k3\LaravelCalendarEvent\Exceptions\InvalidMonthException;
 use T1k3\LaravelCalendarEvent\Interfaces\CalendarEventInterface;
 use T1k3\LaravelCalendarEvent\Interfaces\PlaceInterface;
 use T1k3\LaravelCalendarEvent\Interfaces\UserInterface;
@@ -191,7 +190,7 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
     /**
      * Show (potential) CalendarEvent of the month
      * @param \DateTimeInterface $date
-     * @return \Illuminate\Support\Collection|static
+     * @return Collection|static
      */
     public static function showPotentialCalendarEventsOfMonth(\DateTimeInterface $date)
     {
@@ -285,8 +284,14 @@ class CalendarEvent extends AbstractModel implements CalendarEventInterface
             })
             ->orWhere(function ($q) use ($endOfRecurring) {
                 $q->where('is_recurring', true)
-                    ->where('start_datetime', '<=', $endOfRecurring)
-                    ->whereMonth('end_of_recurring', '<=', $endOfRecurring);
+                    ->where('end_of_recurring', '>=', $endOfRecurring)
+                    ->where('start_datetime', '<=', $endOfRecurring);
+            })
+            ->orWhere(function ($q) use ($endOfRecurring, $month) {
+                $q->where('is_recurring', true)
+                    ->whereYear('end_of_recurring', $endOfRecurring->year)
+                    ->whereMonth('end_of_recurring', $month)
+                    ->where('start_datetime', '<=', $endOfRecurring);
             })
             ->with('events')
             ->get();
